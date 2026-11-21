@@ -522,8 +522,8 @@ func animate_dock(dt: float, sim) -> void:
 func location(mode: int) -> void:
 	life.storm = mode == 1
 	var exterior: Texture2D = preload("res://assets/room/nursery_window.webp")
-	if mode == 1 and ResourceLoader.exists("res://assets/room/ring_shadow.webp"):
-		exterior = load("res://assets/room/ring_shadow.webp")
+	if mode == 1:
+		exterior = preload("res://assets/room/ring_shadow.webp")
 	life.plate.set_shader_parameter("plate", exterior)
 	life.plate.set_shader_parameter("ring_ice", float(mode == 1))
 	life.plate.set_shader_parameter(

@@ -1,14 +1,14 @@
 """Stage each sealed local log prefix and run one Bruin writer. Use --watch for live flights."""
 
 import argparse
-from contextlib import contextmanager
 import json
 import os
-from pathlib import Path
 import shutil
 import subprocess
 import sys
 import time
+from contextlib import contextmanager
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCAL = ROOT / "telemetry" / "local"
@@ -44,6 +44,9 @@ def stage(paths):
                         continue
                     row = {
                         "run": header["run"],
+                        "mode": ("Open Crews" if header["open_crews"] else "Rivals")
+                        if "open_crews" in header
+                        else None,
                         "origin": header.get("origin", "fixture"),
                         "seq": e["seq"],
                         "kind": e["kind"],
@@ -70,7 +73,9 @@ def single_writer(lock_file, skip_if_busy):
         import fcntl
 
         try:
-            fcntl.flock(lock_file, fcntl.LOCK_EX | (fcntl.LOCK_NB if skip_if_busy else 0))
+            fcntl.flock(
+                lock_file, fcntl.LOCK_EX | (fcntl.LOCK_NB if skip_if_busy else 0)
+            )
         except BlockingIOError:
             yield False
             return
@@ -123,7 +128,11 @@ def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("inputs", nargs="*", type=Path)
     cli.add_argument("--watch", action="store_true")
-    cli.add_argument("--if-idle", action="store_true", help="Leave a running watcher in charge of the final refresh.")
+    cli.add_argument(
+        "--if-idle",
+        action="store_true",
+        help="Leave a running watcher in charge of the final refresh.",
+    )
     args = cli.parse_args()
     LOCAL.mkdir(exist_ok=True)
     config = LOCAL / "bruin.yml"

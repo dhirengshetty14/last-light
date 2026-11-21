@@ -22,7 +22,50 @@ func grade(s, category: String) -> Dictionary:
 	return {}
 
 
+func check_relay() -> void:
+	for crews in [true, false]:
+		var s = court(crews)
+		s.cooldown.fill(160)
+		s.tick = 20
+		for receiver in [1, 0, 1]:
+			var sender: int = s.owner
+			check(s.launch(sender, true, receiver), "relay pass released")
+			s.tick += 10
+			s.possession(receiver, "catch")
+			if receiver == 0:
+				check(
+					s.cooldown[0] == (s.tick if crews else 160),
+					"second completed pass restores the crew dash"
+				)
+				check(s.cooldown[2] == 160, "opponent keeps its cooldown")
+				s.cooldown[1] = 120
+		check(s.cooldown[1] == 120, "third pass in possession cannot recharge repeatedly")
+		check(s.relay_passes == (2 if crews else 0), "relay progress belongs to Open Crews")
+		s.possession(2, "steal")
+		check(s.relay_passes == 0, "steal breaks the passing sequence")
+	var s = court(true)
+	s.launch(0, true, 1)
+	s.possession(1, "catch")
+	s.launch(1, true, 0)
+	s.possession(4, "catch")
+	check(s.relay_passes == 0, "intercepted throw cannot complete relay")
+
+
 func _initialize() -> void:
+	check_relay()
+	var moving = court()
+	moving.pos[0] = Vector2(-3.5, -1.)
+	moving.pos[1] = Vector2(.2, -1.)
+	moving.vel[1] = Vector2(0., 3.65)
+	moving.ball = moving.hand(0)
+	moving.launch(0, true, 1)
+	for t in 48:
+		moving.tick += 1
+		moving.pos[1] += moving.vel[1] * moving.DT
+		moving.advance_ball()
+		if moving.owner >= 0:
+			break
+	check(moving.owner == 1, "ballistic lead reaches a receiver sprinting across court")
 	for seat in 2:
 		var s = court()
 		s.pos[seat] = Vector2(3.5, -.5)

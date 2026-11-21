@@ -5,7 +5,7 @@ const Performer = preload("res://game/crew_visual.gd")
 const Front = preload("res://game/star_ui.gd")
 const Coach = preload("res://game/gemini_coach.gd")
 var coach: Coach
-var session_key := ""
+var radio_host = preload("res://game/radio_host.gd").new()
 const Recorder = preload("res://game/flight_recorder.gd")
 const AMBER := Color("#ffce76")
 const BLUE := Color("#78e2ed")
@@ -28,6 +28,7 @@ const CAST = [
 ]
 var room := Room.new()
 var front := Front.new()
+var dock_lights = preload("res://game/court_lights.gd").new()
 var camera := Camera3D.new()
 var sim = Game.new()
 var cast: Array = []
@@ -36,6 +37,8 @@ var hoops: Array = []
 var star := Node3D.new()
 var shade_disc: MeshInstance3D
 var beacon: Node3D
+var beacon_start_tick := 0
+var beacon_end_tick := 0
 var music := AudioStreamPlayer.new()
 var voice := AudioStreamPlayer.new()
 var effects := AudioStreamPlayer.new()
@@ -56,6 +59,7 @@ var stride := [0., 0., 0., 0., 0.]
 var aim_dots: Array = []
 var message := ""
 var message_until := 0
+var box_score := {"passes": 0, "steals": 0, "relays": 0, "beacons": 0}
 var last_voice := -150
 var last_ledger := [-1, -1, -99, -99, -99]
 var command_edges := [{}, {}]
@@ -118,6 +122,12 @@ func _ready() -> void:
 		"pip_intro",
 		"morrow_intro",
 		"zip_intro",
+		"pip_outlet",
+		"morrow_outlet",
+		"zip_outlet",
+		"pip_relay",
+		"morrow_relay",
+		"zip_relay",
 		"pip_join",
 		"morrow_join",
 		"zip_join",
@@ -139,12 +149,8 @@ func _ready() -> void:
 	voice.volume_db = -1
 	effects.volume_db = -10
 	add_child(front)
-	front.key_changed.connect(set_session_key)
 	if not test_session and not capture_session:
-		var key := OS.get_environment("GEMINI_API_KEY")
-		if key.is_empty():
-			key = OS.get_environment("GOOGLE_API_KEY")
-		set_session_key(key)
+		radio_host.start()
 	front.chosen.connect(handle)
 	var pretrained = Game.Policy.new()
 	pretrained.load_checkpoint("res://learning/star_checkpoint.json")
@@ -166,6 +172,8 @@ func _ready() -> void:
 
 
 func court() -> void:
+	add_child(dock_lights)
+	dock_lights.build(room)
 	var enamel = room.metal("ivory chalk", "#ada18b", .68, .14)
 	var colored = [
 		room.metal("gold beacon", "#ffba47", .32, .23, 2.),
@@ -242,6 +250,9 @@ func court() -> void:
 
 
 func intro() -> void:
+	room.location(0)
+	dock_lights.age = 10.
+	dock_lights.sync(0., [0, 0], false, 0., room.life.reduced)
 	phase = "title"
 	chapter = -1
 	chapter_time = 0
@@ -252,6 +263,7 @@ func intro() -> void:
 	star.show()
 	for dot in aim_dots:
 		dot.hide()
+	beacon.rotation = Vector3.ZERO
 	beacon.scale = Vector3.ONE * .58
 	beacon.position = Vector3(3.15, 3.93, -4.65)
 	beacon.show()
@@ -312,6 +324,7 @@ func pilot_names() -> Array:
 
 
 func select_pilots() -> void:
+	room.location(int(crews))
 	phase = "pilots"
 	star.hide()
 	for i in 5:
@@ -358,25 +371,28 @@ func handle(cmd: String) -> void:
 			front.match_view()
 
 
-func set_session_key(value: String) -> void:
-	session_key = value.strip_edges()
-	if session_key != session_key.strip_escapes() or session_key.contains(" "):
-		session_key = ""
-	front.key_set = not session_key.is_empty()
+func connect_radio() -> void:
+	var url: String = radio_host.address()
+	if url != "" and not coach:
+		coach = Coach.new()
+		add_child(coach)
+		coach.configure(url)
 
 
 func start() -> void:
 	end_log()
+	beacon_start_tick = 0
+	beacon_end_tick = 0
 	goal_pose.clear()
+	dock_lights.age = 10.
 	scoring_team = -1
 	sim = Game.new()
 	sim.configure_agents(training, social_memory)
 	var seed_value := forced_seed if forced_seed >= 0 else int(random.randi())
 	sim.setup(seed_value, crews)
-	if not session_key.is_empty() and not test_session and not capture_session:
-		coach = Coach.new()
-		add_child(coach)
-		coach.configure(session_key)
+	connect_radio()
+	for key in box_score:
+		box_score[key] = 0
 	phase = "play"
 	beacon.scale = Vector3.ONE
 	beacon.hide()
@@ -417,7 +433,9 @@ func start() -> void:
 			"kind": "header",
 			"run": run,
 			"seed": seed_value,
-			"game": "last-light-v4",
+			"game": "last-light-v5",
+			"dock_relay": sim.relay_rules,
+			"moving_passes": sim.moving_passes,
 			"origin": "capture" if test_session or capture_session else "local_play",
 			"open_crews": crews,
 			"input_schema": 1,
@@ -471,6 +489,7 @@ func end_log() -> void:
 
 func _exit_tree() -> void:
 	end_log()
+	radio_host.stop()
 	for player in [music, voice, effects]:
 		player.stop()
 		player.stream = null
@@ -482,6 +501,12 @@ func say(key: String) -> void:
 		voice.play()
 
 
+func match_call(actor: int, cue: String, gap: int) -> void:
+	if not voice.playing and sim.tick - last_voice >= gap:
+		say(Performer.FILES[actor] + "_" + cue)
+		last_voice = sim.tick
+
+
 func sound(key: String) -> void:
 	effects.stream = clips[key]
 	if DisplayServer.get_name() != "headless":
@@ -489,8 +514,6 @@ func sound(key: String) -> void:
 
 
 func _input(ev: InputEvent) -> void:
-	if front.key_dialog and front.key_dialog.visible:
-		return
 	if not ev is InputEventKey or not ev.pressed or ev.echo:
 		return
 	var k: int = ev.physical_keycode
@@ -533,6 +556,8 @@ func _input(ev: InputEvent) -> void:
 func _physics_process(_dt: float) -> void:
 	if phase != "play":
 		return
+	if not coach and sim.tick % 30 == 0:
+		connect_radio()
 	var keys := [[KEY_A, KEY_D, KEY_W, KEY_S], [KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN]]
 	for i in 2:
 		command_edges[pilot_for_seat[i]]["move"] = Vector2(
@@ -575,7 +600,7 @@ func _physics_process(_dt: float) -> void:
 	if sim.finished:
 		end_log()
 		phase = "end"
-		front.results(sim.goals[0], sim.goals[1])
+		front.results(sim.goals[0], sim.goals[1], box_score, crews)
 	else:
 		update_hud()
 
@@ -583,9 +608,32 @@ func _physics_process(_dt: float) -> void:
 func present(e: Dictionary) -> void:
 	var i: int = e.seat
 	match str(e.kind):
+		"action_grade":
+			if e.type == "court_throw" and e.action == "pass" and e["pass"]:
+				box_score.passes += 1
 		"throw":
 			sound("toss")
+		"dock_relay":
+			dock_lights.signal_crew(e.team, e.charged)
+			var crew := "Gold" if e.team == Game.GOLD else "Blue"
+			message = (
+				crew
+				+ (
+					" relay lit! The crew can dash again."
+					if e.charged
+					else " relay · Complete one more pass to recharge dash."
+				)
+			)
+			message_until = sim.tick + 95
+			if e.charged:
+				box_score.relays += 1
+				sound("accord")
+				var speaker: int = i if i >= 2 else int(e["from"])
+				if speaker >= 2:
+					match_call(speaker, "relay", 60)
 		"response_intent":
+			if e.choice == "outlet" and sim.owner in [0, 1] and sim.team[i] == sim.team[sim.owner]:
+				match_call(i, "outlet", 230)
 			if sim.tick - last_ledger[i] > 100:
 				front.record(Game.NAMES[i] + "  ·  " + e.reason)
 				last_ledger[i] = sim.tick
@@ -593,10 +641,10 @@ func present(e: Dictionary) -> void:
 			if e.method == "restart":
 				return
 			if e.method == "steal":
+				box_score.steals += 1
 				sound("turnover")
-				if i >= 2 and sim.tick - last_voice > 170:
-					say(Performer.FILES[i] + "_steal")
-					last_voice = sim.tick
+				if i >= 2:
+					match_call(i, "steal", 170)
 			if sim.tick >= message_until or e.method == "steal":
 				message = (
 					Game.NAMES[i]
@@ -604,6 +652,7 @@ func present(e: Dictionary) -> void:
 				)
 				message_until = sim.tick + 67
 		"goal":
+			dock_lights.signal_crew(e.team, true)
 			goal_pose = positions.duplicate()
 			scoring_team = e.team
 			goal_spot = Vector3(Game.RING if scoring_team == 0 else -Game.RING, Game.HEIGHT, 0)
@@ -614,6 +663,10 @@ func present(e: Dictionary) -> void:
 			message_until = sim.tick + 128
 			front.record(message)
 		"aurora":
+			if e.tick >= beacon_end_tick:
+				beacon_start_tick = e.tick
+			beacon_end_tick = e.until
+			box_score.beacons += 1
 			message = Game.NAMES[i] + " lit the far beacon. Both rings widen!"
 			message_until = sim.tick + 138
 			front.record(message)
@@ -628,12 +681,14 @@ func present(e: Dictionary) -> void:
 				sound("accord")
 				if e.team == 0:
 					say(Performer.FILES[i] + "_join")
+					last_voice = sim.tick
 		"out_of_reach":
 			message = "Move beside a robot to offer a jersey."
 			message_until = sim.tick + 100
 
 
 func update_hud() -> void:
+	front.show_dashes(sim, pilot_for_seat)
 	if front.ledger.visible and (sim.tick % 8 == 0 or front.ledger.text.is_empty()):
 		front.show_plans(sim)
 	var left := ceili((Game.END - sim.tick) / 60.)
@@ -716,6 +771,13 @@ func _process(dt: float) -> void:
 
 
 func render_game(dt: float, alpha: float) -> void:
+	dock_lights.sync(
+		dt if phase == "play" else 0.,
+		sim.goals,
+		sim.tick < sim.surge_until,
+		room.life.seconds,
+		room.life.reduced
+	)
 	var celebration: bool = (
 		not goal_pose.is_empty()
 		and (sim.tick < sim.restart_until - 12 or (phase == "end" and sim.goals.max() >= 3))
@@ -780,10 +842,11 @@ func render_game(dt: float, alpha: float) -> void:
 		)
 	beacon.visible = sim.tick < sim.surge_until
 	if beacon.visible:
-		var pass_time := 1. - float(sim.surge_until - sim.tick) / 600.
+		var orbit := (float(sim.tick - beacon_start_tick) + alpha) * PI / 520.
 		beacon.position = Vector3(
-			lerpf(8., -8., pass_time), 3.28 + sin(pass_time * TAU) * .37, -5.2
+			7.8 * cos(orbit), 3.40 + .32 * sin(orbit * 2.), -6. - .9 * sin(orbit)
 		)
+		beacon.rotation.y = atan2(-.9 * cos(orbit), 7.8 * sin(orbit))
 		beacon.rotation.z = .08 * sin(clock * 1.9)
 		for fin in ["FlukeLeft", "FlukeRight"]:
 			beacon.get_node(fin).rotation.z = .21 * sin(clock * 2.8)

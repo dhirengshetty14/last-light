@@ -55,6 +55,9 @@ var robot_chain := false
 var surge_until := 0
 var restart_until := 0
 var open_crews := false
+var relay_rules := true
+var moving_passes := true
+var relay_passes := 0
 var finished := false
 var keep_events := true
 var last_input: Array[Vector2] = [Vector2.ZERO, Vector2.ZERO]
@@ -147,6 +150,15 @@ func possession(i: int, method: String) -> void:
 			i == target and flight == "pass",
 			i == target or (thrower >= 0 and team[i] == team[thrower])
 		)
+	var clean_pass: bool = (
+		method == "catch"
+		and flight == "pass"
+		and i == target
+		and thrower >= 0
+		and thrower != i
+		and team[i] == throw_side
+		and team[thrower] == throw_side
+	)
 	var before := owner
 	var previous := thrower if before < 0 else before
 	if i < 2:
@@ -182,6 +194,26 @@ func possession(i: int, method: String) -> void:
 	generation += 1
 	emit("custody", i, {"method": method, "from": previous, "team": team[i]})
 
+	if relay_rules and open_crews:
+		if not clean_pass:
+			relay_passes = 0
+		elif relay_passes < 2:
+			relay_passes += 1
+			if relay_passes == 2:
+				for teammate in 5:
+					if team[teammate] == team[i]:
+						cooldown[teammate] = tick
+			emit(
+				"dock_relay",
+				i,
+				{
+					"team": team[i],
+					"from": previous,
+					"passes": relay_passes,
+					"charged": relay_passes == 2
+				}
+			)
+
 
 func launch(i: int, passing: bool, requested: int = -1) -> bool:
 	if i != owner or tick < restart_until:
@@ -210,6 +242,15 @@ func launch(i: int, passing: bool, requested: int = -1) -> bool:
 		dest.x += signf(dest.x) * .25
 	var origin := hand(i)
 	var seconds := clampf(floor_ball().distance_to(dest) / 7.4, .30, .92)
+	if passing and moving_passes:
+		# Lead a running teammate for the actual flight time. The throw is ballistic after release.
+		var runner := Vector2(vel[recipient]).limit_length(SPEED[recipient])
+		var release := Vector2(origin.x, origin.z)
+		for iteration in 3:
+			dest = (Vector2(pos[recipient]) + runner * seconds).clamp(
+				Vector2(-5.07, -2.04), Vector2(5.07, 2.04)
+			)
+			seconds = clampf(release.distance_to(dest) / 7.4, .30, .92)
 	var end := Vector3(dest.x, height, dest.y)
 	throw_checks = {
 		"seat": i,
@@ -245,6 +286,7 @@ func launch(i: int, passing: bool, requested: int = -1) -> bool:
 				if ignored[ally] >= 2:
 					settle(ally)
 					team[ally] = BLUE
+					relay_passes = 0
 					agents[ally - 2].change_team()
 					pact[ally] = -1
 					trust[ally] -= 1
@@ -374,6 +416,7 @@ func invite(human: int) -> void:
 	if next != team[j]:
 		settle(j)
 		team[j] = next
+		relay_passes = 0
 		actor.change_team()
 		ignored[j] = 0
 		pact[j] = human if next == GOLD else -1

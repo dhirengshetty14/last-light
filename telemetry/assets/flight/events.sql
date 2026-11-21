@@ -12,7 +12,7 @@ custom_checks:
     value: 0
 @bruin */
 SELECT * FROM read_json('telemetry/local/events.ndjson', columns={
-    run: 'VARCHAR', origin: 'VARCHAR', seq: 'BIGINT', tick: 'BIGINT', kind: 'VARCHAR', seat: 'INTEGER',
+    run: 'VARCHAR', mode: 'VARCHAR', origin: 'VARCHAR', seq: 'BIGINT', tick: 'BIGINT', kind: 'VARCHAR', seat: 'INTEGER',
     points: 'INTEGER', full_pass: 'BOOLEAN', category: 'VARCHAR', choice: 'VARCHAR',
     cause: 'BIGINT', flags: 'BOOLEAN[]', payload: 'VARCHAR'
 }, format='newline_delimited')

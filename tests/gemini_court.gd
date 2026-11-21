@@ -1,5 +1,5 @@
 extends SceneTree
-## Exercise three overlapping asynchronous turns using synthetic Google-shaped replies.
+## Exercise three overlapping asynchronous turns using synthetic game service replies.
 const Court = preload("res://game/star_match.gd")
 const Coach = preload("res://game/gemini_coach.gd")
 const Replay = preload("res://tools/replay_court.gd")
@@ -34,14 +34,15 @@ func answer(slot: int) -> PackedByteArray:
 			"move": Coach.OPTIONS[phase][0],
 			"reason": "Cover the lane for " + Coach.ROLES[slot] + "."
 		}
-	var parts := [{"thought": true, "text": "private test marker"}, {"text": JSON.stringify(plan)}]
 	return (
 		JSON
 		. stringify(
 			{
-				"candidates": [{"finishReason": "STOP", "content": {"parts": parts}}],
-				"usageMetadata": {"promptTokenCount": 52, "candidatesTokenCount": 38},
-				"modelVersion": "fixture"
+				"plan": plan,
+				"model_version": "fixture",
+				"input_tokens": 52,
+				"output_tokens": 38,
+				"total_tokens": 90
 			}
 		)
 		. to_utf8_buffer()
@@ -66,7 +67,10 @@ func run() -> void:
 			not JSON.stringify(obs).contains("points") and not obs.has("estimates"), "reward hidden"
 		)
 		check(
-			radio.requests[i].generationConfig.responseJsonSchema.required.size() == 4,
+			(
+				radio.requests[i].name == Coach.ROLES[i]
+				and not radio.requests[i].has("systemInstruction")
+			),
 			"structured request"
 		)
 	check(radio.poll(world).is_empty(), "no overlapping calls for same robot")
@@ -86,7 +90,8 @@ func run() -> void:
 				"kind": "header",
 				"origin": "fixture",
 				"input_schema": 1,
-				"game": "last-light-v4",
+				"game": "last-light-v5",
+				"moving_passes": true,
 				"run": "gemini-test-87",
 				"seed": 87,
 				"open_crews": false,
@@ -147,7 +152,7 @@ func run() -> void:
 		"id": 9,
 		"team_epoch": 0,
 		"asked_tick": world.tick,
-		"model": Coach.MODELS[0],
+		"model": Coach.MODEL,
 		"state": "request"
 	}
 	actor.accept_packet(ticket, world.tick)

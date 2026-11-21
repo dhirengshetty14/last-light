@@ -8,11 +8,9 @@ var objective: Label
 var feed: Label
 var controls_line: Label
 var ledger := RichTextLabel.new()
-signal key_changed(value: String)
-var key_set := false
-var key_dialog := ConfirmationDialog.new()
-var key_input := LineEdit.new()
 var history: Array[String] = []
+var dash_labels: Array[Label] = []
+var dash_meters: Array[ProgressBar] = []
 
 
 func _ready() -> void:
@@ -32,6 +30,42 @@ func _ready() -> void:
 	dark.set_corner_radius_all(3)
 	board.add_theme_stylebox_override("panel", dark)
 	match_hud.add_child(board)
+	var dash_panel := PanelContainer.new()
+	match_hud.add_child(dash_panel)
+	dash_panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	dash_panel.offset_left = -218
+	dash_panel.offset_right = -15
+	dash_panel.offset_top = 17
+	var panel_style := dark.duplicate() as StyleBoxFlat
+	panel_style.border_width_left = 0
+	panel_style.content_margin_left = 12
+	panel_style.content_margin_right = 12
+	panel_style.content_margin_top = 7
+	panel_style.content_margin_bottom = 7
+	dash_panel.add_theme_stylebox_override("panel", panel_style)
+	var rows := VBoxContainer.new()
+	dash_panel.add_child(rows)
+	for seat in 2:
+		var row := HBoxContainer.new()
+		rows.add_child(row)
+		var label := ink_label("", 15, PALE)
+		label.custom_minimum_size.x = 95
+		row.add_child(label)
+		dash_labels.append(label)
+		var meter := ProgressBar.new()
+		meter.show_percentage = false
+		meter.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		meter.custom_minimum_size = Vector2(73, 5)
+		meter.max_value = 1.
+		meter.step = .01
+		var fill := StyleBoxFlat.new()
+		fill.bg_color = GOLD_INK if seat == 0 else AQUA
+		var track := StyleBoxFlat.new()
+		track.bg_color = Color("#405155")
+		meter.add_theme_stylebox_override("fill", fill)
+		meter.add_theme_stylebox_override("background", track)
+		row.add_child(meter)
+		dash_meters.append(meter)
 	score = place(match_hud, 29, 24, 22, PALE)
 	score.add_theme_font_override("font", INSTRUMENT_FACE)
 	objective = place(match_hud, 23, 69, 18, GOLD_INK)
@@ -57,50 +91,6 @@ func _ready() -> void:
 	ledger.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	ledger.hide()
 	match_hud.hide()
-	add_child(key_dialog)
-	key_dialog.title = "Court radio · Gemini"
-	var radio_theme := Theme.new()
-	radio_theme.default_font = BODY_FACE
-	radio_theme.set_font("font", "Button", DISPLAY_FACE)
-	radio_theme.set_font("title_font", "Window", DISPLAY_FACE)
-	key_dialog.theme = radio_theme
-	key_dialog.exclusive = true
-	key_dialog.ok_button_text = "Use for this session"
-	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 12)
-	key_dialog.add_child(box)
-	var hint := ink_label(
-		"During matches each robot sends its own scout report to Google. Requests use your Gemini API quota. The key stays in memory until you quit.",
-		18,
-		PALE
-	)
-	hint.custom_minimum_size.x = 450
-	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	box.add_child(hint)
-	key_input.placeholder_text = "Gemini API key"
-	key_input.secret = true
-	key_input.max_length = 512
-	box.add_child(key_input)
-	key_dialog.get_ok_button().disabled = true
-	key_input.text_changed.connect(
-		func(value: String): key_dialog.get_ok_button().disabled = value.strip_edges().is_empty()
-	)
-	key_dialog.confirmed.connect(
-		func():
-			key_changed.emit(key_input.text.strip_edges())
-			key_input.clear()
-			modes()
-	)
-	key_dialog.canceled.connect(key_input.clear)
-	key_dialog.add_button("Use local agents", true, "local")
-	key_dialog.custom_action.connect(
-		func(action: StringName):
-			if action == "local":
-				key_changed.emit("")
-				key_input.clear()
-				key_dialog.hide()
-				modes()
-	)
 
 
 func place(
@@ -147,23 +137,12 @@ func modes() -> void:
 	menu(
 		"Choose a game mode",
 		"LAST LIGHT   /   NIGHT SHIFT",
-		"Rivals keeps all three robots on Blue. In Open Crews, ask a robot to join Gold or take on all three together. Both modes play to three goals.",
-		{
-			"rivals": "Rivals   ·   2 vs 3",
-			"crews": "Open Crews",
-			"replay": "Meet the five again",
-			"gemini": "Gemini settings" if key_set else "Connect Gemini"
-		}
+		"Rivals pits Nell and Rafi against three robots. In Open Crews, recruit a rival and string two passes together to recharge your crew’s dash. First to three goals lights the harbor.",
+		{"rivals": "Rivals   ·   2 vs 3", "crews": "Open Crews", "replay": "Meet the five again"}
 	)
 
 
 func pick(cmd: String) -> void:
-	if cmd == "gemini":
-		key_input.clear()
-		key_dialog.get_ok_button().disabled = true
-		key_dialog.popup_centered(Vector2i(520, 210))
-		key_input.grab_focus()
-		return
 	chosen.emit(cmd)
 
 
@@ -188,13 +167,20 @@ func briefing(crews: bool, names: Array) -> void:
 				% names
 			)
 			+ (
-				"\nQ (P1) or P (P2) offers a nearby robot a jersey. Ask your ally again to break the deal."
+				"\nQ (P1) or P (P2) offers a nearby robot a jersey. Complete two passes in a row to recharge every teammate’s dash."
 				if crews
 				else ""
 			)
 		),
 		{"play": "Take the court", "pilots": "Change pilots", "select": "Change mode"}
 	)
+
+
+func show_dashes(sim, pilots: Array[int]) -> void:
+	for seat in 2:
+		var pilot := pilots[seat]
+		dash_labels[seat].text = "%s   DASH" % sim.NAMES[pilot]
+		dash_meters[seat].value = 1. - clampf(float(sim.cooldown[pilot] - sim.tick) / 86., 0., 1.)
 
 
 func match_view() -> void:
@@ -241,7 +227,7 @@ func show_plans(sim) -> void:
 		ledger.text = words
 
 
-func results(gold: int, blue: int) -> void:
+func results(gold: int, blue: int, stats: Dictionary, crews: bool) -> void:
 	var title := (
 		"Gold lights the harbor"
 		if gold > blue
@@ -250,7 +236,13 @@ func results(gold: int, blue: int) -> void:
 	menu(
 		title,
 		"FINAL WHISTLE   /   %d GOLD    %d BLUE" % [gold, blue],
-		"Both crews carry what they learned into the next shift.",
+		(
+			(
+				"%d completed passes     ·     %d steals     ·     %d machine-lit beacons"
+				% [stats.passes, stats.steals, stats.beacons]
+			)
+			+ ("     ·     %d charged relays" % stats.relays if crews else "")
+		),
 		{"again": "Rematch", "select": "Change mode", "replay": "Replay opening"}
 	)
 

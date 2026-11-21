@@ -26,3 +26,6 @@ environment/defaults/default_clear_color=Color(0.025,0.042,0.062,1)
 
 [physics]
 common/physics_ticks_per_second=60
+
+[last_light]
+radio/url=""

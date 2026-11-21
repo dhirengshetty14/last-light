@@ -1,13 +1,7 @@
 extends Node
 ## Each robot owns an independent one-request channel. The simulator consumes replies only at tick boundaries.
-const ENDPOINT := "https://generativelanguage.googleapis.com/v1beta/models/"
-const MODELS := ["gemini-3.1-flash-lite", "gemini-3.6-flash", "gemini-3.5-flash-lite"]
+const MODEL = "gemini-3.1-flash-lite"
 const ROLES := ["Pip", "Morrow", "Zip"]
-const PERSONAS := [
-	"You are Pip, an opportunistic ball thief who values teammates who pass back.",
-	"You are Morrow, a patient keeper who studies shooting lanes and supports underdogs.",
-	"You are Zip, a fast courier who looks for open space and reliable passing partners."
-]
 const OPTIONS := {
 	"defend": ["press", "screen", "cut"],
 	"support": ["advance", "outlet"],
@@ -15,7 +9,7 @@ const OPTIONS := {
 	"loose": ["lead", "recover"]
 }
 const INTERVAL_MS := 8000
-var _key := ""
+var endpoint := ""
 var channels: Array[HTTPRequest] = []
 var models: Array[String] = []
 var active := [{}, {}, {}]
@@ -25,16 +19,10 @@ var completed: Array = []
 var disabled := [false, false, false]
 
 
-func configure(key: String) -> void:
-	_key = key
+func configure(url: String) -> void:
+	endpoint = url
 	for i in 3:
-		var model := OS.get_environment("LAST_LIGHT_MODEL_" + ROLES[i].to_upper()).strip_edges()
-		if (
-			model.is_empty()
-			or not model.replace("-", "").replace(".", "").replace("_", "").is_valid_identifier()
-		):
-			model = MODELS[i]
-		models.append(model)
+		models.append(MODEL)
 		var http := HTTPRequest.new()
 		http.use_threads = true
 		http.timeout = 6.
@@ -79,41 +67,6 @@ static func observation(sim, i: int) -> Dictionary:
 	}
 
 
-static func payload(i: int, seen: Dictionary) -> Dictionary:
-	var properties := {}
-	for phase in OPTIONS:
-		properties[phase] = {
-			"type": "object",
-			"properties":
-			{"move": {"type": "string", "enum": OPTIONS[phase]}, "reason": {"type": "string"}},
-			"required": ["move", "reason"]
-		}
-	return {
-		"systemInstruction":
-		{
-			"parts":
-			[
-				{
-					"text":
-					(
-						PERSONAS[i]
-						+ " Play Last Light, a passing game. Gold attacks right, Blue left. Plan one move for each possession phase. Press challenges the carrier, screen guards the ring, cut covers a passing lane. Lead predicts a loose ball and recover chases it. An outlet stays available for a pass. Team 0 is Gold. Use only this scout report. learned_tactic is your local policy's latest recommendation. Give a short public tactical reason per move (one sentence, at most 100 characters)."
-					)
-				}
-			]
-		},
-		"contents": [{"role": "user", "parts": [{"text": JSON.stringify(seen)}]}],
-		"generationConfig":
-		{
-			"responseMimeType": "application/json",
-			"responseJsonSchema":
-			{"type": "object", "properties": properties, "required": OPTIONS.keys()},
-			"maxOutputTokens": 768,
-			"thinkingConfig": {"thinkingLevel": "MINIMAL"}
-		}
-	}
-
-
 static func validate_plan(value: Variant) -> Dictionary:
 	if not value is Dictionary or value.size() != OPTIONS.size():
 		return {}
@@ -139,31 +92,15 @@ static func decode(body: PackedByteArray) -> Dictionary:
 	var response: Variant = JSON.parse_string(body.get_string_from_utf8())
 	if not response is Dictionary:
 		return {}
-	var candidates: Variant = response.get("candidates")
-	if not candidates is Array or candidates.is_empty() or not candidates[0] is Dictionary:
-		return {}
-	var candidate: Dictionary = candidates[0]
-	if candidate.get("finishReason") != "STOP":
-		return {}
-	var content: Variant = candidate.get("content")
-	if not content is Dictionary or not content.get("parts") is Array:
-		return {}
-	var answer := ""
-	for part in content.parts:
-		if part is Dictionary and not part.get("thought", false) and part.get("text") is String:
-			answer += part.text
-	var plan := validate_plan(JSON.parse_string(answer))
+	var plan := validate_plan(response.get("plan"))
 	if plan.is_empty():
 		return {}
-	var usage: Variant = response.get("usageMetadata", {})
-	if not usage is Dictionary:
-		usage = {}
 	return {
 		"plan": plan,
-		"model_version": str(response.get("modelVersion", "")).left(100),
-		"input_tokens": int(usage.get("promptTokenCount", 0)),
-		"output_tokens": int(usage.get("candidatesTokenCount", 0)),
-		"total_tokens": int(usage.get("totalTokenCount", 0))
+		"model_version": str(response.get("model_version", "")).left(100),
+		"input_tokens": int(response.get("input_tokens", 0)),
+		"output_tokens": int(response.get("output_tokens", 0)),
+		"total_tokens": int(response.get("total_tokens", 0))
 	}
 
 
@@ -190,7 +127,7 @@ func poll(sim) -> Array:
 		active[i] = ticket
 		next_ms[i] = now + INTERVAL_MS
 		active[i]["start_ms"] = now
-		var err := dispatch(i, payload(i, seen))
+		var err := dispatch(i, seen)
 		if err != OK:
 			_finish(i, "transport_error", 0, {})
 	return batch
@@ -198,8 +135,8 @@ func poll(sim) -> Array:
 
 func dispatch(i: int, body: Dictionary) -> Error:
 	return channels[i].request(
-		ENDPOINT + models[i] + ":generateContent",
-		PackedStringArray(["Content-Type: application/json", "x-goog-api-key: " + _key]),
+		endpoint,
+		PackedStringArray(["Content-Type: application/json"]),
 		HTTPClient.METHOD_POST,
 		JSON.stringify(body)
 	)
@@ -222,6 +159,8 @@ func _reply(
 			state = "invalid_reply"
 	if status in [400, 401, 403, 404]:
 		disabled[i] = true
+	if state == "transport_error" or state == "timeout":
+		next_ms[i] = Time.get_ticks_msec() + 15000
 	if status == 429:
 		next_ms[i] = Time.get_ticks_msec() + 30000
 	_finish(i, state, status, checked)
@@ -238,7 +177,7 @@ func _finish(i: int, state: String, status: int, fields: Dictionary) -> void:
 
 
 func close() -> Array:
-	_key = ""
+	endpoint = ""
 	for i in channels.size():
 		if not active[i].is_empty():
 			channels[i].cancel_request()

@@ -32,6 +32,8 @@ func verify(path: String) -> bool:
 		return false
 	var s = Game.new()
 	s.setup(int(head.seed), head.open_crews)
+	s.moving_passes = head.get("moving_passes", false)
+	s.relay_rules = head.get("dock_relay", false)
 	s.legacy_replay = not head.has("starting_relationships")
 	s.configure_agents(head.starting_policy, head.get("starting_relationships", {}))
 	var inputs: Dictionary = {}
