@@ -1,0 +1,477 @@
+{"game":"last-light-v2","input_schema":1,"kind":"header","open_crews":true,"origin":"capture","run":"1795287995908035-87","seed":87,"starting_policy":{"star2/2/carry/fresh/0/0/drive":[30.0,9.0,1860.0],"star2/2/carry/fresh/0/0/flank":[34.0,19.0,2655.0],"star2/2/carry/fresh/0/0/pass":[2.0,0.0,130.0],"star2/2/carry/fresh/1/0/finish":[33.0,25.0,3020.0],"star2/2/carry/pass/0/0/drive":[10.0,3.0,615.0],"star2/2/carry/pass/0/0/flank":[15.0,10.0,1250.0],"star2/2/carry/pass/0/1/drive":[102.0,90.0,9690.0],"star2/2/carry/pass/0/1/flank":[10.0,6.0,770.0],"star2/2/carry/pass/0/1/pass":[6.0,3.0,495.0],"star2/2/carry/pass/1/0/finish":[4.0,3.0,365.0],"star2/2/carry/pass/1/1/finish":[37.0,35.0,3630.0],"star2/2/carry/shoot/0/-1/drive":[1.0,0.0,20.0],"star2/2/carry/shoot/0/-1/pass":[2.0,2.0,200.0],"star2/2/carry/shoot/0/0/drive":[61.0,42.0,5255.0],"star2/2/carry/shoot/0/0/flank":[9.0,6.0,750.0],"star2/2/carry/shoot/0/0/pass":[3.0,2.0,265.0],"star2/2/carry/shoot/0/1/drive":[419.0,255.0,32605.0],"star2/2/carry/shoot/0/1/flank":[56.0,33.0,4290.0],"star2/2/carry/shoot/0/1/pass":[63.0,42.0,5565.0],"star2/2/carry/shoot/1/0/finish":[20.0,19.0,1965.0],"star2/2/carry/shoot/1/1/finish":[115.0,80.0,10275.0],"star2/2/defend/fresh/0/-1/press":[3.0,1.0,175.0],"star2/2/defend/fresh/0/0/cut":[233.0,46.0,14340.0],"star2/2/defend/fresh/0/0/press":[174.0,21.0,9630.0],"star2/2/defend/fresh/0/0/screen":[35.0,2.0,1935.0],"star2/2/defend/fresh/0/1/cut":[3.0,1.0,195.0],"star2/2/defend/fresh/0/1/press":[7.0,2.0,510.0],"star2/2/defend/fresh/0/1/screen":[2.0,0.0,75.0],"star2/2/defend/fresh/1/0/cut":[15.0,6.0,1195.0],"star2/2/defend/fresh/1/0/press":[15.0,3.0,1070.0],"star2/2/defend/fresh/1/0/screen":[4.0,0.0,175.0],"star2/2/defend/pass/0/-1/cut":[3.0,2.0,255.0],"star2/2/defend/pass/0/-1/screen":[1.0,0.0,65.0],"star2/2/defend/pass/0/0/cut":[60.0,3.0,3515.0],"star2/2/defend/pass/0/0/press":[4.0,0.0,165.0],"star2/2/defend/pass/0/0/screen":[3.0,0.0,80.0],"star2/2/defend/pass/0/1/cut":[47.0,6.0,2585.0],"star2/2/defend/pass/0/1/press":[7.0,0.0,305.0],"star2/2/defend/pass/0/1/screen":[14.0,1.0,680.0],"star2/2/defend/pass/1/0/cut":[4.0,0.0,170.0],"star2/2/defend/pass/1/0/press":[1.0,1.0,100.0],"star2/2/defend/pass/1/0/screen":[5.0,1.0,330.0],"star2/2/defend/pass/1/1/cut":[3.0,1.0,230.0],"star2/2/defend/pass/1/1/screen":[1.0,1.0,100.0],"star2/2/defend/shoot/0/-1/screen":[1.0,0.0,40.0],"star2/2/defend/shoot/0/0/cut":[6.0,1.0,350.0],"star2/2/defend/shoot/0/0/press":[47.0,13.0,3030.0],"star2/2/defend/shoot/0/0/screen":[8.0,1.0,515.0],"star2/2/defend/shoot/0/1/cut":[59.0,17.0,4115.0],"star2/2/defend/shoot/0/1/press":[344.0,124.0,24040.0],"star2/2/defend/shoot/0/1/screen":[105.0,28.0,7740.0],"star2/2/defend/shoot/1/0/press":[1.0,0.0,65.0],"star2/2/defend/shoot/1/1/cut":[2.0,1.0,165.0],"star2/2/defend/shoot/1/1/press":[48.0,26.0,3950.0],"star2/2/defend/shoot/1/1/screen":[4.0,0.0,265.0],"star2/2/loose/fresh/0/0/lead":[10.0,0.0,455.0],"star2/2/loose/fresh/0/0/recover":[65.0,8.0,3525.0],"star2/2/loose/fresh/1/0/lead":[3.0,0.0,100.0],"star2/2/loose/fresh/1/0/recover":[12.0,0.0,440.0],"star2/2/loose/pass/0/-1/lead":[1.0,0.0,65.0],"star2/2/loose/pass/0/-1/recover":[2.0,0.0,85.0],"star2/2/loose/pass/0/0/lead":[9.0,2.0,535.0],"star2/2/loose/pass/0/0/recover":[16.0,2.0,1015.0],"star2/2/loose/pass/0/1/lead":[42.0,11.0,2710.0],"star2/2/loose/pass/0/1/recover":[104.0,30.0,6365.0],"star2/2/loose/pass/1/-1/recover":[2.0,0.0,130.0],"star2/2/loose/pass/1/0/recover":[3.0,0.0,105.0],"star2/2/loose/pass/1/1/lead":[1.0,0.0,65.0],"star2/2/loose/pass/1/1/recover":[8.0,1.0,415.0],"star2/2/loose/shoot/0/-1/lead":[2.0,0.0,105.0],"star2/2/loose/shoot/0/-1/recover":[2.0,0.0,80.0],"star2/2/loose/shoot/0/0/lead":[3.0,0.0,120.0],"star2/2/loose/shoot/0/0/recover":[20.0,2.0,1235.0],"star2/2/loose/shoot/0/1/lead":[44.0,2.0,1940.0],"star2/2/loose/shoot/0/1/recover":[234.0,9.0,12545.0],"star2/2/loose/shoot/1/0/lead":[1.0,0.0,40.0],"star2/2/loose/shoot/1/0/recover":[4.0,0.0,100.0],"star2/2/loose/shoot/1/1/lead":[19.0,0.0,1040.0],"star2/2/loose/shoot/1/1/recover":[35.0,0.0,1060.0],"star2/2/support/fresh/0/0/advance":[49.0,6.0,2135.0],"star2/2/support/fresh/0/0/outlet":[42.0,0.0,1585.0],"star2/2/support/fresh/1/0/advance":[1.0,0.0,40.0],"star2/2/support/fresh/1/0/outlet":[6.0,0.0,240.0],"star2/2/support/pass/0/-1/advance":[1.0,0.0,40.0],"star2/2/support/pass/0/-1/outlet":[3.0,0.0,145.0],"star2/2/support/pass/0/0/advance":[6.0,0.0,245.0],"star2/2/support/pass/0/0/outlet":[15.0,0.0,670.0],"star2/2/support/pass/0/1/advance":[6.0,0.0,365.0],"star2/2/support/pass/0/1/outlet":[86.0,20.0,5170.0],"star2/2/support/pass/1/-1/outlet":[1.0,0.0,20.0],"star2/2/support/pass/1/0/outlet":[1.0,0.0,40.0],"star2/2/support/pass/1/1/advance":[1.0,0.0,20.0],"star2/2/support/shoot/0/-1/advance":[3.0,0.0,100.0],"star2/2/support/shoot/0/-1/outlet":[4.0,1.0,225.0],"star2/2/support/shoot/0/0/advance":[13.0,1.0,710.0],"star2/2/support/shoot/0/0/outlet":[24.0,0.0,990.0],"star2/2/support/shoot/0/1/advance":[68.0,1.0,3465.0],"star2/2/support/shoot/0/1/outlet":[449.0,30.0,22695.0],"star2/2/support/shoot/1/0/outlet":[1.0,0.0,40.0],"star2/2/support/shoot/1/1/advance":[4.0,0.0,120.0],"star2/2/support/shoot/1/1/outlet":[19.0,0.0,680.0],"star2/3/carry/fresh/0/0/drive":[2.0,0.0,130.0],"star2/3/carry/fresh/1/0/finish":[1.0,1.0,100.0],"star2/3/carry/pass/0/-1/drive":[8.0,4.0,660.0],"star2/3/carry/pass/0/0/drive":[5.0,1.0,270.0],"star2/3/carry/pass/0/0/flank":[11.0,8.0,905.0],"star2/3/carry/pass/0/0/pass":[1.0,0.0,65.0],"star2/3/carry/pass/0/1/drive":[60.0,40.0,5255.0],"star2/3/carry/pass/0/1/flank":[3.0,2.0,265.0],"star2/3/carry/pass/0/1/pass":[2.0,0.0,130.0],"star2/3/carry/pass/1/-1/finish":[2.0,2.0,200.0],"star2/3/carry/pass/1/0/finish":[4.0,4.0,400.0],"star2/3/carry/pass/1/1/finish":[6.0,6.0,600.0],"star2/3/carry/shoot/0/-1/drive":[3.0,2.0,265.0],"star2/3/carry/shoot/0/0/drive":[22.0,10.0,1735.0],"star2/3/carry/shoot/0/0/flank":[2.0,0.0,130.0],"star2/3/carry/shoot/0/0/pass":[3.0,0.0,195.0],"star2/3/carry/shoot/0/1/drive":[277.0,145.0,22720.0],"star2/3/carry/shoot/0/1/flank":[32.0,14.0,2495.0],"star2/3/carry/shoot/0/1/pass":[11.0,6.0,925.0],"star2/3/carry/shoot/1/0/finish":[3.0,3.0,300.0],"star2/3/carry/shoot/1/1/finish":[28.0,28.0,2800.0],"star2/3/defend/fresh/0/-1/screen":[3.0,0.0,170.0],"star2/3/defend/fresh/0/0/cut":[114.0,13.0,5815.0],"star2/3/defend/fresh/0/0/press":[104.0,25.0,7105.0],"star2/3/defend/fresh/0/0/screen":[141.0,0.0,8955.0],"star2/3/defend/fresh/0/1/cut":[3.0,0.0,170.0],"star2/3/defend/fresh/0/1/press":[1.0,0.0,20.0],"star2/3/defend/fresh/0/1/screen":[17.0,2.0,955.0],"star2/3/defend/fresh/1/0/cut":[2.0,0.0,115.0],"star2/3/defend/fresh/1/0/press":[1.0,0.0,80.0],"star2/3/defend/fresh/1/0/screen":[4.0,0.0,160.0],"star2/3/defend/fresh/1/1/screen":[1.0,0.0,75.0],"star2/3/defend/pass/0/-1/cut":[4.0,0.0,215.0],"star2/3/defend/pass/0/-1/screen":[1.0,0.0,75.0],"star2/3/defend/pass/0/0/cut":[60.0,13.0,3330.0],"star2/3/defend/pass/0/0/press":[2.0,0.0,130.0],"star2/3/defend/pass/0/0/screen":[9.0,0.0,500.0],"star2/3/defend/pass/0/1/cut":[54.0,4.0,2670.0],"star2/3/defend/pass/0/1/press":[7.0,1.0,435.0],"star2/3/defend/pass/0/1/screen":[12.0,0.0,735.0],"star2/3/defend/pass/1/0/cut":[7.0,1.0,460.0],"star2/3/defend/pass/1/0/press":[1.0,0.0,65.0],"star2/3/defend/pass/1/0/screen":[2.0,0.0,40.0],"star2/3/defend/pass/1/1/cut":[5.0,1.0,360.0],"star2/3/defend/shoot/0/-1/screen":[1.0,0.0,20.0],"star2/3/defend/shoot/0/0/cut":[10.0,1.0,495.0],"star2/3/defend/shoot/0/0/press":[18.0,8.0,1305.0],"star2/3/defend/shoot/0/0/screen":[40.0,4.0,2625.0],"star2/3/defend/shoot/0/1/cut":[57.0,5.0,3295.0],"star2/3/defend/shoot/0/1/press":[7.0,1.0,495.0],"star2/3/defend/shoot/0/1/screen":[537.0,164.0,39180.0],"star2/3/defend/shoot/1/1/cut":[1.0,1.0,100.0],"star2/3/defend/shoot/1/1/screen":[2.0,0.0,150.0],"star2/3/loose/fresh/0/0/lead":[3.0,1.0,160.0],"star2/3/loose/fresh/0/0/recover":[6.0,1.0,300.0],"star2/3/loose/fresh/1/0/recover":[1.0,0.0,20.0],"star2/3/loose/pass/0/-1/lead":[1.0,0.0,65.0],"star2/3/loose/pass/0/-1/recover":[6.0,3.0,425.0],"star2/3/loose/pass/0/0/lead":[5.0,0.0,280.0],"star2/3/loose/pass/0/0/recover":[18.0,3.0,1100.0],"star2/3/loose/pass/0/1/lead":[77.0,12.0,3890.0],"star2/3/loose/pass/0/1/recover":[121.0,9.0,5755.0],"star2/3/loose/pass/1/-1/recover":[1.0,1.0,100.0],"star2/3/loose/pass/1/0/lead":[1.0,0.0,65.0],"star2/3/loose/pass/1/0/recover":[3.0,0.0,150.0],"star2/3/loose/pass/1/1/lead":[3.0,0.0,195.0],"star2/3/loose/pass/1/1/recover":[8.0,0.0,360.0],"star2/3/loose/shoot/0/-1/lead":[3.0,1.0,180.0],"star2/3/loose/shoot/0/-1/recover":[3.0,0.0,145.0],"star2/3/loose/shoot/0/0/lead":[10.0,1.0,510.0],"star2/3/loose/shoot/0/0/recover":[46.0,6.0,2455.0],"star2/3/loose/shoot/0/1/lead":[156.0,27.0,8050.0],"star2/3/loose/shoot/0/1/recover":[388.0,44.0,20595.0],"star2/3/loose/shoot/1/0/recover":[2.0,0.0,40.0],"star2/3/loose/shoot/1/1/recover":[6.0,1.0,265.0],"star2/3/support/fresh/0/0/advance":[7.0,0.0,280.0],"star2/3/support/fresh/0/0/outlet":[2.0,0.0,80.0],"star2/3/support/pass/0/0/advance":[20.0,1.0,1015.0],"star2/3/support/pass/0/0/outlet":[11.0,1.0,535.0],"star2/3/support/pass/0/1/advance":[128.0,0.0,6720.0],"star2/3/support/pass/0/1/outlet":[24.0,0.0,1245.0],"star2/3/support/pass/1/0/advance":[2.0,0.0,80.0],"star2/3/support/pass/1/1/advance":[2.0,0.0,80.0],"star2/3/support/shoot/0/-1/advance":[4.0,0.0,165.0],"star2/3/support/shoot/0/-1/outlet":[1.0,0.0,20.0],"star2/3/support/shoot/0/0/advance":[82.0,0.0,4165.0],"star2/3/support/shoot/0/0/outlet":[20.0,1.0,945.0],"star2/3/support/shoot/0/1/advance":[739.0,1.0,37740.0],"star2/3/support/shoot/0/1/outlet":[97.0,0.0,4840.0],"star2/3/support/shoot/1/0/advance":[2.0,0.0,80.0],"star2/3/support/shoot/1/1/advance":[2.0,0.0,60.0],"star2/4/carry/fresh/0/0/flank":[4.0,2.0,240.0],"star2/4/carry/fresh/1/0/finish":[2.0,2.0,200.0],"star2/4/carry/pass/0/-1/flank":[2.0,1.0,165.0],"star2/4/carry/pass/0/0/drive":[5.0,4.0,465.0],"star2/4/carry/pass/0/0/flank":[3.0,0.0,150.0],"star2/4/carry/pass/0/1/drive":[3.0,1.0,230.0],"star2/4/carry/pass/0/1/flank":[42.0,35.0,3775.0],"star2/4/carry/pass/0/1/pass":[2.0,0.0,130.0],"star2/4/carry/pass/1/0/finish":[1.0,1.0,100.0],"star2/4/carry/pass/1/1/finish":[15.0,14.0,1465.0],"star2/4/carry/shoot/0/-1/drive":[1.0,0.0,20.0],"star2/4/carry/shoot/0/-1/flank":[2.0,1.0,120.0],"star2/4/carry/shoot/0/-1/pass":[1.0,0.0,65.0],"star2/4/carry/shoot/0/0/drive":[6.0,2.0,370.0],"star2/4/carry/shoot/0/0/flank":[23.0,14.0,1760.0],"star2/4/carry/shoot/0/0/pass":[4.0,2.0,330.0],"star2/4/carry/shoot/0/1/drive":[28.0,18.0,2225.0],"star2/4/carry/shoot/0/1/flank":[302.0,234.0,26815.0],"star2/4/carry/shoot/0/1/pass":[19.0,8.0,1515.0],"star2/4/carry/shoot/1/-1/finish":[1.0,1.0,100.0],"star2/4/carry/shoot/1/0/finish":[9.0,8.0,865.0],"star2/4/carry/shoot/1/1/finish":[137.0,120.0,13105.0],"star2/4/defend/fresh/0/-1/press":[2.0,2.0,200.0],"star2/4/defend/fresh/0/-1/screen":[1.0,0.0,40.0],"star2/4/defend/fresh/0/0/cut":[103.0,7.0,4860.0],"star2/4/defend/fresh/0/0/press":[102.0,22.0,6455.0],"star2/4/defend/fresh/0/0/screen":[137.0,1.0,8520.0],"star2/4/defend/fresh/0/1/cut":[4.0,0.0,230.0],"star2/4/defend/fresh/0/1/press":[13.0,1.0,810.0],"star2/4/defend/fresh/0/1/screen":[5.0,0.0,285.0],"star2/4/defend/fresh/1/0/cut":[2.0,0.0,130.0],"star2/4/defend/fresh/1/0/press":[4.0,1.0,240.0],"star2/4/defend/fresh/1/0/screen":[1.0,0.0,40.0],"star2/4/defend/fresh/1/1/screen":[1.0,0.0,40.0],"star2/4/defend/pass/0/-1/cut":[4.0,0.0,190.0],"star2/4/defend/pass/0/-1/press":[1.0,0.0,80.0],"star2/4/defend/pass/0/-1/screen":[1.0,0.0,40.0],"star2/4/defend/pass/0/0/cut":[48.0,7.0,2440.0],"star2/4/defend/pass/0/0/press":[3.0,0.0,135.0],"star2/4/defend/pass/0/0/screen":[5.0,0.0,195.0],"star2/4/defend/pass/0/1/cut":[38.0,0.0,1575.0],"star2/4/defend/pass/0/1/press":[23.0,3.0,1515.0],"star2/4/defend/pass/0/1/screen":[9.0,0.0,345.0],"star2/4/defend/pass/1/0/cut":[19.0,4.0,850.0],"star2/4/defend/pass/1/0/press":[1.0,0.0,55.0],"star2/4/defend/pass/1/0/screen":[5.0,0.0,160.0],"star2/4/defend/pass/1/1/cut":[6.0,0.0,255.0],"star2/4/defend/pass/1/1/screen":[3.0,0.0,170.0],"star2/4/defend/shoot/0/-1/press":[1.0,0.0,65.0],"star2/4/defend/shoot/0/0/cut":[8.0,0.0,350.0],"star2/4/defend/shoot/0/0/press":[24.0,11.0,1780.0],"star2/4/defend/shoot/0/0/screen":[34.0,6.0,2305.0],"star2/4/defend/shoot/0/1/cut":[353.0,103.0,21115.0],"star2/4/defend/shoot/0/1/press":[153.0,78.0,12580.0],"star2/4/defend/shoot/0/1/screen":[48.0,4.0,2780.0],"star2/4/defend/shoot/1/0/press":[1.0,0.0,20.0],"star2/4/defend/shoot/1/0/screen":[1.0,0.0,40.0],"star2/4/defend/shoot/1/1/cut":[40.0,11.0,2690.0],"star2/4/defend/shoot/1/1/press":[7.0,0.0,210.0],"star2/4/defend/shoot/1/1/screen":[5.0,0.0,275.0],"star2/4/loose/fresh/0/0/lead":[1.0,1.0,100.0],"star2/4/loose/pass/0/-1/lead":[7.0,0.0,305.0],"star2/4/loose/pass/0/-1/recover":[3.0,0.0,195.0],"star2/4/loose/pass/0/0/lead":[12.0,1.0,620.0],"star2/4/loose/pass/0/0/recover":[7.0,2.0,405.0],"star2/4/loose/pass/0/1/lead":[156.0,17.0,8855.0],"star2/4/loose/pass/0/1/recover":[13.0,0.0,555.0],"star2/4/loose/pass/1/-1/lead":[1.0,0.0,65.0],"star2/4/loose/pass/1/-1/recover":[1.0,0.0,65.0],"star2/4/loose/pass/1/0/lead":[7.0,0.0,315.0],"star2/4/loose/pass/1/0/recover":[2.0,0.0,80.0],"star2/4/loose/pass/1/1/lead":[25.0,0.0,1180.0],"star2/4/loose/pass/1/1/recover":[10.0,1.0,385.0],"star2/4/loose/shoot/0/-1/lead":[4.0,2.0,305.0],"star2/4/loose/shoot/0/0/lead":[35.0,2.0,1605.0],"star2/4/loose/shoot/0/0/recover":[9.0,0.0,430.0],"star2/4/loose/shoot/0/1/lead":[278.0,37.0,15415.0],"star2/4/loose/shoot/0/1/recover":[104.0,11.0,6135.0],"star2/4/loose/shoot/1/0/lead":[6.0,0.0,345.0],"star2/4/loose/shoot/1/0/recover":[1.0,0.0,20.0],"star2/4/loose/shoot/1/1/lead":[45.0,1.0,2390.0],"star2/4/loose/shoot/1/1/recover":[11.0,0.0,445.0],"star2/4/support/fresh/0/0/advance":[3.0,0.0,100.0],"star2/4/support/fresh/0/0/outlet":[1.0,0.0,40.0],"star2/4/support/pass/0/-1/advance":[7.0,1.0,370.0],"star2/4/support/pass/0/-1/outlet":[1.0,0.0,40.0],"star2/4/support/pass/0/0/advance":[20.0,0.0,960.0],"star2/4/support/pass/0/0/outlet":[13.0,1.0,620.0],"star2/4/support/pass/0/1/advance":[97.0,6.0,5425.0],"star2/4/support/pass/0/1/outlet":[75.0,10.0,4100.0],"star2/4/support/pass/1/0/advance":[4.0,0.0,160.0],"star2/4/support/pass/1/0/outlet":[1.0,0.0,40.0],"star2/4/support/pass/1/1/advance":[2.0,0.0,60.0],"star2/4/support/pass/1/1/outlet":[1.0,0.0,40.0],"star2/4/support/shoot/0/-1/advance":[3.0,1.0,205.0],"star2/4/support/shoot/0/-1/outlet":[1.0,0.0,40.0],"star2/4/support/shoot/0/0/advance":[71.0,3.0,3405.0],"star2/4/support/shoot/0/0/outlet":[20.0,1.0,1025.0],"star2/4/support/shoot/0/1/advance":[651.0,33.0,34105.0],"star2/4/support/shoot/0/1/outlet":[117.0,8.0,5940.0],"star2/4/support/shoot/1/0/advance":[2.0,0.0,80.0],"star2/4/support/shoot/1/0/outlet":[1.0,0.0,40.0],"star2/4/support/shoot/1/1/advance":[13.0,1.0,560.0],"star2/4/support/shoot/1/1/outlet":[3.0,0.0,145.0]}}
+{"choice":"press","context":"star2/2/defend/fresh/0/0","kind":"response_intent","owner":0,"reason":"Close the carrier before the shot.","seat":2,"seq":1,"source":1,"tick":1,"x":1.3300000429153442,"z":-0.25999999046325684}
+{"choice":"screen","context":"star2/3/defend/fresh/0/0","kind":"response_intent","owner":0,"reason":"Hold between the carrier and our ring.","seat":3,"seq":2,"source":2,"tick":1,"x":3.819999933242798,"z":0.699999988079071}
+{"choice":"cut","context":"star2/4/defend/fresh/0/0","kind":"response_intent","owner":0,"reason":"Cutting the passing lane.","seat":4,"seq":3,"source":3,"tick":1,"x":2.3499999046325684,"z":-1.6200000047683716}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":4,"tick":2}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":1,"seq":5,"tick":2}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":6,"tick":10}
+{"buttons":["invite"],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":7,"tick":13}
+{"action":"press","flags":[true,true,true,false,false],"kind":"action_grade","owner":0,"pass":false,"points":40,"seat":2,"seq":8,"source":1,"tick":13,"type":"response","x":0.9767716526985168,"z":0.02406991273164749}
+{"changed":true,"human":0,"kind":"alliance","reason":"Pip takes the open jersey.","seat":2,"seq":9,"team":0,"tick":13}
+{"choice":"advance","context":"star2/2/support/fresh/0/0","kind":"response_intent","owner":0,"reason":"Get ahead for a return ball.","seat":2,"seq":10,"source":10,"tick":13,"x":0.9767716526985168,"z":0.02406991273164749}
+{"action":"screen","flags":[true,true,true,true,false],"kind":"action_grade","owner":0,"pass":false,"points":65,"seat":3,"seq":11,"source":2,"tick":13,"type":"response","x":3.399899482727051,"z":0.5728186964988708}
+{"choice":"press","context":"star2/3/defend/fresh/0/0","kind":"response_intent","owner":0,"reason":"Close the carrier before the shot.","seat":3,"seq":12,"source":12,"tick":13,"x":3.399899482727051,"z":0.5728186964988708}
+{"action":"cut","flags":[true,true,true,false,false],"kind":"action_grade","owner":0,"pass":false,"points":40,"seat":4,"seq":13,"source":3,"tick":13,"type":"response","x":1.9810116291046143,"z":-1.3031352758407593}
+{"choice":"press","context":"star2/4/defend/fresh/0/0","kind":"response_intent","owner":0,"reason":"Close the carrier before the shot.","seat":4,"seq":14,"source":14,"tick":13,"x":1.9810116291046143,"z":-1.3031352758407593}
+{"kind":"court_frame","owner":0,"players":[[-0.038,0.9590000000000001,0],[1.454,-1.5,0],[0.879,0.108,0],[3.249,0.549,1],[1.848,-1.1500000000000001,1]],"seat":-1,"seq":15,"star":[-0.0375298447906971,1.059999942779541,1.1189804077148438],"tick":15}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":16,"tick":23}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":17,"tick":26}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":18,"tick":28}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":19,"tick":29}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":20,"tick":30}
+{"kind":"court_frame","owner":0,"players":[[0.759,0.876,0],[2.404,-1.5,0],[1.062,0.045,0],[2.469,0.654,1],[1.371,-0.296,1]],"seat":-1,"seq":21,"star":[0.7586164474487305,1.059999942779541,1.0363444089889526],"tick":30}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":22,"tick":32}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":23,"tick":35}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":24,"tick":38}
+{"buttons":[],"kind":"human_input","move":[1.0,1.0],"seat":1,"seq":25,"tick":39}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":26,"tick":40}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":27,"tick":42}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":1,"seq":28,"tick":43}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":29,"tick":44}
+{"kind":"court_frame","owner":0,"players":[[1.391,0.786,0],[3.315,-1.4060000000000001,0],[1.411,-0.14400000000000002,0],[1.875,0.733,1],[1.598,0.366,1]],"seat":-1,"seq":30,"star":[1.3905247449874878,1.059999942779541,0.9455450177192688],"tick":45}
+{"buttons":[],"kind":"human_input","move":[1.0,1.0],"seat":1,"seq":31,"tick":47}
+{"action":"advance","flags":[true,true,true,true,false],"kind":"action_grade","owner":0,"pass":false,"points":65,"seat":2,"seq":32,"source":10,"tick":48,"type":"response","x":1.5102516412734985,"z":-0.19505038857460022}
+{"choice":"advance","context":"star2/2/support/fresh/0/0","kind":"response_intent","owner":0,"reason":"Get ahead for a return ball.","seat":2,"seq":33,"source":33,"tick":48,"x":1.5102516412734985,"z":-0.19505038857460022}
+{"action":"press","flags":[true,true,true,false,false],"kind":"action_grade","owner":0,"pass":false,"points":40,"seat":3,"seq":34,"source":12,"tick":48,"type":"response","x":1.8845576047897339,"z":0.747323751449585}
+{"choice":"press","context":"star2/3/defend/fresh/0/0","kind":"response_intent","owner":0,"reason":"Close the carrier before the shot.","seat":3,"seq":35,"source":35,"tick":48,"x":1.8845576047897339,"z":0.747323751449585}
+{"action":"press","flags":[true,true,true,false,false],"kind":"action_grade","owner":0,"pass":false,"points":40,"seat":4,"seq":36,"source":14,"tick":48,"type":"response","x":1.6125733852386475,"z":0.3763458728790283}
+{"choice":"press","context":"star2/4/defend/fresh/0/0","kind":"response_intent","owner":0,"reason":"Close the carrier before the shot.","seat":4,"seq":37,"source":37,"tick":48,"x":1.6125733852386475,"z":0.3763458728790283}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":1,"seq":38,"tick":51}
+{"buttons":[],"kind":"human_input","move":[-1.0,-1.0],"seat":1,"seq":39,"tick":52}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":40,"tick":53}
+{"buttons":["pass"],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":41,"tick":54}
+{"action":"pass","from_x":1.392652988433838,"from_z":0.8982717990875244,"kind":"throw","seat":0,"seq":42,"tick":54,"to":1}
+{"action":"advance","flags":[true,true,true,false,false],"kind":"action_grade","owner":-1,"pass":false,"points":40,"seat":2,"seq":43,"source":33,"tick":54,"type":"response","x":1.808953046798706,"z":-0.34671643376350403}
+{"choice":"recover","context":"star2/2/loose/fresh/0/0","kind":"response_intent","owner":-1,"reason":"Get to the loose star first.","seat":2,"seq":44,"source":44,"tick":54,"x":1.808953046798706,"z":-0.34671643376350403}
+{"action":"press","flags":[true,true,true,true,false],"kind":"action_grade","owner":-1,"pass":false,"points":65,"seat":3,"seq":45,"source":35,"tick":54,"type":"response","x":1.8777201175689697,"z":0.7227482199668884}
+{"choice":"recover","context":"star2/3/loose/pass/0/1","kind":"response_intent","owner":-1,"reason":"Get to the loose star first.","seat":3,"seq":46,"source":46,"tick":54,"x":1.8777201175689697,"z":0.7227482199668884}
+{"action":"press","flags":[true,true,true,true,false],"kind":"action_grade","owner":-1,"pass":false,"points":65,"seat":4,"seq":47,"source":37,"tick":54,"type":"response","x":1.6293452978134155,"z":0.3355661928653717}
+{"choice":"lead","context":"star2/4/loose/pass/0/1","kind":"response_intent","owner":-1,"reason":"Read where the star will land.","seat":4,"seq":48,"source":48,"tick":54,"x":1.6293452978134155,"z":0.3355661928653717}
+{"buttons":[],"kind":"human_input","move":[1.0,1.0],"seat":0,"seq":49,"tick":55}
+{"buttons":[],"kind":"human_input","move":[-1.0,1.0],"seat":1,"seq":50,"tick":55}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":51,"tick":56}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":52,"tick":58}
+{"action":"pass","flags":[true,true,true,false,false],"kind":"action_grade","pass":false,"points":40,"seat":0,"seq":53,"source":42,"tick":59,"type":"court_throw"}
+{"from":0,"kind":"custody","method":"catch","seat":3,"seq":54,"team":1,"tick":59}
+{"buttons":[],"kind":"human_input","move":[1.0,1.0],"seat":0,"seq":55,"tick":60}
+{"action":"recover","flags":[true,true,false,false,false],"kind":"action_grade","owner":3,"pass":false,"points":20,"seat":2,"seq":56,"source":44,"tick":60,"type":"response","x":2.0235681533813477,"z":-0.39395031332969666}
+{"choice":"cut","context":"star2/2/defend/fresh/0/0","kind":"response_intent","owner":3,"reason":"Cutting the passing lane.","seat":2,"seq":57,"source":57,"tick":60,"x":2.0235681533813477,"z":-0.39395031332969666}
+{"action":"recover","flags":[true,true,true,true,true],"kind":"action_grade","owner":3,"pass":true,"points":100,"seat":3,"seq":58,"source":46,"tick":60,"type":"response","x":1.9095559120178223,"z":0.7341100573539734}
+{"choice":"drive","context":"star2/3/carry/pass/0/1","kind":"response_intent","owner":3,"reason":"Carry the light into range.","seat":3,"seq":59,"source":59,"tick":60,"x":1.9095559120178223,"z":0.7341100573539734}
+{"action":"lead","flags":[true,true,true,true,false],"kind":"action_grade","owner":3,"pass":false,"points":65,"seat":4,"seq":60,"source":48,"tick":60,"type":"response","x":1.7143259048461914,"z":0.3175944983959198}
+{"choice":"advance","context":"star2/4/support/pass/0/1","kind":"response_intent","owner":3,"reason":"Get ahead for a return ball.","seat":4,"seq":61,"source":61,"tick":60,"x":1.7143259048461914,"z":0.3175944983959198}
+{"kind":"court_frame","owner":3,"players":[[1.453,0.678,0],[3.914,-1.196,0],[2.0460000000000003,-0.384,0],[1.917,0.733,1],[1.734,0.311,1]],"seat":-1,"seq":62,"star":[1.9172857999801636,1.059999942779541,0.8932129144668579],"tick":60}
+{"buttons":["dash"],"kind":"human_input","move":[1.0,1.0],"seat":0,"seq":63,"tick":61}
+{"kind":"dash","seat":0,"seq":64,"tick":61}
+{"buttons":["dash"],"kind":"human_input","move":[1.0,1.0],"seat":0,"seq":65,"tick":64}
+{"buttons":["dash"],"kind":"human_input","move":[1.0,1.0],"seat":0,"seq":66,"tick":67}
+{"buttons":["dash"],"kind":"human_input","move":[1.0,1.0],"seat":0,"seq":67,"tick":70}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":68,"tick":71}
+{"buttons":["dash"],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":69,"tick":73}
+{"kind":"court_frame","owner":3,"players":[[1.794,1.177,0],[3.427,-0.606,0],[1.943,0.219,0],[1.819,0.662,1],[1.311,0.055,1]],"seat":-1,"seq":70,"star":[1.8190369606018066,1.059999942779541,0.8223429918289185],"tick":75}
+{"buttons":["dash"],"kind":"human_input","move":[0.0,-1.0],"seat":0,"seq":71,"tick":76}
+{"buttons":[],"kind":"human_input","move":[-1.0,-1.0],"seat":0,"seq":72,"tick":77}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,-1.0],"seat":0,"seq":73,"tick":79}
+{"kind":"court_frame","owner":3,"players":[[2.451,1.834,0],[2.755,0.066,0],[1.308,0.371,0],[1.022,0.731,1],[0.377,-0.333,1]],"seat":-1,"seq":74,"star":[1.0218000411987305,1.059999942779541,0.890525758266449],"tick":90}
+{"kind":"dash","seat":2,"seq":75,"tick":94}
+{"from":3,"kind":"custody","method":"steal","seat":2,"seq":76,"team":0,"tick":94}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":77,"tick":95}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":1,"seq":78,"tick":95}
+{"action":"cut","flags":[true,true,true,true,true],"kind":"action_grade","owner":2,"pass":true,"points":100,"seat":2,"seq":79,"source":57,"tick":95,"type":"response","x":1.1050002574920654,"z":0.37756532430648804}
+{"choice":"flank","context":"star2/2/carry/fresh/0/0","kind":"response_intent","owner":2,"reason":"Take the outside lane.","seat":2,"seq":80,"source":80,"tick":95,"x":1.1050002574920654,"z":0.37756532430648804}
+{"action":"drive","flags":[true,true,true,true,false],"kind":"action_grade","owner":2,"pass":false,"points":65,"seat":3,"seq":81,"source":59,"tick":95,"type":"response","x":0.8123403787612915,"z":0.7324599623680115}
+{"choice":"press","context":"star2/3/defend/fresh/0/0","kind":"response_intent","owner":2,"reason":"Close the carrier before the shot.","seat":3,"seq":82,"source":82,"tick":95,"x":0.8123403787612915,"z":0.7324599623680115}
+{"action":"advance","flags":[true,true,true,false,false],"kind":"action_grade","owner":2,"pass":false,"points":40,"seat":4,"seq":83,"source":61,"tick":95,"type":"response","x":0.1208379864692688,"z":-0.4196980893611908}
+{"choice":"screen","context":"star2/4/defend/fresh/0/0","kind":"response_intent","owner":2,"reason":"Hold between the carrier and our ring.","seat":4,"seq":84,"source":84,"tick":95,"x":0.1208379864692688,"z":-0.4196980893611908}
+{"kind":"court_frame","owner":2,"players":[[2.716,1.5250000000000001,0],[2.382,0.44,0],[0.763,0.579,0],[0.403,0.866,1],[-0.176,-0.546,1]],"seat":-1,"seq":85,"star":[0.7634336948394775,0.8700000047683716,0.7394298315048218],"tick":105}
+{"buttons":[],"kind":"human_input","move":[0.0,-1.0],"seat":0,"seq":86,"tick":117}
+{"kind":"court_frame","owner":2,"players":[[3.303,0.855,0],[2.8970000000000002,-0.076,0],[1.165,0.758,0],[0.725,0.893,1],[0.528,-0.402,1]],"seat":-1,"seq":87,"star":[1.1646775007247925,0.8700000047683716,0.9176309704780579],"tick":120}
+{"kind":"dash","seat":3,"seq":88,"tick":129}
+{"from":2,"kind":"custody","method":"steal","seat":3,"seq":89,"team":1,"tick":129}
+{"buttons":[],"kind":"human_input","move":[-1.0,1.0],"seat":0,"seq":90,"tick":130}
+{"buttons":[],"kind":"human_input","move":[-1.0,1.0],"seat":1,"seq":91,"tick":130}
+{"action":"flank","flags":[true,true,true,true,false],"kind":"action_grade","owner":3,"pass":false,"points":65,"seat":2,"seq":92,"source":80,"tick":130,"type":"response","x":1.6385860443115234,"z":0.7739421725273132}
+{"choice":"cut","context":"star2/2/defend/fresh/0/0","kind":"response_intent","owner":3,"reason":"Cutting the passing lane.","seat":2,"seq":93,"source":93,"tick":130,"x":1.6385860443115234,"z":0.7739421725273132}
+{"action":"press","flags":[true,true,true,true,true],"kind":"action_grade","owner":3,"pass":true,"points":100,"seat":3,"seq":94,"source":82,"tick":130,"type":"response","x":1.1826813220977783,"z":0.8351871967315674}
+{"choice":"drive","context":"star2/3/carry/pass/0/1","kind":"response_intent","owner":3,"reason":"Carry the light into range.","seat":3,"seq":95,"source":95,"tick":130,"x":1.1826813220977783,"z":0.8351871967315674}
+{"action":"screen","flags":[true,true,true,false,true],"kind":"action_grade","owner":3,"pass":false,"points":75,"seat":4,"seq":96,"source":84,"tick":130,"type":"response","x":1.1201016902923584,"z":-0.2676500976085663}
+{"choice":"advance","context":"star2/4/support/pass/0/1","kind":"response_intent","owner":3,"reason":"Get ahead for a return ball.","seat":4,"seq":97,"source":97,"tick":130,"x":1.1201016902923584,"z":-0.2676500976085663}
+{"kind":"court_frame","owner":3,"players":[[3.274,0.076,0],[3.474,-0.653,0],[1.968,0.731,0],[1.5110000000000001,0.79,1],[1.3860000000000001,-0.215,1]],"seat":-1,"seq":98,"star":[1.5114723443984985,1.059999942779541,0.9500535726547241],"tick":135}
+{"kind":"court_frame","owner":3,"players":[[2.779,0.358,0],[3.203,-0.382,0],[1.957,0.41100000000000003,0],[1.971,0.871,1],[1.083,-0.36,1]],"seat":-1,"seq":99,"star":[1.9711353778839111,1.059999942779541,1.0309839248657227],"tick":150}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,1.0],"seat":0,"seq":100,"tick":157}
+{"kind":"dash","seat":0,"seq":101,"tick":157}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,1.0],"seat":0,"seq":102,"tick":160}
+{"buttons":[],"kind":"human_input","move":[0.0,0.0],"seat":0,"seq":103,"tick":161}
+{"buttons":[],"kind":"human_input","move":[0.0,0.0],"seat":1,"seq":104,"tick":161}
+{"buttons":[],"kind":"human_input","move":[-1.0,1.0],"seat":0,"seq":105,"tick":162}
+{"buttons":[],"kind":"human_input","move":[-1.0,1.0],"seat":1,"seq":106,"tick":162}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,0.0],"seat":0,"seq":107,"tick":163}
+{"from":3,"kind":"custody","method":"steal","seat":0,"seq":108,"team":0,"tick":164}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":109,"tick":165}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":1,"seq":110,"tick":165}
+{"action":"cut","flags":[true,true,true,true,true],"kind":"action_grade","owner":0,"pass":true,"points":100,"seat":2,"seq":111,"source":93,"tick":165,"type":"response","x":1.5221045017242432,"z":0.4179184138774872}
+{"choice":"outlet","context":"star2/2/support/fresh/0/0","kind":"response_intent","owner":0,"reason":"Give the carrier a passing angle.","seat":2,"seq":112,"source":112,"tick":165,"x":1.5221045017242432,"z":0.4179184138774872}
+{"action":"drive","flags":[true,true,false,false,false],"kind":"action_grade","owner":0,"pass":false,"points":20,"seat":3,"seq":113,"source":95,"tick":165,"type":"response","x":1.58718740940094,"z":0.873291015625}
+{"choice":"press","context":"star2/3/defend/pass/0/1","kind":"response_intent","owner":0,"reason":"Nell has tried 0 shots and 1 passes. Close the carrier before the shot.","seat":3,"seq":114,"source":114,"tick":165,"x":1.58718740940094,"z":0.873291015625}
+{"action":"advance","flags":[true,true,true,false,false],"kind":"action_grade","owner":0,"pass":false,"points":40,"seat":4,"seq":115,"source":97,"tick":165,"type":"response","x":0.19288694858551025,"z":-0.6759293079376221}
+{"choice":"cut","context":"star2/4/defend/pass/0/1","kind":"response_intent","owner":0,"reason":"Nell has tried 0 shots and 1 passes. They keep passing. Jump the outlet.","seat":4,"seq":116,"source":116,"tick":165,"x":0.19288694858551025,"z":-0.6759293079376221}
+{"kind":"court_frame","owner":0,"players":[[1.943,1.195,0],[2.543,0.279,0],[1.489,0.417,0],[1.544,0.873,1],[0.134,-0.6930000000000001,1]],"seat":-1,"seq":117,"star":[1.9427409172058105,1.059999942779541,1.3547827005386353],"tick":165}
+{"kind":"court_frame","owner":0,"players":[[0.974,2.04,0],[2.481,0.34,0],[1.618,0.035,0],[1.201,1.3920000000000001,1],[-0.10400000000000001,-0.535,1]],"seat":-1,"seq":118,"star":[0.9740049242973328,1.059999942779541,2.200000047683716],"tick":180}
+{"kind":"court_frame","owner":0,"players":[[0.704,2.04,0],[3.128,-0.307,0],[2.0060000000000002,-0.706,0],[1.0190000000000001,1.705,1],[0.466,0.253,1]],"seat":-1,"seq":119,"star":[0.7036876082420349,1.059999942779541,2.1999478340148926],"tick":195}
+{"buttons":["pass"],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":120,"tick":199}
+{"action":"pass","from_x":0.7322795987129211,"from_z":2.177157163619995,"kind":"throw","seat":0,"seq":121,"tick":199,"to":1}
+{"action":"outlet","flags":[true,true,true,false,false],"kind":"action_grade","owner":-1,"pass":false,"points":40,"seat":2,"seq":122,"source":112,"tick":199,"type":"response","x":2.0741028785705566,"z":-0.8589351177215576}
+{"choice":"recover","context":"star2/2/loose/fresh/0/0","kind":"response_intent","owner":-1,"reason":"Get to the loose star first.","seat":2,"seq":123,"source":123,"tick":199,"x":2.0741028785705566,"z":-0.8589351177215576}
+{"action":"press","flags":[true,true,true,true,false],"kind":"action_grade","owner":-1,"pass":false,"points":65,"seat":3,"seq":124,"source":114,"tick":199,"type":"response","x":1.045351266860962,"z":1.6801317930221558}
+{"choice":"recover","context":"star2/3/loose/pass/0/1","kind":"response_intent","owner":-1,"reason":"Get to the loose star first.","seat":3,"seq":125,"source":125,"tick":199,"x":1.045351266860962,"z":1.6801317930221558}
+{"action":"cut","flags":[true,true,true,false,false],"kind":"action_grade","owner":-1,"pass":false,"points":40,"seat":4,"seq":126,"source":116,"tick":199,"type":"response","x":0.5960670113563538,"z":0.4079658091068268}
+{"choice":"lead","context":"star2/4/loose/pass/0/1","kind":"response_intent","owner":-1,"reason":"Read where the star will land.","seat":4,"seq":127,"source":127,"tick":199,"x":0.5960670113563538,"z":0.4079658091068268}
+{"buttons":[],"kind":"human_input","move":[1.0,1.0],"seat":0,"seq":128,"tick":200}
+{"buttons":[],"kind":"human_input","move":[-1.0,1.0],"seat":1,"seq":129,"tick":200}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":130,"tick":201}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":131,"tick":202}
+{"action":"pass","flags":[true,true,true,false,false],"kind":"action_grade","pass":false,"points":40,"seat":0,"seq":132,"source":121,"tick":204,"type":"court_throw"}
+{"from":0,"kind":"custody","method":"catch","seat":3,"seq":133,"team":1,"tick":204}
+{"buttons":["dash"],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":134,"tick":205}
+{"action":"recover","flags":[true,true,false,false,false],"kind":"action_grade","owner":3,"pass":false,"points":20,"seat":2,"seq":135,"source":123,"tick":205,"type":"response","x":2.159471035003662,"z":-1.0407744646072388}
+{"choice":"cut","context":"star2/2/defend/fresh/0/0","kind":"response_intent","owner":3,"reason":"Cutting the passing lane.","seat":2,"seq":136,"source":136,"tick":205,"x":2.159471035003662,"z":-1.0407744646072388}
+{"action":"recover","flags":[true,true,true,true,true],"kind":"action_grade","owner":3,"pass":true,"points":100,"seat":3,"seq":137,"source":125,"tick":205,"type":"response","x":1.1398520469665527,"z":1.6576859951019287}
+{"choice":"drive","context":"star2/3/carry/pass/0/1","kind":"response_intent","owner":3,"reason":"Carry the light into range.","seat":3,"seq":138,"source":138,"tick":205,"x":1.1398520469665527,"z":1.6576859951019287}
+{"action":"lead","flags":[true,true,true,true,false],"kind":"action_grade","owner":3,"pass":false,"points":65,"seat":4,"seq":139,"source":127,"tick":205,"type":"response","x":0.935558557510376,"z":0.6010322570800781}
+{"choice":"outlet","context":"star2/4/support/pass/0/1","kind":"response_intent","owner":3,"reason":"Give the carrier a passing angle.","seat":4,"seq":140,"source":140,"tick":205,"x":0.935558557510376,"z":0.6010322570800781}
+{"buttons":["dash"],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":141,"tick":208}
+{"kind":"court_frame","owner":3,"players":[[0.898,1.8980000000000001,0],[3.5020000000000002,-0.68,0],[2.153,-1.012,0],[1.169,1.526,1],[1.202,0.634,1]],"seat":-1,"seq":142,"star":[1.1686749458312988,1.059999942779541,1.6864086389541626],"tick":210}
+{"buttons":["dash"],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":143,"tick":211}
+{"buttons":["dash"],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":144,"tick":214}
+{"buttons":[],"kind":"human_input","move":[0.0,-1.0],"seat":0,"seq":145,"tick":215}
+{"buttons":[],"kind":"human_input","move":[-1.0,-1.0],"seat":0,"seq":146,"tick":216}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,-1.0],"seat":0,"seq":147,"tick":217}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,-1.0],"seat":0,"seq":148,"tick":220}
+{"buttons":[],"kind":"human_input","move":[-1.0,0.0],"seat":0,"seq":149,"tick":222}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,0.0],"seat":0,"seq":150,"tick":223}
+{"kind":"court_frame","owner":3,"players":[[1.11,1.401,0],[2.986,-0.165,0],[1.772,-0.36,0],[0.505,1.25,1],[0.981,0.253,1]],"seat":-1,"seq":151,"star":[0.5047596096992493,1.059999942779541,1.410422444343567],"tick":225}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,0.0],"seat":0,"seq":152,"tick":226}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,0.0],"seat":0,"seq":153,"tick":229}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,0.0],"seat":0,"seq":154,"tick":232}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,0.0],"seat":0,"seq":155,"tick":235}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,0.0],"seat":0,"seq":156,"tick":238}
+{"action":"cut","flags":[true,true,true,false,false],"kind":"action_grade","owner":3,"pass":false,"points":40,"seat":2,"seq":157,"source":136,"tick":240,"type":"response","x":1.1663095951080322,"z":0.12586522102355957}
+{"choice":"cut","context":"star2/2/defend/fresh/0/0","kind":"response_intent","owner":3,"reason":"Cutting the passing lane.","seat":2,"seq":158,"source":158,"tick":240,"x":1.1663095951080322,"z":0.12586522102355957}
+{"action":"drive","flags":[true,true,true,true,true],"kind":"action_grade","owner":3,"pass":true,"points":100,"seat":3,"seq":159,"source":138,"tick":240,"type":"response","x":-0.14899179339408875,"z":1.1091091632843018}
+{"choice":"drive","context":"star2/3/carry/pass/0/1","kind":"response_intent","owner":3,"reason":"Carry the light into range.","seat":3,"seq":160,"source":160,"tick":240,"x":-0.14899179339408875,"z":1.1091091632843018}
+{"action":"outlet","flags":[true,true,true,true,false],"kind":"action_grade","owner":3,"pass":false,"points":65,"seat":4,"seq":161,"source":140,"tick":240,"type":"response","x":0.1660676896572113,"z":-0.22504585981369019}
+{"choice":"advance","context":"star2/4/support/pass/0/1","kind":"response_intent","owner":3,"reason":"Get ahead for a return ball.","seat":4,"seq":162,"source":162,"tick":240,"x":0.1660676896572113,"z":-0.22504585981369019}
+{"kind":"court_frame","owner":3,"players":[[0.328,1.304,0],[2.314,0.507,0],[1.116,0.151,0],[-0.196,1.099,1],[0.10300000000000001,-0.249,1]],"seat":-1,"seq":163,"star":[-0.19568832218647003,1.059999942779541,1.2590153217315674],"tick":240}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,0.0],"seat":0,"seq":164,"tick":241}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,0.0],"seat":0,"seq":165,"tick":244}
+{"kind":"dash","seat":0,"seq":166,"tick":244}
+{"from":3,"kind":"custody","method":"steal","seat":0,"seq":167,"team":0,"tick":244}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":168,"tick":245}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":1,"seq":169,"tick":245}
+{"action":"cut","flags":[true,true,true,false,true],"kind":"action_grade","owner":0,"pass":false,"points":75,"seat":2,"seq":170,"source":158,"tick":245,"type":"response","x":0.91055828332901,"z":0.23736190795898438}
+{"choice":"advance","context":"star2/2/support/fresh/0/0","kind":"response_intent","owner":0,"reason":"Get ahead for a return ball.","seat":2,"seq":171,"source":171,"tick":245,"x":0.91055828332901,"z":0.23736190795898438}
+{"action":"drive","flags":[true,true,true,true,false],"kind":"action_grade","owner":0,"pass":false,"points":65,"seat":3,"seq":172,"source":160,"tick":245,"type":"response","x":-0.382474422454834,"z":1.0586401224136353}
+{"choice":"screen","context":"star2/3/defend/pass/0/1","kind":"response_intent","owner":0,"reason":"Nell has tried 0 shots and 2 passes. Hold between the carrier and our ring.","seat":3,"seq":173,"source":173,"tick":245,"x":-0.382474422454834,"z":1.0586401224136353}
+{"action":"advance","flags":[true,true,true,false,false],"kind":"action_grade","owner":0,"pass":false,"points":40,"seat":4,"seq":174,"source":162,"tick":245,"type":"response","x":-0.15699587762355804,"z":-0.3204309642314911}
+{"choice":"screen","context":"star2/4/defend/pass/0/1","kind":"response_intent","owner":0,"reason":"Nell has tried 0 shots and 2 passes. Hold between the carrier and our ring.","seat":4,"seq":175,"source":175,"tick":245,"x":-0.15699587762355804,"z":-0.3204309642314911}
+{"buttons":["dash"],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":176,"tick":253}
+{"kind":"court_frame","owner":0,"players":[[-0.9420000000000001,1.3800000000000001,0],[1.941,0.881,0],[0.6980000000000001,0.23900000000000002,0],[-0.526,0.905,1],[-0.47200000000000003,-0.386,1]],"seat":-1,"seq":177,"star":[-0.941798746585846,1.059999942779541,1.5399013757705688],"tick":255}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":178,"tick":265}
+{"kind":"court_frame","owner":0,"players":[[-2.13,1.314,0],[2.456,0.365,0],[0.9420000000000001,-0.454,0],[0.20800000000000002,0.882,1],[0.186,-0.095,1]],"seat":-1,"seq":179,"star":[-2.13023042678833,1.059999942779541,1.473813533782959],"tick":270}
+{"action":"advance","flags":[true,true,true,true,false],"kind":"action_grade","owner":0,"pass":false,"points":65,"seat":2,"seq":180,"source":171,"tick":280,"type":"response","x":0.9209944605827332,"z":-0.9558482766151428}
+{"choice":"advance","context":"star2/2/support/fresh/0/0","kind":"response_intent","owner":0,"reason":"Get ahead for a return ball.","seat":2,"seq":181,"source":181,"tick":280,"x":0.9209944605827332,"z":-0.9558482766151428}
+{"action":"screen","flags":[true,true,true,false,false],"kind":"action_grade","owner":0,"pass":false,"points":40,"seat":3,"seq":182,"source":173,"tick":280,"type":"response","x":0.6798280477523804,"z":0.8651207685470581}
+{"choice":"cut","context":"star2/3/defend/pass/0/1","kind":"response_intent","owner":0,"reason":"Nell has tried 0 shots and 2 passes. They keep passing. Jump the outlet.","seat":3,"seq":183,"source":183,"tick":280,"x":0.6798280477523804,"z":0.8651207685470581}
+{"action":"screen","flags":[true,true,true,false,false],"kind":"action_grade","owner":0,"pass":false,"points":40,"seat":4,"seq":184,"source":175,"tick":280,"type":"response","x":0.7408661842346191,"z":0.15281303226947784}
+{"choice":"press","context":"star2/4/defend/pass/0/1","kind":"response_intent","owner":0,"reason":"Nell has tried 0 shots and 2 passes. Close the carrier before the shot.","seat":4,"seq":185,"source":185,"tick":280,"x":0.7408661842346191,"z":0.15281303226947784}
+{"kind":"court_frame","owner":0,"players":[[-1.931,1.274,0],[3.128,-0.307,0],[0.971,-1.2550000000000001,0],[0.86,0.856,1],[0.977,0.313,1]],"seat":-1,"seq":186,"star":[-1.931176781654358,1.059999942779541,1.4339507818222046],"tick":285}
+{"buttons":[],"kind":"human_input","move":[0.0,-1.0],"seat":1,"seq":187,"tick":295}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":188,"tick":298}
+{"kind":"court_frame","owner":0,"players":[[-1.115,1.239,0],[3.676,-1.03,0],[1.585,-1.476,0],[0.327,0.85,1],[0.681,0.556,1]],"seat":-1,"seq":189,"star":[-1.1154718399047852,1.059999942779541,1.3985353708267212],"tick":300}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":190,"tick":302}
+{"buttons":[],"kind":"human_input","move":[-1.0,-1.0],"seat":1,"seq":191,"tick":304}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":192,"tick":307}
+{"buttons":[],"kind":"human_input","move":[0.0,1.0],"seat":1,"seq":193,"tick":307}
+{"kind":"dash","seat":3,"seq":194,"tick":307}
+{"buttons":[],"kind":"human_input","move":[1.0,1.0],"seat":1,"seq":195,"tick":308}
+{"from":0,"kind":"custody","method":"steal","seat":3,"seq":196,"team":1,"tick":309}
+{"buttons":["dash"],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":197,"tick":310}
+{"buttons":[],"kind":"human_input","move":[-1.0,1.0],"seat":1,"seq":198,"tick":310}
+{"action":"advance","flags":[true,true,false,false,false],"kind":"action_grade","owner":3,"pass":false,"points":20,"seat":2,"seq":199,"source":181,"tick":310,"type":"response","x":2.034804582595825,"z":-1.499770998954773}
+{"choice":"cut","context":"star2/2/defend/fresh/0/0","kind":"response_intent","owner":3,"reason":"Cutting the passing lane.","seat":2,"seq":200,"source":200,"tick":310,"x":2.034804582595825,"z":-1.499770998954773}
+{"action":"cut","flags":[true,true,true,true,true],"kind":"action_grade","owner":3,"pass":true,"points":100,"seat":3,"seq":201,"source":183,"tick":310,"type":"response","x":-0.0458732470870018,"z":0.7302707433700562}
+{"choice":"drive","context":"star2/3/carry/pass/0/1","kind":"response_intent","owner":3,"reason":"Carry the light into range.","seat":3,"seq":202,"source":202,"tick":310,"x":-0.0458732470870018,"z":0.7302707433700562}
+{"action":"press","flags":[true,true,true,false,true],"kind":"action_grade","owner":3,"pass":false,"points":75,"seat":4,"seq":203,"source":185,"tick":310,"type":"response","x":0.41125887632369995,"z":0.6789848208427429}
+{"choice":"advance","context":"star2/4/support/pass/0/1","kind":"response_intent","owner":3,"reason":"Get ahead for a return ball.","seat":4,"seq":204,"source":204,"tick":310,"x":0.41125887632369995,"z":0.6789848208427429}
+{"buttons":["dash"],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":205,"tick":313}
+{"kind":"court_frame","owner":3,"players":[[-0.439,1.0110000000000001,0],[3.493,-1.637,0],[2.22,-1.452,0],[-0.278,0.58,1],[0.154,0.739,1]],"seat":-1,"seq":206,"star":[-0.27771034836769104,1.059999942779541,0.7399531006813049],"tick":315}
+{"buttons":["dash"],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":207,"tick":316}
+{"buttons":[],"kind":"human_input","move":[0.0,-1.0],"seat":0,"seq":208,"tick":318}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,-1.0],"seat":0,"seq":209,"tick":319}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,-1.0],"seat":0,"seq":210,"tick":322}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,-1.0],"seat":0,"seq":211,"tick":325}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,0.0],"seat":0,"seq":212,"tick":328}
+{"kind":"court_frame","owner":3,"players":[[-0.44,0.604,0],[2.895,-1.1400000000000001,0],[1.804,-1.07,0],[-1.024,0.442,1],[-0.646,0.18,1]],"seat":-1,"seq":213,"star":[-1.0237964391708374,1.059999942779541,0.6021808385848999],"tick":330}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,0.0],"seat":0,"seq":214,"tick":331}
+{"kind":"dash","seat":0,"seq":215,"tick":331}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,0.0],"seat":0,"seq":216,"tick":334}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,0.0],"seat":0,"seq":217,"tick":337}
+{"buttons":[],"kind":"human_input","move":[-1.0,1.0],"seat":0,"seq":218,"tick":338}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,1.0],"seat":0,"seq":219,"tick":340}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,0.0],"seat":0,"seq":220,"tick":343}
+{"from":3,"kind":"custody","method":"steal","seat":0,"seq":221,"team":0,"tick":344}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":222,"tick":345}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":1,"seq":223,"tick":345}
+{"action":"cut","flags":[true,true,true,false,true],"kind":"action_grade","owner":0,"pass":false,"points":75,"seat":2,"seq":224,"source":200,"tick":345,"type":"response","x":1.0891684293746948,"z":-0.7544488310813904}
+{"choice":"outlet","context":"star2/2/support/fresh/0/0","kind":"response_intent","owner":0,"reason":"Give the carrier a passing angle.","seat":2,"seq":225,"source":225,"tick":345,"x":1.0891684293746948,"z":-0.7544488310813904}
+{"action":"drive","flags":[true,true,true,true,false],"kind":"action_grade","owner":0,"pass":false,"points":65,"seat":3,"seq":226,"source":202,"tick":345,"type":"response","x":-1.8261311054229736,"z":0.34973371028900146}
+{"choice":"cut","context":"star2/3/defend/pass/0/1","kind":"response_intent","owner":0,"reason":"Nell has tried 0 shots and 2 passes. They keep passing. Jump the outlet.","seat":3,"seq":227,"source":227,"tick":345,"x":-1.8261311054229736,"z":0.34973371028900146}
+{"action":"advance","flags":[true,true,true,false,false],"kind":"action_grade","owner":0,"pass":false,"points":40,"seat":4,"seq":228,"source":204,"tick":345,"type":"response","x":-1.5243802070617676,"z":-0.16880546510219574}
+{"choice":"press","context":"star2/4/defend/pass/0/1","kind":"response_intent","owner":0,"reason":"Nell has tried 0 shots and 2 passes. Close the carrier before the shot.","seat":4,"seq":229,"source":229,"tick":345,"x":-1.5243802070617676,"z":-0.16880546510219574}
+{"kind":"court_frame","owner":0,"players":[[-1.456,0.468,0],[2.228,-0.47200000000000003,0],[1.038,-0.742,0],[-1.897,0.336,1],[-1.585,-0.188,1]],"seat":-1,"seq":230,"star":[-1.4562610387802124,1.059999942779541,0.6278026103973389],"tick":345}
+{"kind":"court_frame","owner":0,"players":[[-2.196,0.759,0],[2.166,-0.41100000000000003,0],[0.326,-1.062,0],[-2.061,0.36,1],[-2.071,-0.1,1]],"seat":-1,"seq":231,"star":[-2.196279525756836,1.059999942779541,0.9187812805175781],"tick":360}
+{"kind":"court_frame","owner":0,"players":[[-1.703,0.966,0],[2.813,-1.058,0],[-0.273,-1.437,0],[-1.242,0.404,1],[-1.9020000000000001,0.552,1]],"seat":-1,"seq":232,"star":[-1.7028111219406128,1.059999942779541,1.1263346672058105],"tick":375}
+{"kind":"dash","seat":4,"seq":233,"tick":379}
+{"from":0,"kind":"custody","method":"steal","seat":4,"seq":234,"team":1,"tick":379}
+{"buttons":[],"kind":"human_input","move":[-1.0,-1.0],"seat":0,"seq":235,"tick":380}
+{"buttons":[],"kind":"human_input","move":[-1.0,1.0],"seat":1,"seq":236,"tick":380}
+{"action":"outlet","flags":[true,true,true,false,false],"kind":"action_grade","owner":4,"pass":false,"points":40,"seat":2,"seq":237,"source":225,"tick":380,"type":"response","x":-0.2527632415294647,"z":-1.497186303138733}
+{"choice":"cut","context":"star2/2/defend/fresh/0/0","kind":"response_intent","owner":4,"reason":"Cutting the passing lane.","seat":2,"seq":238,"source":238,"tick":380,"x":-0.2527632415294647,"z":-1.497186303138733}
+{"action":"cut","flags":[true,true,true,true,true],"kind":"action_grade","owner":4,"pass":true,"points":100,"seat":3,"seq":239,"source":227,"tick":380,"type":"response","x":-1.0318084955215454,"z":0.4020887315273285}
+{"choice":"advance","context":"star2/3/support/pass/0/1","kind":"response_intent","owner":4,"reason":"Get ahead for a return ball.","seat":3,"seq":240,"source":240,"tick":380,"x":-1.0318084955215454,"z":0.4020887315273285}
+{"action":"press","flags":[true,true,true,true,true],"kind":"action_grade","owner":4,"pass":true,"points":100,"seat":4,"seq":241,"source":229,"tick":380,"type":"response","x":-1.7310643196105957,"z":0.668344259262085}
+{"choice":"flank","context":"star2/4/carry/pass/0/1","kind":"response_intent","owner":4,"reason":"Take the outside lane.","seat":4,"seq":242,"source":242,"tick":380,"x":-1.7310643196105957,"z":0.668344259262085}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,-1.0],"seat":0,"seq":243,"tick":382}
+{"buttons":[],"kind":"human_input","move":[-1.0,0.0],"seat":0,"seq":244,"tick":384}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,0.0],"seat":0,"seq":245,"tick":385}
+{"buttons":[],"kind":"human_input","move":[-1.0,1.0],"seat":0,"seq":246,"tick":386}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,1.0],"seat":0,"seq":247,"tick":388}
+{"kind":"court_frame","owner":4,"players":[[-1.0030000000000001,1.072,0],[3.186,-1.431,0],[-0.319,-1.2790000000000001,0],[-0.864,0.295,1],[-1.325,1.401,1]],"seat":-1,"seq":248,"star":[-1.3247076272964478,1.059999942779541,1.5605556964874268],"tick":390}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,1.0],"seat":0,"seq":249,"tick":391}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,1.0],"seat":0,"seq":250,"tick":394}
+{"buttons":[],"kind":"human_input","move":[0.0,1.0],"seat":0,"seq":251,"tick":395}
+{"buttons":["dash"],"kind":"human_input","move":[0.0,1.0],"seat":0,"seq":252,"tick":397}
+{"buttons":["dash"],"kind":"human_input","move":[0.0,1.0],"seat":0,"seq":253,"tick":400}
+{"buttons":["dash"],"kind":"human_input","move":[0.0,1.0],"seat":0,"seq":254,"tick":403}
+{"kind":"court_frame","owner":4,"players":[[-1.143,1.569,0],[2.6710000000000003,-0.916,0],[-0.581,-0.483,0],[-1.5050000000000001,-0.046,1],[-1.176,2.028,1]],"seat":-1,"seq":255,"star":[-1.176252007484436,1.059999942779541,2.187722682952881],"tick":405}
+{"buttons":["dash"],"kind":"human_input","move":[0.0,1.0],"seat":0,"seq":256,"tick":406}
+{"buttons":[],"kind":"human_input","move":[-1.0,1.0],"seat":0,"seq":257,"tick":408}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,1.0],"seat":0,"seq":258,"tick":409}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,1.0],"seat":0,"seq":259,"tick":412}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,1.0],"seat":0,"seq":260,"tick":415}
+{"action":"cut","flags":[true,true,true,false,false],"kind":"action_grade","owner":4,"pass":false,"points":40,"seat":2,"seq":261,"source":238,"tick":415,"type":"response","x":-0.7941809892654419,"z":-0.029792360961437225}
+{"choice":"cut","context":"star2/2/defend/fresh/0/0","kind":"response_intent","owner":4,"reason":"Cutting the passing lane.","seat":2,"seq":262,"source":262,"tick":415,"x":-0.7941809892654419,"z":-0.029792360961437225}
+{"action":"advance","flags":[true,true,true,true,false],"kind":"action_grade","owner":4,"pass":false,"points":65,"seat":3,"seq":263,"source":240,"tick":415,"type":"response","x":-1.9275175333023071,"z":-0.2579505443572998}
+{"choice":"outlet","context":"star2/3/support/pass/0/1","kind":"response_intent","owner":4,"reason":"Give the carrier a passing angle.","seat":3,"seq":264,"source":264,"tick":415,"x":-1.9275175333023071,"z":-0.2579505443572998}
+{"action":"flank","flags":[true,true,false,false,false],"kind":"action_grade","owner":4,"pass":false,"points":20,"seat":4,"seq":265,"source":242,"tick":415,"type":"response","x":-1.6395151615142822,"z":1.9102141857147217}
+{"choice":"flank","context":"star2/4/carry/pass/0/1","kind":"response_intent","owner":4,"reason":"Take the outside lane.","seat":4,"seq":266,"source":266,"tick":415,"x":-1.6395151615142822,"z":1.9102141857147217}
+{"buttons":[],"kind":"human_input","move":[-1.0,0.0],"seat":0,"seq":267,"tick":417}
+{"buttons":["dash"],"kind":"human_input","move":[-1.0,0.0],"seat":0,"seq":268,"tick":418}
+{"kind":"dash","seat":0,"seq":269,"tick":418}
+{"from":4,"kind":"custody","method":"steal","seat":0,"seq":270,"team":0,"tick":418}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":271,"tick":419}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":1,"seq":272,"tick":419}
+{"action":"cut","flags":[true,true,true,false,true],"kind":"action_grade","owner":0,"pass":false,"points":75,"seat":2,"seq":273,"source":262,"tick":419,"type":"response","x":-0.9318558573722839,"z":0.1457875519990921}
+{"choice":"advance","context":"star2/2/support/fresh/0/0","kind":"response_intent","owner":0,"reason":"Get ahead for a return ball.","seat":2,"seq":274,"source":274,"tick":419,"x":-0.9318558573722839,"z":0.1457875519990921}
+{"action":"outlet","flags":[true,true,true,false,false],"kind":"action_grade","owner":0,"pass":false,"points":40,"seat":3,"seq":275,"source":264,"tick":419,"type":"response","x":-2.0968072414398193,"z":-0.3816019594669342}
+{"choice":"cut","context":"star2/3/defend/pass/0/1","kind":"response_intent","owner":0,"reason":"Nell has tried 0 shots and 2 passes. They keep passing. Jump the outlet.","seat":3,"seq":276,"source":276,"tick":419,"x":-2.0968072414398193,"z":-0.3816019594669342}
+{"action":"flank","flags":[true,true,true,true,false],"kind":"action_grade","owner":0,"pass":false,"points":65,"seat":4,"seq":277,"source":266,"tick":419,"type":"response","x":-1.825311303138733,"z":1.7493226528167725}
+{"choice":"cut","context":"star2/4/defend/pass/0/1","kind":"response_intent","owner":0,"reason":"Nell has tried 0 shots and 2 passes. They keep passing. Jump the outlet.","seat":4,"seq":278,"source":278,"tick":419,"x":-1.825311303138733,"z":1.7493226528167725}
+{"kind":"court_frame","owner":0,"players":[[-1.484,2.04,0],[2.013,-0.258,0],[-0.991,0.217,0],[-2.1670000000000003,-0.431,1],[-1.9000000000000001,1.673,1]],"seat":-1,"seq":279,"star":[-1.4841639995574951,1.059999942779541,2.200000047683716],"tick":420}
+{"buttons":["dash"],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":280,"tick":433}
+{"kind":"court_frame","owner":0,"players":[[-2.904,2.035,0],[2.019,-0.263,0],[-0.874,0.169,0],[-2.149,-0.212,1],[-1.698,1.363,1]],"seat":-1,"seq":281,"star":[-2.903785467147827,1.059999942779541,2.195030450820923],"tick":435}
+{"kind":"court_frame","owner":0,"players":[[-3.5780000000000003,1.7870000000000001,0],[2.678,-0.923,0],[-0.611,-0.617,0],[-1.956,0.55,1],[-1.733,1.217,1]],"seat":-1,"seq":282,"star":[-3.5782246589660645,1.059999942779541,1.946555256843567],"tick":450}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":283,"tick":454}
+{"action":"advance","flags":[true,true,true,true,false],"kind":"action_grade","owner":0,"pass":false,"points":65,"seat":2,"seq":284,"source":274,"tick":454,"type":"response","x":-0.585066556930542,"z":-0.782526433467865}
+{"choice":"advance","context":"star2/2/support/fresh/0/0","kind":"response_intent","owner":0,"reason":"Get ahead for a return ball.","seat":2,"seq":285,"source":285,"tick":454,"x":-0.585066556930542,"z":-0.782526433467865}
+{"action":"cut","flags":[true,true,true,false,false],"kind":"action_grade","owner":0,"pass":false,"points":40,"seat":3,"seq":286,"source":276,"tick":454,"type":"response","x":-1.911311388015747,"z":0.6863787174224854}
+{"choice":"cut","context":"star2/3/defend/pass/0/1","kind":"response_intent","owner":0,"reason":"Nell has tried 0 shots and 2 passes. They keep passing. Jump the outlet.","seat":3,"seq":287,"source":287,"tick":454,"x":-1.911311388015747,"z":0.6863787174224854}
+{"action":"cut","flags":[true,true,true,false,false],"kind":"action_grade","owner":0,"pass":false,"points":40,"seat":4,"seq":288,"source":278,"tick":454,"type":"response","x":-1.7615373134613037,"z":1.1293445825576782}
+{"choice":"press","context":"star2/4/defend/pass/0/1","kind":"response_intent","owner":0,"reason":"Nell has tried 0 shots and 2 passes. Close the carrier before the shot.","seat":4,"seq":289,"source":289,"tick":454,"x":-1.7615373134613037,"z":1.1293445825576782}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":1,"seq":290,"tick":458}
+{"kind":"court_frame","owner":0,"players":[[-3.017,1.577,0],[3.4370000000000003,-1.385,0],[-0.269,-1.324,0],[-1.583,0.725,1],[-2.172,1.211,1]],"seat":-1,"seq":291,"star":[-3.0167579650878906,1.059999942779541,1.7367043495178223],"tick":465}
+{"kind":"dash","seat":4,"seq":292,"tick":466}
+{"buttons":[],"kind":"human_input","move":[1.0,1.0],"seat":1,"seq":293,"tick":467}
+{"from":0,"kind":"custody","method":"steal","seat":4,"seq":294,"team":1,"tick":467}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":295,"tick":468}
+{"buttons":[],"kind":"human_input","move":[-1.0,1.0],"seat":1,"seq":296,"tick":468}
+{"action":"advance","flags":[true,true,true,false,false],"kind":"action_grade","owner":4,"pass":false,"points":40,"seat":2,"seq":297,"source":285,"tick":468,"type":"response","x":-0.18035760521888733,"z":-1.367317795753479}
+{"choice":"press","context":"star2/2/defend/fresh/0/0","kind":"response_intent","owner":4,"reason":"Close the carrier before the shot.","seat":2,"seq":298,"source":298,"tick":468,"x":-0.18035760521888733,"z":-1.367317795753479}
+{"action":"cut","flags":[true,true,true,true,true],"kind":"action_grade","owner":4,"pass":true,"points":100,"seat":3,"seq":299,"source":287,"tick":468,"type":"response","x":-1.4944820404052734,"z":0.7301086783409119}
+{"choice":"advance","context":"star2/3/support/pass/0/1","kind":"response_intent","owner":4,"reason":"Get ahead for a return ball.","seat":3,"seq":300,"source":300,"tick":468,"x":-1.4944820404052734,"z":0.7301086783409119}
+{"action":"press","flags":[true,true,true,true,true],"kind":"action_grade","owner":4,"pass":true,"points":100,"seat":4,"seq":301,"source":289,"tick":468,"type":"response","x":-2.3019609451293945,"z":1.2682775259017944}
+{"choice":"flank","context":"star2/4/carry/pass/0/1","kind":"response_intent","owner":4,"reason":"Take the outside lane.","seat":4,"seq":302,"source":302,"tick":468,"x":-2.3019609451293945,"z":1.2682775259017944}
+{"buttons":["dash"],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":303,"tick":469}
+{"buttons":["dash"],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":304,"tick":472}
+{"buttons":["dash"],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":305,"tick":475}
+{"buttons":[],"kind":"human_input","move":[-1.0,-1.0],"seat":0,"seq":306,"tick":476}
+{"action":"flank","flags":[true,true,true,true,true],"kind":"action_grade","owner":4,"pass":true,"points":100,"seat":4,"seq":307,"source":302,"tick":477,"type":"response","x":-2.898797035217285,"z":1.249806523323059}
+{"choice":"finish","context":"star2/4/carry/pass/1/1","kind":"response_intent","owner":4,"reason":"The ring is inside my shooting range.","seat":4,"seq":308,"source":308,"tick":477,"x":-2.898797035217285,"z":1.249806523323059}
+{"action":"shot","from_x":-2.898797035217285,"from_z":1.409806489944458,"kind":"throw","seat":4,"seq":309,"tick":477,"to":-1}
+{"action":"press","flags":[true,true,false,false,false],"kind":"action_grade","owner":-1,"pass":false,"points":20,"seat":2,"seq":310,"source":298,"tick":478,"type":"response","x":-0.015413856133818626,"z":-1.3667728900909424}
+{"choice":"recover","context":"star2/2/loose/fresh/0/0","kind":"response_intent","owner":-1,"reason":"Get to the loose star first.","seat":2,"seq":311,"source":311,"tick":478,"x":-0.015413856133818626,"z":-1.3667728900909424}
+{"action":"advance","flags":[true,true,false,false,false],"kind":"action_grade","owner":-1,"pass":false,"points":20,"seat":3,"seq":312,"source":300,"tick":478,"type":"response","x":-1.36941659450531,"z":0.6247898936271667}
+{"choice":"recover","context":"star2/3/loose/pass/0/1","kind":"response_intent","owner":-1,"reason":"Get to the loose star first.","seat":3,"seq":313,"source":313,"tick":478,"x":-1.36941659450531,"z":0.6247898936271667}
+{"kind":"court_frame","owner":-1,"players":[[-2.608,1.488,0],[3.807,-1.102,0],[-0.07100000000000001,-1.3,0],[-1.437,0.592,1],[-3.222,1.297,1]],"seat":-1,"seq":314,"star":[-3.3336448669433594,1.2264347076416016,1.1768138408660889],"tick":480}
+{"buttons":[],"kind":"human_input","move":[-1.0,0.0],"seat":1,"seq":315,"tick":489}
+{"kind":"court_frame","owner":-1,"players":[[-3.051,0.843,0],[3.118,-0.614,0],[-0.786,-0.932,0],[-2.1710000000000003,0.616,1],[-4.115,0.843,1]],"seat":-1,"seq":316,"star":[-4.964322090148926,1.4151480197906494,0.30309152603149414],"tick":495}
+{"action":"shot","flags":[true,true,true,true,true],"kind":"action_grade","pass":true,"points":100,"seat":4,"seq":317,"source":309,"tick":498,"type":"court_throw"}
+{"blue":1,"gold":0,"kind":"goal","seat":4,"seq":318,"team":1,"tick":498}
+{"kind":"aurora","reason":"Robot possession lit the far beacon. Both rings widen for ten seconds.","seat":4,"seq":319,"tick":498,"until":1098}
+{"action":"recover","flags":[true,true,true,false,false],"kind":"action_grade","owner":-1,"pass":false,"points":40,"seat":2,"seq":320,"source":311,"tick":498,"type":"response","x":-0.9479787945747375,"z":-0.8881489038467407}
+{"action":"recover","flags":[true,true,true,false,false],"kind":"action_grade","owner":-1,"pass":false,"points":40,"seat":3,"seq":321,"source":313,"tick":498,"type":"response","x":-2.3273141384124756,"z":0.5962100028991699}
+{"action":"finish","flags":[true,true,true,true,true],"kind":"action_grade","owner":-1,"pass":true,"points":100,"seat":4,"seq":322,"source":308,"tick":498,"type":"response","x":-4.278639316558838,"z":0.723964512348175}
+{"from":-1,"kind":"custody","method":"restart","seat":0,"seq":323,"team":0,"tick":498}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":324,"tick":573}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":1,"seq":325,"tick":573}
+{"choice":"outlet","context":"star2/2/support/fresh/0/0","kind":"response_intent","owner":0,"reason":"Give the carrier a passing angle.","seat":2,"seq":326,"source":326,"tick":573,"x":1.3300000429153442,"z":-0.25999999046325684}
+{"choice":"cut","context":"star2/3/defend/pass/0/1","kind":"response_intent","owner":0,"reason":"Nell has tried 0 shots and 2 passes. They keep passing. Jump the outlet.","seat":3,"seq":327,"source":327,"tick":573,"x":3.819999933242798,"z":0.699999988079071}
+{"choice":"press","context":"star2/4/defend/pass/0/1","kind":"response_intent","owner":0,"reason":"Nell has tried 0 shots and 2 passes. Close the carrier before the shot.","seat":4,"seq":328,"source":328,"tick":573,"x":2.3499999046325684,"z":-1.6200000047683716}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":329,"tick":581}
+{"kind":"court_frame","owner":0,"players":[[-0.092,0.961,0],[1.391,-1.5,0],[1.342,-0.765,0],[3.3280000000000003,0.6910000000000001,1],[1.966,-1.221,1]],"seat":-1,"seq":330,"star":[-0.09166786074638367,1.059999942779541,1.1212754249572754],"tick":585}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":331,"tick":594}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":332,"tick":597}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":333,"tick":599}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":334,"tick":600}
+{"kind":"court_frame","owner":0,"players":[[0.708,0.888,0],[2.341,-1.5,0],[1.818,-1.325,0],[2.551,0.5700000000000001,1],[1.51,-0.367,1]],"seat":-1,"seq":335,"star":[0.7081479430198669,1.059999942779541,1.048149585723877],"tick":600}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":336,"tick":601}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":337,"tick":603}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":338,"tick":606}
+{"action":"outlet","flags":[true,true,true,true,false],"kind":"action_grade","owner":0,"pass":false,"points":65,"seat":2,"seq":339,"source":326,"tick":608,"type":"response","x":2.196370840072632,"z":-1.4227204322814941}
+{"choice":"outlet","context":"star2/2/support/fresh/0/0","kind":"response_intent","owner":0,"reason":"Give the carrier a passing angle.","seat":2,"seq":340,"source":340,"tick":608,"x":2.196370840072632,"z":-1.4227204322814941}
+{"action":"cut","flags":[true,true,true,false,false],"kind":"action_grade","owner":0,"pass":false,"points":40,"seat":3,"seq":341,"source":327,"tick":608,"type":"response","x":2.2009987831115723,"z":0.45872631669044495}
+{"choice":"cut","context":"star2/3/defend/pass/0/1","kind":"response_intent","owner":0,"reason":"Nell has tried 0 shots and 2 passes. They keep passing. Jump the outlet.","seat":3,"seq":342,"source":342,"tick":608,"x":2.2009987831115723,"z":0.45872631669044495}
+{"action":"press","flags":[true,true,true,false,false],"kind":"action_grade","owner":0,"pass":false,"points":40,"seat":4,"seq":343,"source":328,"tick":608,"type":"response","x":1.3703930377960205,"z":0.08141843229532242}
+{"choice":"press","context":"star2/4/defend/pass/0/1","kind":"response_intent","owner":0,"reason":"Nell has tried 0 shots and 2 passes. Close the carrier before the shot.","seat":4,"seq":344,"source":344,"tick":608,"x":1.3703930377960205,"z":0.08141843229532242}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":345,"tick":609}
+{"buttons":[],"kind":"human_input","move":[1.0,1.0],"seat":1,"seq":346,"tick":610}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":347,"tick":611}
+{"buttons":["dash"],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":348,"tick":613}
+{"kind":"dash","seat":0,"seq":349,"tick":613}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":1,"seq":350,"tick":614}
+{"kind":"court_frame","owner":0,"players":[[1.451,0.849,0],[3.254,-1.411,0],[2.64,-1.476,0],[1.925,0.271,1],[1.482,0.394,1]],"seat":-1,"seq":351,"star":[1.4507559537887573,1.059999942779541,1.008882999420166],"tick":615}
+{"buttons":[],"kind":"human_input","move":[1.0,1.0],"seat":1,"seq":352,"tick":618}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":1,"seq":353,"tick":622}
+{"buttons":[],"kind":"human_input","move":[-1.0,-1.0],"seat":1,"seq":354,"tick":623}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":355,"tick":625}
+{"buttons":["shoot"],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":356,"tick":629}
+{"action":"shot","from_x":2.5288047790527344,"from_z":0.5473853349685669,"kind":"throw","seat":0,"seq":357,"tick":629,"to":-1}
+{"action":"outlet","flags":[true,true,true,false,false],"kind":"action_grade","owner":-1,"pass":false,"points":40,"seat":2,"seq":358,"source":340,"tick":629,"type":"response","x":3.3649401664733887,"z":-1.500934362411499}
+{"choice":"recover","context":"star2/2/loose/fresh/1/0","kind":"response_intent","owner":-1,"reason":"Get to the loose star first.","seat":2,"seq":359,"source":359,"tick":629,"x":3.3649401664733887,"z":-1.500934362411499}
+{"action":"cut","flags":[true,true,true,true,false],"kind":"action_grade","owner":-1,"pass":false,"points":65,"seat":3,"seq":360,"source":342,"tick":629,"type":"response","x":2.268235683441162,"z":0.007425057236105204}
+{"choice":"recover","context":"star2/3/loose/pass/0/1","kind":"response_intent","owner":-1,"reason":"Get to the loose star first.","seat":3,"seq":361,"source":361,"tick":629,"x":2.268235683441162,"z":0.007425057236105204}
+{"action":"press","flags":[true,true,true,true,false],"kind":"action_grade","owner":-1,"pass":false,"points":65,"seat":4,"seq":362,"source":344,"tick":629,"type":"response","x":2.0089097023010254,"z":0.3873591423034668}
+{"choice":"lead","context":"star2/4/loose/pass/0/1","kind":"response_intent","owner":-1,"reason":"Read where the star will land.","seat":4,"seq":363,"source":363,"tick":629,"x":2.0089097023010254,"z":0.3873591423034668}
+{"buttons":[],"kind":"human_input","move":[0.0,1.0],"seat":0,"seq":364,"tick":630}
+{"buttons":[],"kind":"human_input","move":[-1.0,1.0],"seat":1,"seq":365,"tick":630}
+{"kind":"court_frame","owner":-1,"players":[[2.697,0.277,0],[3.916,-1.301,0],[3.461,-1.491,0],[2.348,-0.025,1],[2.133,0.382,1]],"seat":-1,"seq":366,"star":[2.771468162536621,1.1504918336868286,0.5031261444091797],"tick":630}
+{"buttons":[],"kind":"human_input","move":[1.0,1.0],"seat":0,"seq":367,"tick":631}
+{"buttons":[],"kind":"human_input","move":[0.0,1.0],"seat":1,"seq":368,"tick":639}
+{"buttons":[],"kind":"human_input","move":[1.0,1.0],"seat":1,"seq":369,"tick":643}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":370,"tick":645}
+{"kind":"court_frame","owner":-1,"players":[[3.586,0.06,0],[3.9650000000000003,-0.751,0],[3.606,-1.039,0],[3.113,0.0,1],[3.077,0.459,1]],"seat":-1,"seq":371,"star":[4.5914435386657715,1.439597725868225,0.17118221521377563],"tick":645}
+{"action":"shot","flags":[true,true,true,true,true],"kind":"action_grade","pass":true,"points":100,"seat":0,"seq":372,"source":357,"tick":651,"type":"court_throw"}
+{"blue":1,"gold":1,"kind":"goal","seat":0,"seq":373,"team":0,"tick":651}
+{"action":"recover","flags":[true,true,true,false,false],"kind":"action_grade","owner":-1,"pass":false,"points":40,"seat":2,"seq":374,"source":359,"tick":651,"type":"response","x":3.8454906940460205,"z":-0.8261575698852539}
+{"action":"recover","flags":[true,true,false,false,false],"kind":"action_grade","owner":-1,"pass":false,"points":20,"seat":3,"seq":375,"source":361,"tick":651,"type":"response","x":3.4257049560546875,"z":-0.02512354403734207}
+{"action":"lead","flags":[true,true,true,true,false],"kind":"action_grade","owner":-1,"pass":false,"points":65,"seat":4,"seq":376,"source":363,"tick":651,"type":"response","x":3.476137399673462,"z":0.4321035146713257}
+{"from":-1,"kind":"custody","method":"restart","seat":3,"seq":377,"team":1,"tick":651}
+{"choice":"cut","context":"star2/2/defend/fresh/0/0","kind":"response_intent","owner":3,"reason":"Cutting the passing lane.","seat":2,"seq":378,"source":378,"tick":726,"x":1.3300000429153442,"z":-0.25999999046325684}
+{"choice":"drive","context":"star2/3/carry/pass/0/1","kind":"response_intent","owner":3,"reason":"Carry the light into range.","seat":3,"seq":379,"source":379,"tick":726,"x":3.819999933242798,"z":0.699999988079071}
+{"choice":"outlet","context":"star2/4/support/pass/0/1","kind":"response_intent","owner":3,"reason":"Give the carrier a passing angle.","seat":4,"seq":380,"source":380,"tick":726,"x":2.3499999046325684,"z":-1.6200000047683716}
+{"kind":"court_frame","owner":3,"players":[[-0.132,1.22,0],[1.098,-1.252,0],[1.667,-0.202,0],[3.499,0.675,1],[2.1590000000000003,-1.355,1]],"seat":-1,"seq":381,"star":[3.498734951019287,1.059999942779541,0.8352872133255005],"tick":735}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":382,"tick":749}
+{"kind":"court_frame","owner":3,"players":[[0.773,1.202,0],[1.7650000000000001,-0.5710000000000001,0],[2.403,0.033,0],[2.7840000000000003,0.62,1],[1.453,-1.208,1]],"seat":-1,"seq":383,"star":[2.78421950340271,1.059999942779541,0.7803242802619934],"tick":750}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":384,"tick":756}
+{"buttons":[],"kind":"human_input","move":[0.0,1.0],"seat":1,"seq":385,"tick":761}
+{"action":"cut","flags":[true,true,true,false,false],"kind":"action_grade","owner":3,"pass":false,"points":40,"seat":2,"seq":386,"source":378,"tick":761,"type":"response","x":2.3973546028137207,"z":0.1627740114927292}
+{"choice":"cut","context":"star2/2/defend/fresh/0/0","kind":"response_intent","owner":3,"reason":"Cutting the passing lane.","seat":2,"seq":387,"source":387,"tick":761,"x":2.3973546028137207,"z":0.1627740114927292}
+{"action":"drive","flags":[true,true,true,true,true],"kind":"action_grade","owner":3,"pass":true,"points":100,"seat":3,"seq":388,"source":379,"tick":761,"type":"response","x":2.3028833866119385,"z":0.6129686236381531}
+{"choice":"drive","context":"star2/3/carry/pass/0/1","kind":"response_intent","owner":3,"reason":"Carry the light into range.","seat":3,"seq":389,"source":389,"tick":761,"x":2.3028833866119385,"z":0.6129686236381531}
+{"action":"outlet","flags":[true,true,false,false,false],"kind":"action_grade","owner":3,"pass":false,"points":20,"seat":4,"seq":390,"source":380,"tick":761,"type":"response","x":0.975525438785553,"z":-1.1934489011764526}
+{"choice":"advance","context":"star2/4/support/pass/0/1","kind":"response_intent","owner":3,"reason":"Get ahead for a return ball.","seat":4,"seq":391,"source":391,"tick":761,"x":0.975525438785553,"z":-1.1934489011764526}
+{"kind":"court_frame","owner":3,"players":[[1.574,0.931,0],[2.227,-0.17400000000000002,0],[2.243,0.269,0],[2.029,0.677,1],[0.659,-1.192,1]],"seat":-1,"seq":392,"star":[2.028803586959839,1.059999942779541,0.8367823958396912],"tick":765}
+{"buttons":["dash"],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":393,"tick":766}
+{"kind":"dash","seat":0,"seq":394,"tick":766}
+{"buttons":[],"kind":"human_input","move":[-1.0,1.0],"seat":1,"seq":395,"tick":766}
+{"kind":"dash","seat":2,"seq":396,"tick":766}
+{"from":3,"kind":"custody","method":"steal","seat":0,"seq":397,"team":0,"tick":766}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":1,"seq":398,"tick":767}
+{"action":"cut","flags":[true,true,true,true,true],"kind":"action_grade","owner":0,"pass":true,"points":100,"seat":2,"seq":399,"source":387,"tick":767,"type":"response","x":2.1957108974456787,"z":0.27880167961120605}
+{"choice":"advance","context":"star2/2/support/fresh/0/0","kind":"response_intent","owner":0,"reason":"Get ahead for a return ball.","seat":2,"seq":400,"source":400,"tick":767,"x":2.1957108974456787,"z":0.27880167961120605}
+{"action":"drive","flags":[true,true,true,true,false],"kind":"action_grade","owner":0,"pass":false,"points":65,"seat":3,"seq":401,"source":389,"tick":767,"type":"response","x":1.9820252656936646,"z":0.6861571669578552}
+{"choice":"cut","context":"star2/3/defend/pass/0/1","kind":"response_intent","owner":0,"reason":"Nell has tried 1 shots and 2 passes. They keep passing. Jump the outlet.","seat":3,"seq":402,"source":402,"tick":767,"x":1.9820252656936646,"z":0.6861571669578552}
+{"action":"advance","flags":[true,true,true,false,false],"kind":"action_grade","owner":0,"pass":false,"points":40,"seat":4,"seq":403,"source":391,"tick":767,"type":"response","x":0.5910710096359253,"z":-1.1923002004623413}
+{"choice":"cut","context":"star2/4/defend/pass/0/1","kind":"response_intent","owner":0,"reason":"Nell has tried 1 shots and 2 passes. They keep passing. Jump the outlet.","seat":4,"seq":404,"source":404,"tick":767,"x":0.5910710096359253,"z":-1.1923002004623413}
+{"kind":"court_frame","owner":0,"players":[[2.508,0.717,0],[2.624,-0.076,0],[1.583,0.317,0],[2.043,0.624,1],[0.257,-0.919,1]],"seat":-1,"seq":405,"star":[2.5079619884490967,1.059999942779541,0.8770720362663269],"tick":780}
+{"buttons":["shoot"],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":406,"tick":782}
+{"action":"shot","from_x":2.5833866596221924,"from_z":0.8016473054885864,"kind":"throw","seat":0,"seq":407,"tick":782,"to":-1}
+{"action":"advance","flags":[true,true,false,false,false],"kind":"action_grade","owner":-1,"pass":false,"points":20,"seat":2,"seq":408,"source":400,"tick":782,"type":"response","x":1.571009635925293,"z":0.3275770843029022}
+{"choice":"recover","context":"star2/2/loose/fresh/0/0","kind":"response_intent","owner":-1,"reason":"Get to the loose star first.","seat":2,"seq":409,"source":409,"tick":782,"x":1.571009635925293,"z":0.3275770843029022}
+{"action":"cut","flags":[true,true,true,true,false],"kind":"action_grade","owner":-1,"pass":false,"points":65,"seat":3,"seq":410,"source":402,"tick":782,"type":"response","x":2.0836963653564453,"z":0.6241123080253601}
+{"choice":"recover","context":"star2/3/loose/shoot/0/1","kind":"response_intent","owner":-1,"reason":"Get to the loose star first.","seat":3,"seq":411,"source":411,"tick":782,"x":2.0836963653564453,"z":0.6241123080253601}
+{"action":"cut","flags":[true,true,false,false,false],"kind":"action_grade","owner":-1,"pass":false,"points":20,"seat":4,"seq":412,"source":404,"tick":782,"type":"response","x":0.2793760299682617,"z":-0.8868362903594971}
+{"choice":"lead","context":"star2/4/loose/shoot/0/1","kind":"response_intent","owner":-1,"reason":"Read where the star will land.","seat":4,"seq":413,"source":413,"tick":782,"x":0.2793760299682617,"z":-0.8868362903594971}
+{"buttons":[],"kind":"human_input","move":[1.0,1.0],"seat":0,"seq":414,"tick":783}
+{"buttons":[],"kind":"human_input","move":[0.0,1.0],"seat":1,"seq":415,"tick":783}
+{"buttons":[],"kind":"human_input","move":[1.0,1.0],"seat":1,"seq":416,"tick":786}
+{"kind":"court_frame","owner":-1,"players":[[3.454,0.243,0],[3.212,-0.148,0],[2.025,0.433,0],[2.801,0.603,1],[1.068,-0.635,1]],"seat":-1,"seq":417,"star":[4.249495506286621,1.4371534585952759,0.348370760679245],"tick":795}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":418,"tick":796}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":1,"seq":419,"tick":800}
+{"action":"shot","flags":[true,true,true,true,true],"kind":"action_grade","pass":true,"points":100,"seat":0,"seq":420,"source":407,"tick":804,"type":"court_throw"}
+{"blue":1,"gold":2,"kind":"goal","seat":0,"seq":421,"team":0,"tick":804}
+{"action":"recover","flags":[true,true,true,true,false],"kind":"action_grade","owner":-1,"pass":false,"points":65,"seat":2,"seq":422,"source":409,"tick":804,"type":"response","x":2.5261545181274414,"z":0.39367207884788513}
+{"action":"recover","flags":[true,true,true,true,false],"kind":"action_grade","owner":-1,"pass":false,"points":65,"seat":3,"seq":423,"source":411,"tick":804,"type":"response","x":3.264775276184082,"z":0.5107082724571228}
+{"action":"lead","flags":[true,true,true,false,false],"kind":"action_grade","owner":-1,"pass":false,"points":40,"seat":4,"seq":424,"source":413,"tick":804,"type":"response","x":1.672850251197815,"z":-0.5796381831169128}
+{"from":-1,"kind":"custody","method":"restart","seat":3,"seq":425,"team":1,"tick":804}
+{"buttons":[],"kind":"human_input","move":[1.0,1.0],"seat":1,"seq":426,"tick":879}
+{"choice":"cut","context":"star2/2/defend/fresh/0/0","kind":"response_intent","owner":3,"reason":"Cutting the passing lane.","seat":2,"seq":427,"source":427,"tick":879,"x":1.3300000429153442,"z":-0.25999999046325684}
+{"choice":"drive","context":"star2/3/carry/shoot/0/1","kind":"response_intent","owner":3,"reason":"Carry the light into range.","seat":3,"seq":428,"source":428,"tick":879,"x":3.819999933242798,"z":0.699999988079071}
+{"choice":"advance","context":"star2/4/support/shoot/0/1","kind":"response_intent","owner":3,"reason":"Get ahead for a return ball.","seat":4,"seq":429,"source":429,"tick":879,"x":2.3499999046325684,"z":-1.6200000047683716}
+{"kind":"court_frame","owner":3,"players":[[-0.301,1.22,0],[0.976,-1.374,0],[1.5070000000000001,-0.233,0],[3.642,0.686,1],[2.177,-1.575,1]],"seat":-1,"seq":430,"star":[3.6416380405426025,1.059999942779541,0.8462797999382019],"tick":885}
+{"kind":"court_frame","owner":3,"players":[[0.598,1.22,0],[1.635,-0.715,0],[2.2960000000000003,-0.039,0],[2.927,0.631,1],[1.212,-1.391,1]],"seat":-1,"seq":431,"star":[2.9271225929260254,1.059999942779541,0.7913168668746948],"tick":900}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":432,"tick":902}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":433,"tick":909}
+{"buttons":[],"kind":"human_input","move":[0.0,1.0],"seat":1,"seq":434,"tick":914}
+{"action":"cut","flags":[true,true,true,false,false],"kind":"action_grade","owner":3,"pass":false,"points":40,"seat":2,"seq":435,"source":427,"tick":914,"type":"response","x":2.3106489181518555,"z":0.1570633202791214}
+{"choice":"cut","context":"star2/2/defend/fresh/0/0","kind":"response_intent","owner":3,"reason":"Cutting the passing lane.","seat":2,"seq":436,"source":436,"tick":914,"x":2.3106489181518555,"z":0.1570633202791214}
+{"action":"drive","flags":[true,true,true,true,true],"kind":"action_grade","owner":3,"pass":true,"points":100,"seat":3,"seq":437,"source":428,"tick":914,"type":"response","x":2.308251142501831,"z":0.6170570850372314}
+{"choice":"drive","context":"star2/3/carry/shoot/0/1","kind":"response_intent","owner":3,"reason":"Carry the light into range.","seat":3,"seq":438,"source":438,"tick":914,"x":2.308251142501831,"z":0.6170570850372314}
+{"action":"advance","flags":[true,true,true,true,true],"kind":"action_grade","owner":3,"pass":true,"points":100,"seat":4,"seq":439,"source":429,"tick":914,"type":"response","x":0.3407001495361328,"z":-1.2891312837600708}
+{"choice":"advance","context":"star2/4/support/shoot/0/1","kind":"response_intent","owner":3,"reason":"Get ahead for a return ball.","seat":4,"seq":440,"source":440,"tick":914,"x":0.3407001495361328,"z":-1.2891312837600708}
+{"kind":"court_frame","owner":3,"players":[[1.391,0.931,0],[2.214,-0.246,0],[2.223,0.193,0],[2.212,0.653,1],[0.20600000000000002,-1.278,1]],"seat":-1,"seq":441,"star":[2.211827516555786,1.059999942779541,0.8131033182144165],"tick":915}
+{"buttons":["dash"],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":442,"tick":919}
+{"kind":"dash","seat":0,"seq":443,"tick":919}
+{"buttons":[],"kind":"human_input","move":[-1.0,1.0],"seat":1,"seq":444,"tick":919}
+{"kind":"dash","seat":2,"seq":445,"tick":919}
+{"from":3,"kind":"custody","method":"steal","seat":0,"seq":446,"team":0,"tick":919}
+{"buttons":[],"kind":"human_input","move":[1.0,-1.0],"seat":1,"seq":447,"tick":920}
+{"action":"cut","flags":[true,true,true,true,true],"kind":"action_grade","owner":0,"pass":true,"points":100,"seat":2,"seq":448,"source":436,"tick":920,"type":"response","x":1.9756214618682861,"z":0.20922234654426575}
+{"choice":"outlet","context":"star2/2/support/fresh/0/0","kind":"response_intent","owner":0,"reason":"Give the carrier a passing angle.","seat":2,"seq":449,"source":449,"tick":920,"x":1.9756214618682861,"z":0.20922234654426575}
+{"action":"drive","flags":[true,true,true,true,false],"kind":"action_grade","owner":0,"pass":false,"points":65,"seat":3,"seq":450,"source":438,"tick":920,"type":"response","x":2.022559642791748,"z":0.666821300983429}
+{"choice":"screen","context":"star2/3/defend/shoot/0/1","kind":"response_intent","owner":0,"reason":"Nell has tried 2 shots and 2 passes. Hold between the carrier and our ring.","seat":3,"seq":451,"source":451,"tick":920,"x":2.022559642791748,"z":0.666821300983429}
+{"action":"advance","flags":[true,true,true,false,false],"kind":"action_grade","owner":0,"pass":false,"points":40,"seat":4,"seq":452,"source":440,"tick":920,"type":"response","x":-0.0630519688129425,"z":-1.2574565410614014}
+{"choice":"cut","context":"star2/4/defend/shoot/0/1","kind":"response_intent","owner":0,"reason":"Nell has tried 2 shots and 2 passes. Cutting the passing lane.","seat":4,"seq":453,"source":453,"tick":920,"x":-0.0630519688129425,"z":-1.2574565410614014}
+{"kind":"court_frame","owner":0,"players":[[2.282,0.786,0],[2.556,0.116,0],[1.575,0.365,0],[2.085,0.37,1],[-0.404,-1.073,1]],"seat":-1,"seq":454,"star":[2.281890869140625,1.059999942779541,0.9459299445152283],"tick":930}
+{"buttons":["shoot"],"kind":"human_input","move":[1.0,-1.0],"seat":0,"seq":455,"tick":935}
+{"action":"shot","from_x":2.622136354446411,"from_z":0.6808794736862183,"kind":"throw","seat":0,"seq":456,"tick":935,"to":-1}
+{"action":"outlet","flags":[true,true,false,false,false],"kind":"action_grade","owner":-1,"pass":false,"points":20,"seat":2,"seq":457,"source":449,"tick":935,"type":"response","x":1.573763132095337,"z":0.3935299217700958}
+{"choice":"recover","context":"star2/2/loose/fresh/0/0","kind":"response_intent","owner":-1,"reason":"Get to the loose star first.","seat":2,"seq":458,"source":458,"tick":935,"x":1.573763132095337,"z":0.3935299217700958}
+{"action":"screen","flags":[true,true,true,false,false],"kind":"action_grade","owner":-1,"pass":false,"points":40,"seat":3,"seq":459,"source":451,"tick":935,"type":"response","x":2.2002930641174316,"z":0.33744463324546814}
+{"choice":"recover","context":"star2/3/loose/shoot/0/1","kind":"response_intent","owner":-1,"reason":"Get to the loose star first.","seat":3,"seq":460,"source":460,"tick":935,"x":2.2002930641174316,"z":0.33744463324546814}
+{"action":"cut","flags":[true,true,false,false,false],"kind":"action_grade","owner":-1,"pass":false,"points":20,"seat":4,"seq":461,"source":453,"tick":935,"type":"response","x":-0.34104156494140625,"z":-0.9648922085762024}
+{"choice":"lead","context":"star2/4/loose/shoot/0/1","kind":"response_intent","owner":-1,"reason":"Read where the star will land.","seat":4,"seq":462,"source":462,"tick":935,"x":-0.34104156494140625,"z":-0.9648922085762024}
+{"buttons":[],"kind":"human_input","move":[1.0,1.0],"seat":0,"seq":463,"tick":936}
+{"buttons":[],"kind":"human_input","move":[0.0,1.0],"seat":1,"seq":464,"tick":936}
+{"buttons":[],"kind":"human_input","move":[1.0,1.0],"seat":1,"seq":465,"tick":938}
+{"kind":"court_frame","owner":-1,"players":[[3.345,0.199,0],[3.1310000000000002,-0.20800000000000002,0],[2.02,0.428,0],[2.754,0.427,1],[0.271,-0.771,1]],"seat":-1,"seq":466,"star":[3.9430739879608154,1.4001939296722412,0.3715801537036896],"tick":945}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":0,"seq":467,"tick":948}
+{"buttons":[],"kind":"human_input","move":[1.0,0.0],"seat":1,"seq":468,"tick":952}
+{"action":"shot","flags":[true,true,true,true,true],"kind":"action_grade","pass":true,"points":100,"seat":0,"seq":469,"source":456,"tick":957,"type":"court_throw"}
+{"blue":1,"gold":3,"kind":"goal","seat":0,"seq":470,"team":0,"tick":957}
+{"action":"recover","flags":[true,true,true,true,false],"kind":"action_grade","owner":-1,"pass":false,"points":65,"seat":2,"seq":471,"source":458,"tick":957,"type":"response","x":2.6872875690460205,"z":0.3736961781978607}
+{"action":"recover","flags":[true,true,true,true,false],"kind":"action_grade","owner":-1,"pass":false,"points":65,"seat":3,"seq":472,"source":460,"tick":957,"type":"response","x":3.346367835998535,"z":0.38960614800453186}
+{"action":"lead","flags":[true,true,true,false,false],"kind":"action_grade","owner":-1,"pass":false,"points":40,"seat":4,"seq":473,"source":462,"tick":957,"type":"response","x":1.0756709575653076,"z":-0.6809789538383484}
+{"from":-1,"kind":"custody","method":"restart","seat":3,"seq":474,"team":1,"tick":957}
+{"blue":1,"gold":3,"kind":"final","seat":-1,"seq":475,"tick":957}
+{"blue":1,"completed":true,"gold":3,"kind":"footer","tick":957}

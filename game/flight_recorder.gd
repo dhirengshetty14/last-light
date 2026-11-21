@@ -47,7 +47,7 @@ func _write(path: String) -> void:
 			break
 		if f:
 			for e in batch:
-				f.store_line(JSON.stringify(e))
+				f.store_line(JSON.stringify(e, "", true, true))
 			f.flush()
 	if f:
 		f.close()

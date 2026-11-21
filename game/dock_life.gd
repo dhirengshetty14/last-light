@@ -83,6 +83,10 @@ func update(dt: float, sim, tutorial: bool) -> void:
 	var reading_catch: bool = (
 		not sim.dwell.is_empty() or (not sim.flight.is_empty() and sim.flight.end - sim.tick <= 100)
 	)
+	animate(dt, reading_catch, tutorial, sim.hatch_open(sim.tick) and not tutorial, sim.gravity == 1)
+
+
+func animate(dt: float, reading_catch: bool, tutorial: bool, open: bool, rising: bool) -> void:
 	var target := 0.36 if reading_catch or tutorial else 1.0
 	quiet = move_toward(quiet, target, dt * 0.95)
 	if not reduced:
@@ -123,9 +127,8 @@ func update(dt: float, sim, tutorial: bool) -> void:
 				8.5 + 7.5 * arc, 3.6 + 1.4 * arc + .23 * sin(float(n) * 3.7), -11.0 - n % 3
 			)
 			ice.multimesh.set_instance_transform(n, Transform3D(basis, at))
-	var open: bool = sim.hatch_open(sim.tick) and not tutorial
 	hatch_fraction = move_toward(hatch_fraction, 1.0 if open else 0.0, dt * 0.78)
-	gravity_fraction = move_toward(gravity_fraction, 1.0 if sim.gravity == 1 else 0.0, dt * 1.3)
+	gravity_fraction = move_toward(gravity_fraction, 1.0 if rising else 0.0, dt * 1.3)
 	for index in hatch_leaves.size():
 		var side := -1.0 if index == 0 else 1.0
 		hatch_leaves[index].position = Vector3(

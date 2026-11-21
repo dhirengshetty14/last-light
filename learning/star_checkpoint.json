@@ -1,0 +1,1486 @@
+{
+  "episodes": 120,
+  "estimates": {
+    "star2/2/carry/fresh/0/0/drive": [
+      30,
+      9,
+      1860
+    ],
+    "star2/2/carry/fresh/0/0/flank": [
+      34,
+      19,
+      2655
+    ],
+    "star2/2/carry/fresh/0/0/pass": [
+      2,
+      0,
+      130
+    ],
+    "star2/2/carry/fresh/1/0/finish": [
+      33,
+      25,
+      3020
+    ],
+    "star2/2/carry/pass/0/0/drive": [
+      10,
+      3,
+      615
+    ],
+    "star2/2/carry/pass/0/0/flank": [
+      15,
+      10,
+      1250
+    ],
+    "star2/2/carry/pass/0/1/drive": [
+      102,
+      90,
+      9690
+    ],
+    "star2/2/carry/pass/0/1/flank": [
+      10,
+      6,
+      770
+    ],
+    "star2/2/carry/pass/0/1/pass": [
+      6,
+      3,
+      495
+    ],
+    "star2/2/carry/pass/1/0/finish": [
+      4,
+      3,
+      365
+    ],
+    "star2/2/carry/pass/1/1/finish": [
+      37,
+      35,
+      3630
+    ],
+    "star2/2/carry/shoot/0/-1/drive": [
+      1,
+      0,
+      20
+    ],
+    "star2/2/carry/shoot/0/-1/pass": [
+      2,
+      2,
+      200
+    ],
+    "star2/2/carry/shoot/0/0/drive": [
+      61,
+      42,
+      5255
+    ],
+    "star2/2/carry/shoot/0/0/flank": [
+      9,
+      6,
+      750
+    ],
+    "star2/2/carry/shoot/0/0/pass": [
+      3,
+      2,
+      265
+    ],
+    "star2/2/carry/shoot/0/1/drive": [
+      419,
+      255,
+      32605
+    ],
+    "star2/2/carry/shoot/0/1/flank": [
+      56,
+      33,
+      4290
+    ],
+    "star2/2/carry/shoot/0/1/pass": [
+      63,
+      42,
+      5565
+    ],
+    "star2/2/carry/shoot/1/0/finish": [
+      20,
+      19,
+      1965
+    ],
+    "star2/2/carry/shoot/1/1/finish": [
+      115,
+      80,
+      10275
+    ],
+    "star2/2/defend/fresh/0/-1/press": [
+      3,
+      1,
+      175
+    ],
+    "star2/2/defend/fresh/0/0/cut": [
+      233,
+      46,
+      14340
+    ],
+    "star2/2/defend/fresh/0/0/press": [
+      174,
+      21,
+      9630
+    ],
+    "star2/2/defend/fresh/0/0/screen": [
+      35,
+      2,
+      1935
+    ],
+    "star2/2/defend/fresh/0/1/cut": [
+      3,
+      1,
+      195
+    ],
+    "star2/2/defend/fresh/0/1/press": [
+      7,
+      2,
+      510
+    ],
+    "star2/2/defend/fresh/0/1/screen": [
+      2,
+      0,
+      75
+    ],
+    "star2/2/defend/fresh/1/0/cut": [
+      15,
+      6,
+      1195
+    ],
+    "star2/2/defend/fresh/1/0/press": [
+      15,
+      3,
+      1070
+    ],
+    "star2/2/defend/fresh/1/0/screen": [
+      4,
+      0,
+      175
+    ],
+    "star2/2/defend/pass/0/-1/cut": [
+      3,
+      2,
+      255
+    ],
+    "star2/2/defend/pass/0/-1/screen": [
+      1,
+      0,
+      65
+    ],
+    "star2/2/defend/pass/0/0/cut": [
+      60,
+      3,
+      3515
+    ],
+    "star2/2/defend/pass/0/0/press": [
+      4,
+      0,
+      165
+    ],
+    "star2/2/defend/pass/0/0/screen": [
+      3,
+      0,
+      80
+    ],
+    "star2/2/defend/pass/0/1/cut": [
+      47,
+      6,
+      2585
+    ],
+    "star2/2/defend/pass/0/1/press": [
+      7,
+      0,
+      305
+    ],
+    "star2/2/defend/pass/0/1/screen": [
+      14,
+      1,
+      680
+    ],
+    "star2/2/defend/pass/1/0/cut": [
+      4,
+      0,
+      170
+    ],
+    "star2/2/defend/pass/1/0/press": [
+      1,
+      1,
+      100
+    ],
+    "star2/2/defend/pass/1/0/screen": [
+      5,
+      1,
+      330
+    ],
+    "star2/2/defend/pass/1/1/cut": [
+      3,
+      1,
+      230
+    ],
+    "star2/2/defend/pass/1/1/screen": [
+      1,
+      1,
+      100
+    ],
+    "star2/2/defend/shoot/0/-1/screen": [
+      1,
+      0,
+      40
+    ],
+    "star2/2/defend/shoot/0/0/cut": [
+      6,
+      1,
+      350
+    ],
+    "star2/2/defend/shoot/0/0/press": [
+      47,
+      13,
+      3030
+    ],
+    "star2/2/defend/shoot/0/0/screen": [
+      8,
+      1,
+      515
+    ],
+    "star2/2/defend/shoot/0/1/cut": [
+      59,
+      17,
+      4115
+    ],
+    "star2/2/defend/shoot/0/1/press": [
+      344,
+      124,
+      24040
+    ],
+    "star2/2/defend/shoot/0/1/screen": [
+      105,
+      28,
+      7740
+    ],
+    "star2/2/defend/shoot/1/0/press": [
+      1,
+      0,
+      65
+    ],
+    "star2/2/defend/shoot/1/1/cut": [
+      2,
+      1,
+      165
+    ],
+    "star2/2/defend/shoot/1/1/press": [
+      48,
+      26,
+      3950
+    ],
+    "star2/2/defend/shoot/1/1/screen": [
+      4,
+      0,
+      265
+    ],
+    "star2/2/loose/fresh/0/0/lead": [
+      10,
+      0,
+      455
+    ],
+    "star2/2/loose/fresh/0/0/recover": [
+      65,
+      8,
+      3525
+    ],
+    "star2/2/loose/fresh/1/0/lead": [
+      3,
+      0,
+      100
+    ],
+    "star2/2/loose/fresh/1/0/recover": [
+      12,
+      0,
+      440
+    ],
+    "star2/2/loose/pass/0/-1/lead": [
+      1,
+      0,
+      65
+    ],
+    "star2/2/loose/pass/0/-1/recover": [
+      2,
+      0,
+      85
+    ],
+    "star2/2/loose/pass/0/0/lead": [
+      9,
+      2,
+      535
+    ],
+    "star2/2/loose/pass/0/0/recover": [
+      16,
+      2,
+      1015
+    ],
+    "star2/2/loose/pass/0/1/lead": [
+      42,
+      11,
+      2710
+    ],
+    "star2/2/loose/pass/0/1/recover": [
+      104,
+      30,
+      6365
+    ],
+    "star2/2/loose/pass/1/-1/recover": [
+      2,
+      0,
+      130
+    ],
+    "star2/2/loose/pass/1/0/recover": [
+      3,
+      0,
+      105
+    ],
+    "star2/2/loose/pass/1/1/lead": [
+      1,
+      0,
+      65
+    ],
+    "star2/2/loose/pass/1/1/recover": [
+      8,
+      1,
+      415
+    ],
+    "star2/2/loose/shoot/0/-1/lead": [
+      2,
+      0,
+      105
+    ],
+    "star2/2/loose/shoot/0/-1/recover": [
+      2,
+      0,
+      80
+    ],
+    "star2/2/loose/shoot/0/0/lead": [
+      3,
+      0,
+      120
+    ],
+    "star2/2/loose/shoot/0/0/recover": [
+      20,
+      2,
+      1235
+    ],
+    "star2/2/loose/shoot/0/1/lead": [
+      44,
+      2,
+      1940
+    ],
+    "star2/2/loose/shoot/0/1/recover": [
+      234,
+      9,
+      12545
+    ],
+    "star2/2/loose/shoot/1/0/lead": [
+      1,
+      0,
+      40
+    ],
+    "star2/2/loose/shoot/1/0/recover": [
+      4,
+      0,
+      100
+    ],
+    "star2/2/loose/shoot/1/1/lead": [
+      19,
+      0,
+      1040
+    ],
+    "star2/2/loose/shoot/1/1/recover": [
+      35,
+      0,
+      1060
+    ],
+    "star2/2/support/fresh/0/0/advance": [
+      49,
+      6,
+      2135
+    ],
+    "star2/2/support/fresh/0/0/outlet": [
+      42,
+      0,
+      1585
+    ],
+    "star2/2/support/fresh/1/0/advance": [
+      1,
+      0,
+      40
+    ],
+    "star2/2/support/fresh/1/0/outlet": [
+      6,
+      0,
+      240
+    ],
+    "star2/2/support/pass/0/-1/advance": [
+      1,
+      0,
+      40
+    ],
+    "star2/2/support/pass/0/-1/outlet": [
+      3,
+      0,
+      145
+    ],
+    "star2/2/support/pass/0/0/advance": [
+      6,
+      0,
+      245
+    ],
+    "star2/2/support/pass/0/0/outlet": [
+      15,
+      0,
+      670
+    ],
+    "star2/2/support/pass/0/1/advance": [
+      6,
+      0,
+      365
+    ],
+    "star2/2/support/pass/0/1/outlet": [
+      86,
+      20,
+      5170
+    ],
+    "star2/2/support/pass/1/-1/outlet": [
+      1,
+      0,
+      20
+    ],
+    "star2/2/support/pass/1/0/outlet": [
+      1,
+      0,
+      40
+    ],
+    "star2/2/support/pass/1/1/advance": [
+      1,
+      0,
+      20
+    ],
+    "star2/2/support/shoot/0/-1/advance": [
+      3,
+      0,
+      100
+    ],
+    "star2/2/support/shoot/0/-1/outlet": [
+      4,
+      1,
+      225
+    ],
+    "star2/2/support/shoot/0/0/advance": [
+      13,
+      1,
+      710
+    ],
+    "star2/2/support/shoot/0/0/outlet": [
+      24,
+      0,
+      990
+    ],
+    "star2/2/support/shoot/0/1/advance": [
+      68,
+      1,
+      3465
+    ],
+    "star2/2/support/shoot/0/1/outlet": [
+      449,
+      30,
+      22695
+    ],
+    "star2/2/support/shoot/1/0/outlet": [
+      1,
+      0,
+      40
+    ],
+    "star2/2/support/shoot/1/1/advance": [
+      4,
+      0,
+      120
+    ],
+    "star2/2/support/shoot/1/1/outlet": [
+      19,
+      0,
+      680
+    ],
+    "star2/3/carry/fresh/0/0/drive": [
+      2,
+      0,
+      130
+    ],
+    "star2/3/carry/fresh/1/0/finish": [
+      1,
+      1,
+      100
+    ],
+    "star2/3/carry/pass/0/-1/drive": [
+      8,
+      4,
+      660
+    ],
+    "star2/3/carry/pass/0/0/drive": [
+      5,
+      1,
+      270
+    ],
+    "star2/3/carry/pass/0/0/flank": [
+      11,
+      8,
+      905
+    ],
+    "star2/3/carry/pass/0/0/pass": [
+      1,
+      0,
+      65
+    ],
+    "star2/3/carry/pass/0/1/drive": [
+      60,
+      40,
+      5255
+    ],
+    "star2/3/carry/pass/0/1/flank": [
+      3,
+      2,
+      265
+    ],
+    "star2/3/carry/pass/0/1/pass": [
+      2,
+      0,
+      130
+    ],
+    "star2/3/carry/pass/1/-1/finish": [
+      2,
+      2,
+      200
+    ],
+    "star2/3/carry/pass/1/0/finish": [
+      4,
+      4,
+      400
+    ],
+    "star2/3/carry/pass/1/1/finish": [
+      6,
+      6,
+      600
+    ],
+    "star2/3/carry/shoot/0/-1/drive": [
+      3,
+      2,
+      265
+    ],
+    "star2/3/carry/shoot/0/0/drive": [
+      22,
+      10,
+      1735
+    ],
+    "star2/3/carry/shoot/0/0/flank": [
+      2,
+      0,
+      130
+    ],
+    "star2/3/carry/shoot/0/0/pass": [
+      3,
+      0,
+      195
+    ],
+    "star2/3/carry/shoot/0/1/drive": [
+      277,
+      145,
+      22720
+    ],
+    "star2/3/carry/shoot/0/1/flank": [
+      32,
+      14,
+      2495
+    ],
+    "star2/3/carry/shoot/0/1/pass": [
+      11,
+      6,
+      925
+    ],
+    "star2/3/carry/shoot/1/0/finish": [
+      3,
+      3,
+      300
+    ],
+    "star2/3/carry/shoot/1/1/finish": [
+      28,
+      28,
+      2800
+    ],
+    "star2/3/defend/fresh/0/-1/screen": [
+      3,
+      0,
+      170
+    ],
+    "star2/3/defend/fresh/0/0/cut": [
+      114,
+      13,
+      5815
+    ],
+    "star2/3/defend/fresh/0/0/press": [
+      104,
+      25,
+      7105
+    ],
+    "star2/3/defend/fresh/0/0/screen": [
+      141,
+      0,
+      8955
+    ],
+    "star2/3/defend/fresh/0/1/cut": [
+      3,
+      0,
+      170
+    ],
+    "star2/3/defend/fresh/0/1/press": [
+      1,
+      0,
+      20
+    ],
+    "star2/3/defend/fresh/0/1/screen": [
+      17,
+      2,
+      955
+    ],
+    "star2/3/defend/fresh/1/0/cut": [
+      2,
+      0,
+      115
+    ],
+    "star2/3/defend/fresh/1/0/press": [
+      1,
+      0,
+      80
+    ],
+    "star2/3/defend/fresh/1/0/screen": [
+      4,
+      0,
+      160
+    ],
+    "star2/3/defend/fresh/1/1/screen": [
+      1,
+      0,
+      75
+    ],
+    "star2/3/defend/pass/0/-1/cut": [
+      4,
+      0,
+      215
+    ],
+    "star2/3/defend/pass/0/-1/screen": [
+      1,
+      0,
+      75
+    ],
+    "star2/3/defend/pass/0/0/cut": [
+      60,
+      13,
+      3330
+    ],
+    "star2/3/defend/pass/0/0/press": [
+      2,
+      0,
+      130
+    ],
+    "star2/3/defend/pass/0/0/screen": [
+      9,
+      0,
+      500
+    ],
+    "star2/3/defend/pass/0/1/cut": [
+      54,
+      4,
+      2670
+    ],
+    "star2/3/defend/pass/0/1/press": [
+      7,
+      1,
+      435
+    ],
+    "star2/3/defend/pass/0/1/screen": [
+      12,
+      0,
+      735
+    ],
+    "star2/3/defend/pass/1/0/cut": [
+      7,
+      1,
+      460
+    ],
+    "star2/3/defend/pass/1/0/press": [
+      1,
+      0,
+      65
+    ],
+    "star2/3/defend/pass/1/0/screen": [
+      2,
+      0,
+      40
+    ],
+    "star2/3/defend/pass/1/1/cut": [
+      5,
+      1,
+      360
+    ],
+    "star2/3/defend/shoot/0/-1/screen": [
+      1,
+      0,
+      20
+    ],
+    "star2/3/defend/shoot/0/0/cut": [
+      10,
+      1,
+      495
+    ],
+    "star2/3/defend/shoot/0/0/press": [
+      18,
+      8,
+      1305
+    ],
+    "star2/3/defend/shoot/0/0/screen": [
+      40,
+      4,
+      2625
+    ],
+    "star2/3/defend/shoot/0/1/cut": [
+      57,
+      5,
+      3295
+    ],
+    "star2/3/defend/shoot/0/1/press": [
+      7,
+      1,
+      495
+    ],
+    "star2/3/defend/shoot/0/1/screen": [
+      537,
+      164,
+      39180
+    ],
+    "star2/3/defend/shoot/1/1/cut": [
+      1,
+      1,
+      100
+    ],
+    "star2/3/defend/shoot/1/1/screen": [
+      2,
+      0,
+      150
+    ],
+    "star2/3/loose/fresh/0/0/lead": [
+      3,
+      1,
+      160
+    ],
+    "star2/3/loose/fresh/0/0/recover": [
+      6,
+      1,
+      300
+    ],
+    "star2/3/loose/fresh/1/0/recover": [
+      1,
+      0,
+      20
+    ],
+    "star2/3/loose/pass/0/-1/lead": [
+      1,
+      0,
+      65
+    ],
+    "star2/3/loose/pass/0/-1/recover": [
+      6,
+      3,
+      425
+    ],
+    "star2/3/loose/pass/0/0/lead": [
+      5,
+      0,
+      280
+    ],
+    "star2/3/loose/pass/0/0/recover": [
+      18,
+      3,
+      1100
+    ],
+    "star2/3/loose/pass/0/1/lead": [
+      77,
+      12,
+      3890
+    ],
+    "star2/3/loose/pass/0/1/recover": [
+      121,
+      9,
+      5755
+    ],
+    "star2/3/loose/pass/1/-1/recover": [
+      1,
+      1,
+      100
+    ],
+    "star2/3/loose/pass/1/0/lead": [
+      1,
+      0,
+      65
+    ],
+    "star2/3/loose/pass/1/0/recover": [
+      3,
+      0,
+      150
+    ],
+    "star2/3/loose/pass/1/1/lead": [
+      3,
+      0,
+      195
+    ],
+    "star2/3/loose/pass/1/1/recover": [
+      8,
+      0,
+      360
+    ],
+    "star2/3/loose/shoot/0/-1/lead": [
+      3,
+      1,
+      180
+    ],
+    "star2/3/loose/shoot/0/-1/recover": [
+      3,
+      0,
+      145
+    ],
+    "star2/3/loose/shoot/0/0/lead": [
+      10,
+      1,
+      510
+    ],
+    "star2/3/loose/shoot/0/0/recover": [
+      46,
+      6,
+      2455
+    ],
+    "star2/3/loose/shoot/0/1/lead": [
+      156,
+      27,
+      8050
+    ],
+    "star2/3/loose/shoot/0/1/recover": [
+      388,
+      44,
+      20595
+    ],
+    "star2/3/loose/shoot/1/0/recover": [
+      2,
+      0,
+      40
+    ],
+    "star2/3/loose/shoot/1/1/recover": [
+      6,
+      1,
+      265
+    ],
+    "star2/3/support/fresh/0/0/advance": [
+      7,
+      0,
+      280
+    ],
+    "star2/3/support/fresh/0/0/outlet": [
+      2,
+      0,
+      80
+    ],
+    "star2/3/support/pass/0/0/advance": [
+      20,
+      1,
+      1015
+    ],
+    "star2/3/support/pass/0/0/outlet": [
+      11,
+      1,
+      535
+    ],
+    "star2/3/support/pass/0/1/advance": [
+      128,
+      0,
+      6720
+    ],
+    "star2/3/support/pass/0/1/outlet": [
+      24,
+      0,
+      1245
+    ],
+    "star2/3/support/pass/1/0/advance": [
+      2,
+      0,
+      80
+    ],
+    "star2/3/support/pass/1/1/advance": [
+      2,
+      0,
+      80
+    ],
+    "star2/3/support/shoot/0/-1/advance": [
+      4,
+      0,
+      165
+    ],
+    "star2/3/support/shoot/0/-1/outlet": [
+      1,
+      0,
+      20
+    ],
+    "star2/3/support/shoot/0/0/advance": [
+      82,
+      0,
+      4165
+    ],
+    "star2/3/support/shoot/0/0/outlet": [
+      20,
+      1,
+      945
+    ],
+    "star2/3/support/shoot/0/1/advance": [
+      739,
+      1,
+      37740
+    ],
+    "star2/3/support/shoot/0/1/outlet": [
+      97,
+      0,
+      4840
+    ],
+    "star2/3/support/shoot/1/0/advance": [
+      2,
+      0,
+      80
+    ],
+    "star2/3/support/shoot/1/1/advance": [
+      2,
+      0,
+      60
+    ],
+    "star2/4/carry/fresh/0/0/flank": [
+      4,
+      2,
+      240
+    ],
+    "star2/4/carry/fresh/1/0/finish": [
+      2,
+      2,
+      200
+    ],
+    "star2/4/carry/pass/0/-1/flank": [
+      2,
+      1,
+      165
+    ],
+    "star2/4/carry/pass/0/0/drive": [
+      5,
+      4,
+      465
+    ],
+    "star2/4/carry/pass/0/0/flank": [
+      3,
+      0,
+      150
+    ],
+    "star2/4/carry/pass/0/1/drive": [
+      3,
+      1,
+      230
+    ],
+    "star2/4/carry/pass/0/1/flank": [
+      42,
+      35,
+      3775
+    ],
+    "star2/4/carry/pass/0/1/pass": [
+      2,
+      0,
+      130
+    ],
+    "star2/4/carry/pass/1/0/finish": [
+      1,
+      1,
+      100
+    ],
+    "star2/4/carry/pass/1/1/finish": [
+      15,
+      14,
+      1465
+    ],
+    "star2/4/carry/shoot/0/-1/drive": [
+      1,
+      0,
+      20
+    ],
+    "star2/4/carry/shoot/0/-1/flank": [
+      2,
+      1,
+      120
+    ],
+    "star2/4/carry/shoot/0/-1/pass": [
+      1,
+      0,
+      65
+    ],
+    "star2/4/carry/shoot/0/0/drive": [
+      6,
+      2,
+      370
+    ],
+    "star2/4/carry/shoot/0/0/flank": [
+      23,
+      14,
+      1760
+    ],
+    "star2/4/carry/shoot/0/0/pass": [
+      4,
+      2,
+      330
+    ],
+    "star2/4/carry/shoot/0/1/drive": [
+      28,
+      18,
+      2225
+    ],
+    "star2/4/carry/shoot/0/1/flank": [
+      302,
+      234,
+      26815
+    ],
+    "star2/4/carry/shoot/0/1/pass": [
+      19,
+      8,
+      1515
+    ],
+    "star2/4/carry/shoot/1/-1/finish": [
+      1,
+      1,
+      100
+    ],
+    "star2/4/carry/shoot/1/0/finish": [
+      9,
+      8,
+      865
+    ],
+    "star2/4/carry/shoot/1/1/finish": [
+      137,
+      120,
+      13105
+    ],
+    "star2/4/defend/fresh/0/-1/press": [
+      2,
+      2,
+      200
+    ],
+    "star2/4/defend/fresh/0/-1/screen": [
+      1,
+      0,
+      40
+    ],
+    "star2/4/defend/fresh/0/0/cut": [
+      103,
+      7,
+      4860
+    ],
+    "star2/4/defend/fresh/0/0/press": [
+      102,
+      22,
+      6455
+    ],
+    "star2/4/defend/fresh/0/0/screen": [
+      137,
+      1,
+      8520
+    ],
+    "star2/4/defend/fresh/0/1/cut": [
+      4,
+      0,
+      230
+    ],
+    "star2/4/defend/fresh/0/1/press": [
+      13,
+      1,
+      810
+    ],
+    "star2/4/defend/fresh/0/1/screen": [
+      5,
+      0,
+      285
+    ],
+    "star2/4/defend/fresh/1/0/cut": [
+      2,
+      0,
+      130
+    ],
+    "star2/4/defend/fresh/1/0/press": [
+      4,
+      1,
+      240
+    ],
+    "star2/4/defend/fresh/1/0/screen": [
+      1,
+      0,
+      40
+    ],
+    "star2/4/defend/fresh/1/1/screen": [
+      1,
+      0,
+      40
+    ],
+    "star2/4/defend/pass/0/-1/cut": [
+      4,
+      0,
+      190
+    ],
+    "star2/4/defend/pass/0/-1/press": [
+      1,
+      0,
+      80
+    ],
+    "star2/4/defend/pass/0/-1/screen": [
+      1,
+      0,
+      40
+    ],
+    "star2/4/defend/pass/0/0/cut": [
+      48,
+      7,
+      2440
+    ],
+    "star2/4/defend/pass/0/0/press": [
+      3,
+      0,
+      135
+    ],
+    "star2/4/defend/pass/0/0/screen": [
+      5,
+      0,
+      195
+    ],
+    "star2/4/defend/pass/0/1/cut": [
+      38,
+      0,
+      1575
+    ],
+    "star2/4/defend/pass/0/1/press": [
+      23,
+      3,
+      1515
+    ],
+    "star2/4/defend/pass/0/1/screen": [
+      9,
+      0,
+      345
+    ],
+    "star2/4/defend/pass/1/0/cut": [
+      19,
+      4,
+      850
+    ],
+    "star2/4/defend/pass/1/0/press": [
+      1,
+      0,
+      55
+    ],
+    "star2/4/defend/pass/1/0/screen": [
+      5,
+      0,
+      160
+    ],
+    "star2/4/defend/pass/1/1/cut": [
+      6,
+      0,
+      255
+    ],
+    "star2/4/defend/pass/1/1/screen": [
+      3,
+      0,
+      170
+    ],
+    "star2/4/defend/shoot/0/-1/press": [
+      1,
+      0,
+      65
+    ],
+    "star2/4/defend/shoot/0/0/cut": [
+      8,
+      0,
+      350
+    ],
+    "star2/4/defend/shoot/0/0/press": [
+      24,
+      11,
+      1780
+    ],
+    "star2/4/defend/shoot/0/0/screen": [
+      34,
+      6,
+      2305
+    ],
+    "star2/4/defend/shoot/0/1/cut": [
+      353,
+      103,
+      21115
+    ],
+    "star2/4/defend/shoot/0/1/press": [
+      153,
+      78,
+      12580
+    ],
+    "star2/4/defend/shoot/0/1/screen": [
+      48,
+      4,
+      2780
+    ],
+    "star2/4/defend/shoot/1/0/press": [
+      1,
+      0,
+      20
+    ],
+    "star2/4/defend/shoot/1/0/screen": [
+      1,
+      0,
+      40
+    ],
+    "star2/4/defend/shoot/1/1/cut": [
+      40,
+      11,
+      2690
+    ],
+    "star2/4/defend/shoot/1/1/press": [
+      7,
+      0,
+      210
+    ],
+    "star2/4/defend/shoot/1/1/screen": [
+      5,
+      0,
+      275
+    ],
+    "star2/4/loose/fresh/0/0/lead": [
+      1,
+      1,
+      100
+    ],
+    "star2/4/loose/pass/0/-1/lead": [
+      7,
+      0,
+      305
+    ],
+    "star2/4/loose/pass/0/-1/recover": [
+      3,
+      0,
+      195
+    ],
+    "star2/4/loose/pass/0/0/lead": [
+      12,
+      1,
+      620
+    ],
+    "star2/4/loose/pass/0/0/recover": [
+      7,
+      2,
+      405
+    ],
+    "star2/4/loose/pass/0/1/lead": [
+      156,
+      17,
+      8855
+    ],
+    "star2/4/loose/pass/0/1/recover": [
+      13,
+      0,
+      555
+    ],
+    "star2/4/loose/pass/1/-1/lead": [
+      1,
+      0,
+      65
+    ],
+    "star2/4/loose/pass/1/-1/recover": [
+      1,
+      0,
+      65
+    ],
+    "star2/4/loose/pass/1/0/lead": [
+      7,
+      0,
+      315
+    ],
+    "star2/4/loose/pass/1/0/recover": [
+      2,
+      0,
+      80
+    ],
+    "star2/4/loose/pass/1/1/lead": [
+      25,
+      0,
+      1180
+    ],
+    "star2/4/loose/pass/1/1/recover": [
+      10,
+      1,
+      385
+    ],
+    "star2/4/loose/shoot/0/-1/lead": [
+      4,
+      2,
+      305
+    ],
+    "star2/4/loose/shoot/0/0/lead": [
+      35,
+      2,
+      1605
+    ],
+    "star2/4/loose/shoot/0/0/recover": [
+      9,
+      0,
+      430
+    ],
+    "star2/4/loose/shoot/0/1/lead": [
+      278,
+      37,
+      15415
+    ],
+    "star2/4/loose/shoot/0/1/recover": [
+      104,
+      11,
+      6135
+    ],
+    "star2/4/loose/shoot/1/0/lead": [
+      6,
+      0,
+      345
+    ],
+    "star2/4/loose/shoot/1/0/recover": [
+      1,
+      0,
+      20
+    ],
+    "star2/4/loose/shoot/1/1/lead": [
+      45,
+      1,
+      2390
+    ],
+    "star2/4/loose/shoot/1/1/recover": [
+      11,
+      0,
+      445
+    ],
+    "star2/4/support/fresh/0/0/advance": [
+      3,
+      0,
+      100
+    ],
+    "star2/4/support/fresh/0/0/outlet": [
+      1,
+      0,
+      40
+    ],
+    "star2/4/support/pass/0/-1/advance": [
+      7,
+      1,
+      370
+    ],
+    "star2/4/support/pass/0/-1/outlet": [
+      1,
+      0,
+      40
+    ],
+    "star2/4/support/pass/0/0/advance": [
+      20,
+      0,
+      960
+    ],
+    "star2/4/support/pass/0/0/outlet": [
+      13,
+      1,
+      620
+    ],
+    "star2/4/support/pass/0/1/advance": [
+      97,
+      6,
+      5425
+    ],
+    "star2/4/support/pass/0/1/outlet": [
+      75,
+      10,
+      4100
+    ],
+    "star2/4/support/pass/1/0/advance": [
+      4,
+      0,
+      160
+    ],
+    "star2/4/support/pass/1/0/outlet": [
+      1,
+      0,
+      40
+    ],
+    "star2/4/support/pass/1/1/advance": [
+      2,
+      0,
+      60
+    ],
+    "star2/4/support/pass/1/1/outlet": [
+      1,
+      0,
+      40
+    ],
+    "star2/4/support/shoot/0/-1/advance": [
+      3,
+      1,
+      205
+    ],
+    "star2/4/support/shoot/0/-1/outlet": [
+      1,
+      0,
+      40
+    ],
+    "star2/4/support/shoot/0/0/advance": [
+      71,
+      3,
+      3405
+    ],
+    "star2/4/support/shoot/0/0/outlet": [
+      20,
+      1,
+      1025
+    ],
+    "star2/4/support/shoot/0/1/advance": [
+      651,
+      33,
+      34105
+    ],
+    "star2/4/support/shoot/0/1/outlet": [
+      117,
+      8,
+      5940
+    ],
+    "star2/4/support/shoot/1/0/advance": [
+      2,
+      0,
+      80
+    ],
+    "star2/4/support/shoot/1/0/outlet": [
+      1,
+      0,
+      40
+    ],
+    "star2/4/support/shoot/1/1/advance": [
+      13,
+      1,
+      560
+    ],
+    "star2/4/support/shoot/1/1/outlet": [
+      3,
+      0,
+      145
+    ]
+  },
+  "schema": "response-policy-v1"
+}

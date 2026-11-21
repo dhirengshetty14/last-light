@@ -1,0 +1,71 @@
+{
+  "held_out_start": 41001,
+  "policy_callback_p95_us": 8,
+  "policy_callback_p99_us": 12,
+  "timing_samples": 1556,
+  "trained": {
+    "agent_events": 96,
+    "blue_goals": 89,
+    "blue_wins": 29,
+    "episodes": 32,
+    "failures_by_action": {
+      "advance": 682,
+      "cut": 250,
+      "drive": 159,
+      "finish": 35,
+      "flank": 44,
+      "lead": 221,
+      "outlet": 141,
+      "press": 313,
+      "recover": 307,
+      "screen": 244
+    },
+    "full_passes": 775,
+    "gold_goals": 35,
+    "verified_actions": 3171
+  },
+  "training": {
+    "agent_events": 340,
+    "blue_goals": 324,
+    "blue_wins": 104,
+    "episodes": 120,
+    "failures_by_action": {
+      "advance": 1958,
+      "cut": 1122,
+      "drive": 417,
+      "finish": 66,
+      "flank": 165,
+      "lead": 853,
+      "outlet": 967,
+      "pass": 54,
+      "press": 783,
+      "recover": 1143,
+      "screen": 994
+    },
+    "full_passes": 2622,
+    "gold_goals": 111,
+    "verified_actions": 11144
+  },
+  "untrained": {
+    "agent_events": 91,
+    "blue_goals": 87,
+    "blue_wins": 28,
+    "episodes": 32,
+    "failures_by_action": {
+      "advance": 740,
+      "cut": 88,
+      "drive": 186,
+      "finish": 27,
+      "flank": 56,
+      "lead": 215,
+      "outlet": 162,
+      "pass": 2,
+      "press": 344,
+      "recover": 342,
+      "screen": 586
+    },
+    "full_passes": 696,
+    "gold_goals": 36,
+    "verified_actions": 3444
+  }
+}

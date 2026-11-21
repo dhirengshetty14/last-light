@@ -15,8 +15,8 @@ finish() {
     fi
 }
 trap finish EXIT
-if [ -x "exports/This Side Up.app/Contents/MacOS/This Side Up" ]; then
-    "exports/This Side Up.app/Contents/MacOS/This Side Up" "$@"
+if [ -x "exports/Last Light.app/Contents/MacOS/Last Light" ]; then
+    "exports/Last Light.app/Contents/MacOS/Last Light" "$@"
 else
     game_bin="${GODOT_BIN:-}"
     for candidate in "$game_bin" "$HOME/Applications/Godot 4.7.2.app/Contents/MacOS/Godot" "/Applications/Godot.app/Contents/MacOS/Godot" "$(command -v godot || true)"; do

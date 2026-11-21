@@ -97,7 +97,7 @@ func placard(p: Node3D, words: String, at: Vector3, tint: Color, size: int = 40)
 	return l
 
 
-func build() -> void:
+func build(arena: bool = false) -> void:
 	var env := Environment.new()
 	env.background_mode = Environment.BG_COLOR
 	env.background_color = Color("#091628")
@@ -154,7 +154,7 @@ func build() -> void:
 		box(self, Vector3(0, -.12, 3.16 + axis * .06), Vector3(15, .24, .041), iron)
 	for n in 34:
 		box(self, Vector3(-7.25 + n * .44, .042, 2.74), Vector3(.23, .023, .065), brass).rotation.y = -.33
-	for z in 3:
+	for z in (0 if arena else 3):
 		var p: Vector3 = PADS[z]
 		var ringmat := metal("p" + str(z), PAD_TINT[z].to_html(false), .4, .17, .7)
 		torus(self, p + Vector3.UP * .06, .80, .86, ringmat)
@@ -210,6 +210,10 @@ func build() -> void:
 	tube(self, Vector3(-.64, 3.36, -2.41), Vector3(.64, 3.36, -2.41), .038, teal)
 	batch_fixed_dock()
 	window_plate()
+	if arena:
+		for cable in winch_cables:
+			cable.hide()
+		return
 	for n in 16:
 		var d := ball(self, Vector3.ZERO, Vector3.ONE * .039, teal)
 		d.hide()

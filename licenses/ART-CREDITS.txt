@@ -12,3 +12,6 @@ https://huggingface.co/hexgrad/Kokoro-82M
 The title painting was supplied as the project's character reference. The two exterior environment plates were generated with the built-in ImageGen tool. The prompt files accompany the personal project in art/source. The three machine rigs and all deck animations were built specifically for this game.
 
 Godot Engine is distributed under its MIT license. The full engine and third-party notices can be read in the editor under Help > About Godot, and at https://godotengine.org/license/.
+
+Last Light uses an original eight-bar dock theme, match sounds and a separate new dialogue bank. The voice clips were generated offline with Kyutai Pocket TTS using the standard Alba, Marius, Cosette, Jean and Javert speaker presets. The audio generator and exact lines are in art/source/star_voices.py.
+https://github.com/kyutai-labs/pocket-tts
