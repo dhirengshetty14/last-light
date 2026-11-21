@@ -43,6 +43,7 @@ var chapter := -1
 var chapter_time := 0.
 var duration := 2.9
 var crews := false
+var pilot_for_seat: Array[int] = [0, 1]
 var positions: Array = Game.START.duplicate()
 var scoring_team := -1
 var goal_pose: Array = []
@@ -60,6 +61,8 @@ var muted := false
 var random := RandomNumberGenerator.new()
 var recorder = Recorder.new()
 var training: Dictionary = {}
+var social_memory: Dictionary = {}
+const SAVE_PATH := "user://last-light-policy.json"
 var capture_path := ""
 var frame_samples: Array[float] = []
 var slow_frames: Array = []
@@ -134,17 +137,22 @@ func _ready() -> void:
 	effects.volume_db = -10
 	add_child(front)
 	front.chosen.connect(handle)
-	sim.policy.load_checkpoint("res://learning/star_checkpoint.json")
+	var pretrained = Game.Policy.new()
+	pretrained.load_checkpoint("res://learning/star_checkpoint.json")
 	if not test_session and not capture_session:
-		sim.policy.add_local_examples("user://verified-responses.json")
+		pretrained.add_local_examples("user://verified-responses.json")
 	var saved = Game.Policy.new()
 	if not test_session and not capture_session:
-		saved.load_checkpoint("user://last-light-policy.json")
+		saved.load_checkpoint(SAVE_PATH)
+		if FileAccess.file_exists(SAVE_PATH):
+			var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(SAVE_PATH))
+			if data is Dictionary and data.get("relationships") is Dictionary:
+				social_memory = data.relationships
 	for key in saved.estimates:
-		var current: Array = sim.policy.estimates.get(key, [0, 0, 0])
+		var current: Array = pretrained.estimates.get(key, [0, 0, 0])
 		if key.begins_with("star2/") and saved.estimates[key][0] > current[0]:
-			sim.policy.estimates[key] = saved.estimates[key]
-	training = sim.policy.estimates
+			pretrained.estimates[key] = saved.estimates[key]
+	training = pretrained.estimates
 	intro()
 
 
@@ -242,6 +250,7 @@ func intro() -> void:
 		hoop.scale = Vector3.ONE
 	for i in 5:
 		var p: Vector2 = LINEUP[i]
+		cast[i].show()
 		cast[i].position = Vector3(p.x, 0, p.y)
 		cast[i].rotation.y = -.11 if i < 3 else .12
 		cast[i].tag.hide()
@@ -289,6 +298,28 @@ func select_mode() -> void:
 	front.modes()
 
 
+func pilot_names() -> Array:
+	return [Game.NAMES[pilot_for_seat[0]], Game.NAMES[pilot_for_seat[1]]]
+
+
+func select_pilots() -> void:
+	phase = "pilots"
+	star.hide()
+	for i in 5:
+		cast[i].visible = i < 2
+		if i < 2:
+			cast[i].position = Vector3(-.90 if i == 0 else .90, 0, 0)
+			cast[i].rotation.y = .10 if i == 0 else -.10
+			cast[i].tag.text = Game.NAMES[i]
+			cast[i].tag.font_size = 24
+			cast[i].tag.position.y = 1.98
+			cast[i].tag.show()
+	camera.position = Vector3(0, 1.72, 4.70)
+	camera.fov = 36.
+	camera.look_at(Vector3(0, 1.30, 0))
+	front.pilots(crews)
+
+
 func handle(cmd: String) -> void:
 	match cmd:
 		"next":
@@ -299,8 +330,17 @@ func handle(cmd: String) -> void:
 			intro()
 		"rivals", "crews":
 			crews = cmd == "crews"
+			select_pilots()
+		"pilots":
+			select_pilots()
+		"nell", "rafi":
+			pilot_for_seat.assign([0, 1] if cmd == "nell" else [1, 0])
 			phase = "brief"
-			front.briefing(crews)
+			for seat in 2:
+				cast[pilot_for_seat[seat]].tag.text = (
+					"P%d  %s" % [seat + 1, Game.NAMES[pilot_for_seat[seat]]]
+				)
+			front.briefing(crews, pilot_names())
 		"again", "play":
 			start()
 		"resume":
@@ -314,7 +354,7 @@ func start() -> void:
 	goal_pose.clear()
 	scoring_team = -1
 	sim = Game.new()
-	sim.policy.estimates = training
+	sim.configure_agents(training, social_memory)
 	var seed_value := forced_seed if forced_seed >= 0 else int(random.randi())
 	sim.setup(seed_value, crews)
 	phase = "play"
@@ -322,6 +362,8 @@ func start() -> void:
 	beacon.hide()
 	chapter_time = 0.
 	command_edges = [{}, {}]
+	pad_edges = [{}, {}]
+	star.show()
 	last_voice = -200
 	last_ledger = [-1, -1, -99, -99, -99]
 	message_until = 230
@@ -337,6 +379,8 @@ func start() -> void:
 	voice.stop()
 	shade_disc.show()
 	for i in 5:
+		cast[i].show()
+		cast[i].tag.font_size = 36
 		cast[i].tag.show()
 		badges[i][0].show()
 		cast[i].rotation.y = PI * .48 if i < 2 else -PI * .48
@@ -353,11 +397,13 @@ func start() -> void:
 			"kind": "header",
 			"run": run,
 			"seed": seed_value,
-			"game": "last-light-v2",
+			"game": "last-light-v3",
 			"origin": "capture" if test_session or capture_session else "local_play",
 			"open_crews": crews,
 			"input_schema": 1,
-			"starting_policy": sim.policy.estimates.duplicate(true)
+			"starting_policy": sim.learned_weights().duplicate(true),
+			"starting_relationships": sim.relationships(),
+			"seat_pilots": pilot_names()
 		}
 	)
 	update_hud()
@@ -365,13 +411,21 @@ func start() -> void:
 
 func end_log() -> void:
 	if recorder.opened:
+		training = sim.learned_weights()
+		social_memory = sim.relationships()
 		if not capture_session and not test_session:
-			var path := "user://last-light-policy.json"
+			var path := SAVE_PATH
 			var staged := path + ".next." + str(OS.get_process_id())
 			var f := FileAccess.open(staged, FileAccess.WRITE)
 			if f:
 				f.store_string(
-					JSON.stringify({"schema": "response-policy-v1", "estimates": training})
+					JSON.stringify(
+						{
+							"schema": "response-policy-v1",
+							"estimates": training,
+							"relationships": social_memory
+						}
+					)
 				)
 				f.close()
 				DirAccess.rename_absolute(
@@ -420,7 +474,9 @@ func _input(ev: InputEvent) -> void:
 		return
 	if k == KEY_ESCAPE:
 		match phase:
-			"title", "story", "brief", "end":
+			"brief":
+				select_pilots()
+			"title", "story", "pilots", "end":
 				select_mode()
 			"pause":
 				handle("resume")
@@ -441,7 +497,7 @@ func _input(ev: InputEvent) -> void:
 	for i in 2:
 		var n: int = keys[i].find(k)
 		if n >= 0:
-			command_edges[i][["shoot", "pass", "dash", "invite"][n]] = true
+			command_edges[pilot_for_seat[i]][["shoot", "pass", "dash", "invite"][n]] = true
 	get_viewport().set_input_as_handled()
 
 
@@ -450,7 +506,7 @@ func _physics_process(_dt: float) -> void:
 		return
 	var keys := [[KEY_A, KEY_D, KEY_W, KEY_S], [KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN]]
 	for i in 2:
-		command_edges[i]["move"] = Vector2(
+		command_edges[pilot_for_seat[i]]["move"] = Vector2(
 			(
 				int(Input.is_physical_key_pressed(keys[i][1]))
 				- int(Input.is_physical_key_pressed(keys[i][0]))
@@ -468,7 +524,7 @@ func _physics_process(_dt: float) -> void:
 			Input.get_joy_axis(pads[n], JOY_AXIS_LEFT_Y)
 		)
 		if stick.length() > .20:
-			command_edges[seat]["move"] = stick.limit_length(1.)
+			command_edges[pilot_for_seat[seat]]["move"] = stick.limit_length(1.)
 		for binding in [
 			["shoot", JOY_BUTTON_A],
 			["pass", JOY_BUTTON_X],
@@ -477,7 +533,7 @@ func _physics_process(_dt: float) -> void:
 		]:
 			var down := Input.is_joy_button_pressed(pads[n], binding[1])
 			if down and not pad_edges[seat].get(binding[0], false):
-				command_edges[seat][binding[0]] = true
+				command_edges[pilot_for_seat[seat]][binding[0]] = true
 			pad_edges[seat][binding[0]] = down
 	positions = sim.pos.duplicate()
 	old_ball = sim.ball
@@ -549,6 +605,8 @@ func present(e: Dictionary) -> void:
 
 
 func update_hud() -> void:
+	if front.ledger.visible and (sim.tick % 8 == 0 or front.ledger.text.is_empty()):
+		front.show_plans(sim)
 	var left := ceili((Game.END - sim.tick) / 60.)
 	front.score.text = (
 		"GOLD   %d      /      %d   BLUE      ·      %d:%02d"
@@ -558,7 +616,7 @@ func update_hud() -> void:
 	if sim.owner >= 0:
 		var who: String = Game.NAMES[sim.owner]
 		if sim.owner < 2:
-			var key: String = "E" if sim.owner == 0 else "Enter"
+			var key: String = "E" if sim.owner == pilot_for_seat[0] else "Enter"
 			prompt = (
 				who
 				+ "  ·  "
@@ -584,7 +642,10 @@ func update_hud() -> void:
 	front.objective.text = prompt
 	front.feed.text = message if sim.tick < message_until else ""
 	front.controls_line.text = (
-		"NELL   WASD / E shoot / F pass / Shift dash        RAFI   Arrows / Enter shoot / Slash pass / Period dash       "
+		(
+			"%s   WASD / E shoot / F pass / Shift dash        %s   Arrows / Enter shoot / Slash pass / Period dash       "
+			% pilot_names()
+		)
 		+ ("Q / P ally       " if crews else "")
 		+ "Tab ledger   ·   Esc pause"
 	)
@@ -655,7 +716,9 @@ func render_game(dt: float, alpha: float) -> void:
 		if celebration:
 			state = "Relief" if sim.team[i] == scoring_team else "Alarm"
 		doll.express(state, stride[i], speed > .15)
-		doll.tag.text = (("P1  " if i == 0 else "P2  ") if i < 2 else "") + Game.NAMES[i]
+		doll.tag.text = (
+			(("P1  " if i == pilot_for_seat[0] else "P2  ") if i < 2 else "") + Game.NAMES[i]
+		)
 		doll.tag.modulate = AMBER if sim.team[i] == 0 else BLUE
 		doll.tag.position.y = [1.98, 2.02, 1.26, 2.02, 1.72][i]
 		badges[i][0].position = doll.position + Vector3.UP * .046
@@ -726,14 +789,16 @@ func capture(dt: float) -> void:
 		name_out = "%02d-%s" % [chapter + 2, Performer.FILES[chapter]]
 	elif phase == "select" and capture_step == 6:
 		name_out = "07-modes"
-	elif phase == "brief" and capture_step == 7:
-		name_out = "08-brief"
-	elif phase == "play" and capture_step == 8 and sim.tick > 22:
-		name_out = "09-court"
-	elif phase == "play" and capture_step == 9 and sim.surge_until > sim.tick:
-		name_out = "10-beacon"
+	elif phase == "pilots" and capture_step == 7:
+		name_out = "08-pilots"
+	elif phase == "brief" and capture_step == 8:
+		name_out = "09-brief"
+	elif phase == "play" and capture_step == 9 and sim.tick > 22:
+		name_out = "10-court"
+	elif phase == "play" and capture_step == 10 and sim.surge_until > sim.tick:
+		name_out = "11-beacon"
 	elif phase == "end":
-		name_out = "11-final"
+		name_out = "12-final"
 	if name_out.is_empty():
 		return
 	captured_once = true
@@ -744,6 +809,8 @@ func capture(dt: float) -> void:
 	capture_timer = 0
 	if phase == "select":
 		handle("rivals")
+	elif phase == "pilots":
+		handle("nell")
 	elif phase == "brief":
 		start()
 	elif phase == "end":

@@ -132,7 +132,11 @@ func set_controls(items: Dictionary) -> void:
 		focus.set_border_width_all(2)
 		focus.border_color = Color("#fff3cf")
 		b.add_theme_stylebox_override("focus", focus)
-		b.add_theme_color_override("font_color", Color("#172c31") if i == 0 else Color("#f6e7cc"))
+		var ink := Color("#172c31") if i == 0 else Color("#f6e7cc")
+		b.add_theme_color_override("font_color", ink)
+		b.add_theme_color_override("font_focus_color", ink)
+		b.add_theme_stylebox_override("hover", focus)
+		b.add_theme_color_override("font_hover_color", ink)
 		b.pressed.connect(pick.bind(command))
 		row.add_child(b)
 		if i == 0:

@@ -133,5 +133,58 @@ func _initialize() -> void:
 		),
 		"verified outcomes change next choice only in matching context"
 	)
+	var personal = court(true)
+	personal.pos[0] = Vector2.ZERO
+	personal.pos[2] = Vector2(.5, 0)
+	personal.pos[3] = Vector2(5., 1.8)
+	personal.pos[4] = Vector2(-4.8, -1.8)
+	personal.launch(0, true, 1)
+	check(
+		(
+			personal.agents[0].scouting[0][1] == 1
+			and personal.agents[1].scouting[0][1] == 0
+			and personal.agents[2].scouting[0][1] == 0
+		),
+		"out-of-range robots do not inherit Pip's observation"
+	)
+	personal.invite(0)
+	personal.tick += 90
+	personal.invite(0)
+	var next = court(true)
+	next.configure_agents({}, personal.relationships())
+	check(
+		(
+			next.agents[0].reputation[0] < 0
+			and next.agents[0].reputation[1] >= 0
+			and next.agents[1].reputation[0] == 0
+		),
+		"broken promise survives rematch, bound to one human and one robot"
+	)
+	check(next.agents[0].scouting[0][1] == 0, "new match clears temporary scouting")
+	for actor in defensive.agents:
+		var own = 0
+		for event in defensive.events:
+			if (
+				event.kind == "action_grade"
+				and event.type == "response"
+				and event.seat == actor.role
+			):
+				own += 1
+		var learned = 0
+		for key in actor.estimates:
+			check(key.begins_with("star2/" + str(actor.role) + "/"), "isolated policy rows")
+			learned += int(actor.estimates[key][0])
+		check(
+			own > 0 and own == actor.decisions_graded and learned == own,
+			"each verified action trains its owner exactly once"
+		)
+	var restored = court()
+	restored.configure_agents(defensive.learned_weights())
+	for i in 3:
+		check(
+			restored.agents[i].estimates == defensive.agents[i].estimates,
+			"checkpoint restores each policy"
+		)
+		check(restored.agents[i].recent.is_empty(), "recent tactical evidence starts fresh")
 	print("Court regression failures: ", failures)
 	quit(int(failures > 0))

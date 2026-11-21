@@ -33,6 +33,16 @@ func _ready() -> void:
 	feed = place(match_hud, 26, -94, 21, PALE, true)
 	controls_line = place(match_hud, 26, -45, 15, Color("#d3e7e5"))
 	ledger = place(match_hud, 24, 110, 16, AQUA)
+	var paper := StyleBoxFlat.new()
+	paper.bg_color = Color(.023, .049, .064, .95)
+	paper.set_corner_radius_all(4)
+	paper.content_margin_left = 15
+	paper.content_margin_right = 15
+	paper.content_margin_top = 10
+	paper.content_margin_bottom = 10
+	ledger.add_theme_stylebox_override("normal", paper)
+	ledger.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	ledger.size.x = 550
 	ledger.hide()
 	match_hud.hide()
 
@@ -79,9 +89,9 @@ func menu(title: String, kicker: String, description: String, buttons: Dictionar
 func modes() -> void:
 	page = "modes"
 	menu(
-		"Choose your crew",
+		"Choose a game mode",
 		"LAST LIGHT   /   NIGHT SHIFT",
-		"Rivals pits both pilots against all three machines. In Open Crews, a machine can change jerseys during play.",
+		"Rivals keeps all three robots on Blue. In Open Crews, ask a robot to join Gold or take on all three together. Both modes play to three goals.",
 		{"rivals": "Rivals   ·   2 vs 3", "crews": "Open Crews", "replay": "Meet the five again"}
 	)
 
@@ -90,20 +100,33 @@ func pick(cmd: String) -> void:
 	chosen.emit(cmd)
 
 
-func briefing(crews: bool) -> void:
+func pilots(crews: bool) -> void:
+	page = "pilots"
+	menu(
+		"Choose your pilots",
+		"OPEN CREWS" if crews else "RIVALS",
+		"Nell has the longest dash. Rafi runs faster and catches passes from farther away. Choose who takes the WASD controls. The other pilot uses the arrow keys.",
+		{"nell": "P1 Nell  ·  P2 Rafi", "rafi": "P1 Rafi  ·  P2 Nell", "select": "Change mode"}
+	)
+
+
+func briefing(crews: bool, names: Array) -> void:
 	page = "brief"
 	menu(
 		"Light the gold ring",
 		"OPEN CREWS" if crews else "RIVALS",
 		(
-			"Carry the star toward the GOLD ring on the right. Shoot when it lights up. First to three wins.\nNell  ·  WASD move, E shoot, F pass, Shift dash/steal.     Rafi  ·  Arrows move, Enter shoot, Slash pass, Period dash/steal."
+			(
+				"Carry the star toward the GOLD ring on the right. Shoot when it lights up. First to three wins.\nP1 %s  ·  WASD move, E shoot, F pass, Shift dash.     P2 %s  ·  Arrows move, Enter shoot, Slash pass, Period dash."
+				% names
+			)
 			+ (
-				"\nQ (Nell) or P (Rafi) offers a nearby robot a jersey. Ask your ally again to break the deal."
+				"\nQ (P1) or P (P2) offers a nearby robot a jersey. Ask your ally again to break the deal."
 				if crews
 				else ""
 			)
 		),
-		{"play": "Take the court", "select": "Change mode"}
+		{"play": "Take the court", "pilots": "Change pilots", "select": "Change mode"}
 	)
 
 
@@ -116,7 +139,35 @@ func record(words: String) -> void:
 	history.push_front(words)
 	if history.size() > 6:
 		history.pop_back()
-	ledger.text = "CREW LEDGER\n" + "\n".join(history)
+
+
+func show_plans(sim) -> void:
+	var lines: Array[String] = ["ROBOT NOTEBOOKS"]
+	for actor in sim.agents:
+		var a: Array = actor.scouting[0]
+		var b: Array = actor.scouting[1]
+		lines.append("\n%s   ·   %s" % [sim.NAMES[actor.role], actor.GOALS[actor.role - 2]])
+		lines.append(actor.last_plan if actor.last_plan != "" else "Watching the opening play.")
+		if actor.plan_basis != "":
+			lines.append(
+				(
+					"%s   ·   %d earlier attempts"
+					% [actor.plan_basis.capitalize(), actor.prior_attempts]
+				)
+			)
+		lines.append(
+			(
+				"Passes seen   Nell %d / Rafi %d     ·     %d decisions graded"
+				% [a[1], b[1], actor.decisions_graded]
+			)
+		)
+		for note in actor.last_deal:
+			if note != "":
+				lines.append(note)
+	if not history.is_empty():
+		lines.append("\nON THE COURT")
+		lines.append_array(history.slice(0, 2))
+	ledger.text = "\n".join(lines)
 
 
 func results(gold: int, blue: int) -> void:

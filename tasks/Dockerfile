@@ -6,7 +6,7 @@ RUN case "$TARGETARCH" in arm64) a=arm64; sum=5dd0d86405cf7e8adf79fb6377b38ba682
     echo "$sum  /tmp/engine.zip" | sha256sum -c - && unzip -p /tmp/engine.zip "$f" > /usr/local/bin/godot && chmod +x /usr/local/bin/godot && rm /tmp/engine.zip
 WORKDIR /nursery
 COPY tasks/headless.godot project.godot
-COPY game/cargo_body.gd game/contracts.gd game/flight_sim.gd game/star_match.gd ./game/
+COPY game/cargo_body.gd game/contracts.gd game/flight_sim.gd game/star_match.gd game/star_agent.gd ./game/
 COPY learning/response_policy.gd learning/star_policy.gd ./learning/
 COPY tasks/grader.gd tasks/star_grader.gd ./tasks/
 WORKDIR /workspace

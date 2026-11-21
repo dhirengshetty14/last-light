@@ -12,3 +12,4 @@
 !game/star_match.gd
 !learning/star_policy.gd
 !tasks/star_grader.gd
+!game/star_agent.gd

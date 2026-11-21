@@ -32,7 +32,8 @@ func verify(path: String) -> bool:
 		return false
 	var s = Game.new()
 	s.setup(int(head.seed), head.open_crews)
-	s.policy.estimates = head.starting_policy
+	s.legacy_replay = not head.has("starting_relationships")
+	s.configure_agents(head.starting_policy, head.get("starting_relationships", {}))
 	var inputs: Dictionary = {}
 	var expected: Array = []
 	var final_tick := 0

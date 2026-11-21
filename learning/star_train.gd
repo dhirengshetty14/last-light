@@ -37,12 +37,12 @@ func series(model, count: int, base: int, adapted: bool, windows: Array[int]) ->
 	var wins := 0
 	var surges := 0
 	var worst: Dictionary = {}
+	var rivals := {"matches": 0, "blue_wins": 0}
+	var by_robot := {"Pip": 0, "Morrow": 0, "Zip": 0}
 	for episode in count:
 		var s = Game.new()
 		s.setup(base + episode, episode % 3 == 1)
-		model.recent.clear()
-		s.policy = model
-		model.adaptive = adapted
+		s.configure_agents(model.estimates, {}, adapted, model.exploration)
 		s.sample_time = episode < 4
 		while not s.finished:
 			var c := drivers(s, episode % 4)
@@ -52,23 +52,31 @@ func series(model, count: int, base: int, adapted: bool, windows: Array[int]) ->
 			for e in s.events:
 				if e.kind == "action_grade" and e.type == "response":
 					attempts += 1
+					by_robot[Game.NAMES[e.seat]] += 1
 					full += int(e.pass)
 					if not e.pass:
 						worst[e.action] = int(worst.get(e.action, 0)) + 1
 				if e.kind == "aurora":
 					surges += 1
 			s.events.clear()
+		if adapted:
+			model.estimates = s.learned_weights()
+		if not s.open_crews:
+			rivals.matches += 1
+			rivals.blue_wins += int(s.goals[1] > s.goals[0])
 		blue += s.goals[1]
 		gold += s.goals[0]
 		wins += int(s.goals[1] > s.goals[0])
 		windows.append_array(s.timings)
 	return {
 		"episodes": count,
+		"rivals": rivals,
 		"blue_wins": wins,
 		"blue_goals": blue,
 		"gold_goals": gold,
 		"agent_events": surges,
 		"verified_actions": attempts,
+		"graded_by_robot": by_robot,
 		"full_passes": full,
 		"failures_by_action": worst
 	}
@@ -92,14 +100,14 @@ func _initialize() -> void:
 	cold.exploration = .04
 	p.exploration = .04
 	timings.clear()
-	var base := series(cold, 32, 41001, false, timings)
-	var eval_result := series(p, 32, 41001, false, timings)
+	var base := series(cold, 32, 52001, false, timings)
+	var eval_result := series(p, 32, 52001, false, timings)
 	timings.sort()
 	var report := {
 		"training": train,
 		"untrained": base,
 		"trained": eval_result,
-		"held_out_start": 41001,
+		"held_out_start": 52001,
 		"timing_samples": timings.size(),
 		"policy_callback_p95_us": timings[int(timings.size() * .95)],
 		"policy_callback_p99_us": timings[int(timings.size() * .99)]

@@ -2,10 +2,48 @@ extends "res://learning/response_policy.gd"
 ## Historical evidence supplies a bounded prior. A robot can change its preference
 ## within a match even after thousands of previously verified encounters.
 var recent: Dictionary = {}
+var explored := false
 
 
 func choose(context: String, legal: Array, preferred: String, rng: RandomNumberGenerator) -> String:
-	if rng.randf() < exploration:
+	explored = rng.randf() < exploration
+	if explored:
+		return str(legal[rng.randi_range(0, legal.size() - 1)])
+	# Untried moves inherit the local difficulty of this situation. Otherwise a
+	# never-attempted move can outrank every tested move in a difficult state.
+	var total := 0.
+	var quality_sum := 0.
+	for move in legal:
+		var row: Array = estimates.get(context + "/" + str(move), [0, 0, 0])
+		total += float(row[0])
+		quality_sum += .75 * float(row[1]) + .0025 * float(row[2])
+	var common: float = (quality_sum + 1.) / (total + 2.)
+	var best := -INF
+	var pick := str(legal[0])
+	for move in legal:
+		var key := context + "/" + str(move)
+		var past: Array = estimates.get(key, [0, 0, 0])
+		var count := float(past[0])
+		var weight := minf(6., sqrt(count))
+		var quality: float = (.75 * float(past[1]) + .0025 * float(past[2])) / maxf(1., count)
+		var live: Array = recent.get(key, [0., 0.])
+		var value: float = (
+			(3. * common + weight * quality + float(live[1])) / (3. + weight + float(live[0]))
+		)
+		if move == preferred:
+			value += .075
+		if value > best:
+			best = value
+			pick = move
+	return pick
+
+
+## Version-two recordings replay their original action ordering and priors.
+func choose_v2(
+	context: String, legal: Array, preferred: String, rng: RandomNumberGenerator
+) -> String:
+	explored = rng.randf() < exploration
+	if explored:
 		return str(legal[rng.randi_range(0, legal.size() - 1)])
 	var best := -INF
 	var result := str(legal[0])

@@ -1,6 +1,7 @@
 extends RefCounted
 ## Fixed-tick court shared by keyboard players, trained robots and the headless gym.
 const Policy = preload("res://learning/star_policy.gd")
+const Agent = preload("res://game/star_agent.gd")
 const NAMES = ["Nell", "Rafi", "Pip", "Morrow", "Zip"]
 const START = [
 	Vector2(-.48, 1.22),
@@ -34,7 +35,8 @@ var tactics := ["", "", "press", "screen", "cut"]
 var destinations: Array = START.duplicate()
 var pending := [{}, {}, {}, {}, {}]
 var generation := 0
-var policy = Policy.new()
+var agents: Array = [Agent.new(2), Agent.new(3), Agent.new(4)]
+var legacy_replay := false
 var rng := RandomNumberGenerator.new()
 var events: Array = []
 var seq := 0
@@ -63,8 +65,45 @@ var lane := [.85, -.9, .95, -.6, -1.25]
 
 func setup(seed_value: int, crews: bool) -> void:
 	rng.seed = seed_value
+	for actor in agents:
+		actor.draw.seed = seed_value ^ (int(actor.role) * 0x9e3779b9)
 	open_crews = crews
 	ball = hand(owner)
+
+
+func configure_agents(
+	weights: Dictionary, social: Dictionary = {}, adaptive: bool = true, exploration: float = .08
+) -> void:
+	for actor in agents:
+		actor.adaptive = adaptive
+		actor.exploration = exploration
+		var id := str(actor.role)
+		if social.get(id) is Dictionary:
+			actor.restore_social(social[id])
+	for key in weights:
+		var parts := str(key).split("/", true, 2)
+		if (
+			parts.size() == 3
+			and parts[0] == "star2"
+			and parts[1] in ["2", "3", "4"]
+			and weights[key] is Array
+			and weights[key].size() == 3
+		):
+			agents[int(parts[1]) - 2].estimates[key] = weights[key].duplicate()
+
+
+func learned_weights() -> Dictionary:
+	var out := {}
+	for actor in agents:
+		out.merge(actor.estimates)
+	return out
+
+
+func relationships() -> Dictionary:
+	var out := {}
+	for actor in agents:
+		out[str(actor.role)] = actor.social_snapshot()
+	return out
 
 
 func goal(i: int) -> Vector2:
@@ -118,6 +157,16 @@ func possession(i: int, method: String) -> void:
 	if method == "catch" and flight == "pass" and i == target:
 		if previous < 2 and previous >= 0 and i >= 2:
 			trust[i] += 1
+			agents[i - 2].remember(previous, 1, NAMES[previous] + " passed to me.")
+		if i < 2 and previous >= 0 and previous < 2:
+			for actor in agents:
+				if (
+					actor.reputation[previous] < 0
+					and actor.can_see(pos[actor.role].distance_to(pos[i]))
+				):
+					actor.remember(
+						previous, 1, NAMES[previous] + " completed a pass to a teammate."
+					)
 		if previous >= 2 and not pending[previous].is_empty():
 			pending[previous]["passed"] = true
 	if method == "steal" and i >= 2 and not pending[i].is_empty():
@@ -180,6 +229,9 @@ func launch(i: int, passing: bool, requested: int = -1) -> bool:
 	flight_tick = tick
 	if i < 2:
 		habits[i][int(passing)] += 1
+		for actor in agents:
+			if recipient == actor.role or actor.can_see(pos[actor.role].distance_to(pos[i])):
+				actor.see_throw(i, passing, pos[i].y)
 		for ally in range(2, 5):
 			if team[ally] != GOLD or pact[ally] != i:
 				continue
@@ -195,6 +247,7 @@ func launch(i: int, passing: bool, requested: int = -1) -> bool:
 					team[ally] = BLUE
 					pact[ally] = -1
 					trust[ally] -= 1
+					agents[ally - 2].remember(i, -1, NAMES[i] + " ignored two openings.")
 					emit(
 						"alliance",
 						ally,
@@ -273,6 +326,9 @@ func invite(human: int) -> void:
 		return
 	var j := selected
 	var reason := ""
+	var actor = agents[j - 2]
+	var confidence: int = trust[j] if legacy_replay else actor.reputation[human]
+	var passes: int = habits[human][1] if legacy_replay else actor.scouting[human][1]
 	var original: int = team[j]
 	var next: int = original
 	if team[j] == BLUE and team.count(BLUE) == 1:
@@ -281,16 +337,21 @@ func invite(human: int) -> void:
 		if pact[j] == human:
 			next = BLUE
 			trust[j] = mini(-1, int(trust[j]) - 2)
+			actor.remember(
+				human,
+				mini(-2, -1 - int(actor.reputation[human])),
+				NAMES[human] + " ended our deal."
+			)
 			reason = "You broke our deal. I'm back with Blue."
 		else:
 			reason = "I'm already playing Gold."
-	elif j == 2 and trust[j] >= 0:
+	elif j == 2 and confidence >= 0:
 		next = GOLD
 		reason = "Pip takes the open jersey."
-	elif j == 3 and goals[GOLD] < goals[BLUE] and trust[j] >= 0:
+	elif j == 3 and goals[GOLD] < goals[BLUE] and confidence >= 0:
 		next = GOLD
 		reason = "Morrow backs the side that's behind."
-	elif j == 4 and int(habits[human][1]) >= 2 and trust[j] >= 0:
+	elif j == 4 and passes >= 2 and confidence >= 0:
 		next = GOLD
 		reason = "Zip remembers your passes and switches sides."
 	else:
@@ -301,6 +362,14 @@ func invite(human: int) -> void:
 			"Morrow only joins a trailing crew.",
 			"Zip wants to see you pass twice."
 		][j]
+	if (
+		not legacy_replay
+		and next == BLUE
+		and original == BLUE
+		and confidence < 0
+		and team.count(BLUE) > 1
+	):
+		reason = actor.last_deal[human] + " I want to see a completed pass."
 	if next != team[j]:
 		settle(j)
 		team[j] = next
@@ -325,7 +394,9 @@ func plan(i: int) -> void:
 	if not pending[i].is_empty():
 		return
 	var h := attacker(i)
-	var witness: Array = habits[h] if h < 2 else [0, 0, 0.0]
+	var actor = agents[i - 2]
+	var seen: Array = habits if legacy_replay else actor.scouting
+	var witness: Array = seen[h] if h < 2 else [0, 0, 0.0]
 	var called: bool = (
 		owner == i and tick < call_expiry[i] and called_by[i] >= 0 and team[called_by[i]] == team[i]
 	)
@@ -372,7 +443,11 @@ func plan(i: int) -> void:
 		"star2/%s/%s/%s/%s/%s" % [i, phase, reads, int(close), signi(roundi(float(witness[2])))]
 	)
 	var us := Time.get_ticks_usec() if sample_time else 0
-	var choice: String = policy.choose(context, legal, preferred, rng)
+	var choice: String = (
+		actor.choose_v2(context, legal, preferred, rng)
+		if legacy_replay
+		else actor.choose(context, legal, preferred, actor.draw)
+	)
 	if sample_time:
 		timings.append(Time.get_ticks_usec() - us)
 	tactics[i] = choice
@@ -384,6 +459,24 @@ func plan(i: int) -> void:
 			"%s has tried %d shots and %d passes. %s"
 			% [NAMES[h], witness[0], witness[1], explanation]
 		)
+	if not legacy_replay and phase == "defend" and h < 2 and reads != "fresh":
+		explanation = (
+			"Saw %s take %d shots and make %d passes. %s"
+			% [NAMES[h], witness[0], witness[1], reason(choice, reads)]
+		)
+	var samples: int = actor.estimates.get(context + "/" + choice, [0, 0, 0])[0]
+	var basis := (
+		"exploring"
+		if actor.explored and legal.size() > 1
+		else (
+			"only legal tactic"
+			if legal.size() == 1
+			else ("weighed past outcomes" if samples > 0 else "starting preference")
+		)
+	)
+	actor.last_plan = explanation
+	actor.plan_basis = basis
+	actor.prior_attempts = samples
 	pending[i] = {
 		"source": source,
 		"context": context,
@@ -403,19 +496,28 @@ func plan(i: int) -> void:
 		"passed": false,
 		"scored": false
 	}
-	emit(
-		"response_intent",
-		i,
-		{
-			"source": source,
-			"context": context,
-			"choice": choice,
-			"reason": explanation,
-			"owner": owner,
-			"x": pos[i].x,
-			"z": pos[i].y
-		}
-	)
+	var intent := {
+		"source": source,
+		"context": context,
+		"choice": choice,
+		"reason": explanation,
+		"owner": owner,
+		"x": pos[i].x,
+		"z": pos[i].y
+	}
+	if not legacy_replay:
+		intent.merge(
+			{
+				"goal": actor.GOALS[i - 2],
+				"basis": basis,
+				"previous_attempts": samples,
+				"legal_choices": legal,
+				"observed_pilot": h if h < 2 else -1,
+				"observed_shots": witness[0],
+				"observed_passes": witness[1]
+			}
+		)
+	emit("response_intent", i, intent)
 
 
 func reason(choice: String, reads: String) -> String:
@@ -479,7 +581,8 @@ func aim(i: int) -> Vector2:
 			if next >= 0:
 				return Vector2(pos[h]).lerp(pos[next], .28)
 		"screen":
-			var read_lane: float = habits[h][2] if h < 2 else 0.
+			var seen: Array = habits if legacy_replay else agents[i - 2].scouting
+			var read_lane: float = seen[h][2] if h < 2 else 0.
 			return Vector2(pos[h]).lerp(-towards, .59) + Vector2(0, read_lane * .20)
 		"lead":
 			return floor_ball() + Vector2(motion.x, motion.z) * .20
@@ -535,7 +638,7 @@ func settle(i: int) -> void:
 		if checks[n]:
 			points += [10, 10, 20, 25, 35][n]
 	var us := Time.get_ticks_usec() if sample_time else 0
-	policy.observe(p.context, p.choice, points)
+	agents[i - 2].record_grade(p.context, p.choice, points)
 	if sample_time:
 		timings.append(Time.get_ticks_usec() - us)
 	emit(
@@ -656,6 +759,9 @@ func step(commands: Array = [{}, {}]) -> void:
 		advance_ball()
 	if owner in [0, 1] and tick % 20 == 0 and Vector2(vel[owner]).length() > 1.:
 		habits[owner][2] = lerpf(float(habits[owner][2]), pos[owner].y, .22)
+		for actor in agents:
+			if actor.can_see(pos[actor.role].distance_to(pos[owner])):
+				actor.see_lane(owner, pos[owner].y, .22)
 	if tick % 15 == 0 and keep_events:
 		var frame := []
 		for i in 5:
