@@ -1,0 +1,54 @@
+{
+  "policy_frozen": true,
+  "results": {
+    "first_rescue": {
+      "prior": {
+        "catch_attempts": 90,
+        "catch_full": 83,
+        "delivered": 45,
+        "flights": 45,
+        "idle_agent_releases": 15,
+        "idle_flights": 15,
+        "response_attempts": 377,
+        "response_full": 128
+      },
+      "trained": {
+        "catch_attempts": 90,
+        "catch_full": 84,
+        "delivered": 45,
+        "flights": 45,
+        "idle_agent_releases": 15,
+        "idle_flights": 15,
+        "response_attempts": 380,
+        "response_full": 154
+      }
+    },
+    "ring_storm": {
+      "prior": {
+        "catch_attempts": 91,
+        "catch_full": 83,
+        "delivered": 45,
+        "flights": 45,
+        "idle_agent_releases": 15,
+        "idle_flights": 15,
+        "response_attempts": 341,
+        "response_full": 133
+      },
+      "trained": {
+        "catch_attempts": 91,
+        "catch_full": 82,
+        "delivered": 45,
+        "flights": 45,
+        "idle_agent_releases": 15,
+        "idle_flights": 15,
+        "response_attempts": 336,
+        "response_full": 151
+      }
+    }
+  },
+  "same_partners": true,
+  "seeds": [
+    5017,
+    5061
+  ]
+}

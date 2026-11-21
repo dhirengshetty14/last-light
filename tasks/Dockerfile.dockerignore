@@ -1,0 +1,11 @@
+*
+!tasks/
+!tasks/Dockerfile
+!tasks/headless.godot
+!tasks/grader.gd
+!game/
+!game/cargo_body.gd
+!game/contracts.gd
+!game/flight_sim.gd
+!learning/
+!learning/response_policy.gd
