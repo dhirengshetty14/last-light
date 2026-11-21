@@ -24,35 +24,51 @@ A dotted arc appears when a human can shoot. Long throws fall short and the ball
 
 ## Simulation and learning
 
-The same GDScript court runs the rendered match, training episodes and Harbor verifier. It advances at 60 physics ticks per second, with capped acceleration, braking, contact separation, dash cooldowns, swept hoop crossings, gravity, rebounds and handoffs. The render loop interpolates player and ball positions. Music, character voice, controls, inference and verification all run locally.
+The same GDScript court runs the rendered match, training episodes and Harbor verifier. It advances at 60 physics ticks per second, with capped acceleration, braking, contact separation, dash cooldowns, swept hoop crossings, gravity, rebounds and handoffs. The render loop interpolates player and ball positions. The controls, local policy, physics, deterministic verifiers, music and recorded voice clips run on the Mac. The optional Gemini connection supplies tactical suggestions in the background.
 
 Pip, Morrow and Zip each have a separate local contextual bandit, scouting notebook and seeded random generator. Pip watches nearby play within 3.2 meters, Morrow watches up to 5.1 meters and Zip up to 4 meters. A pass addressed to a robot is always visible to that receiver. It can pressure, screen, cut a pass, lead a loose ball, offer an outlet, advance, flank, carry, pass or finish. Its context includes possession, range, the observed carrier's shot/pass tendencies and lane. Movement skills and alliance terms are game rules. The policy chooses from legal tactics, reacts to possession changes and calls, and reassesses a continuing opportunity after 35 ticks. Throws settle when the court has an outcome. Historical estimates supply a bounded prior. Recent outcomes can change the next preference within one match. Aggregate preferences carry across matches and launches. Observed shot counts, passing tendencies, running lanes and team membership start fresh each match. Each robot saves its learned estimates and its relationship with Nell and Rafi separately. The relationship follows the character through a player swap.
 
 For a reaction, the simulator checks the witnessed opportunity, legal choice, approach, physical execution and world consequence. It assigns weights of 0.10, 0.10, 0.20, 0.25 and 0.35. Only 1.00 is a full pass. Every throw by a human or robot also has its own five-check outcome. Points are recorded as integer hundredths. The policy receives its observation and legal choices. A separate update consumes the verified grade once per decision. The public ledger shows choices and reasons. These checks and replay tests cover known failure modes. Reward design can still favor an unintended strategy.
 
-The checkpoint comes from 120 simulated matches against four scripted human styles. Frozen comparisons use 32 other seeded matches, common inputs and identical exploration rates. The evaluation file includes win counts, graded reactions, per-action failures, and timing for the chooser and learner callbacks. Across 120 training matches, Pip received 3,964 verified tactical updates, Morrow 3,938 and Zip 3,859. In held-out play, full tactical passes rose from 20.2% to 24.6%. Blue won 20 of 21 Rivals fixtures with training and 21 of 21 before training. The local checks and the match score measure different outcomes. The earlier [Mac frame-time sample](docs/last-light-performance.json) covers live play at 1280 × 752 on an Apple M5. Navigation and speech are authored locally. No external model key is required.
+The checkpoint comes from 120 simulated matches against four scripted human styles. Frozen comparisons use 32 other seeded matches, common inputs and identical exploration rates. The evaluation file includes win counts, graded reactions, per-action failures, and timing for the chooser and learner callbacks. Across 120 training matches, Pip received 3,964 verified tactical updates, Morrow 3,938 and Zip 3,859. In held-out play, full tactical passes rose from 20.2% to 24.6%. Blue won 20 of 21 Rivals fixtures with training and 21 of 21 before training. The local checks and the match score measure different outcomes. The earlier [Mac frame-time sample](docs/last-light-performance.json) covers live play at 1280 × 752 on an Apple M5. These historical measurements cover the local policy. Enable Gemini to compare model-assisted decisions in your own matches.
 
 - [Authoritative court](game/star_match.gd)
 - [Policy](learning/star_policy.gd), [trainer](learning/star_train.gd) and [evaluation](learning/star_eval.json)
 - [Visible world, cast and input](game/last_light.gd)
 - [Five-condition Harbor task](tasks/ring-window/instruction.md)
 
+## Connect Gemini
+
+At the mode screen, click **Connect Gemini**, paste a Gemini API key into the masked field, and choose **Use for this session**. The key stays in process memory. **Gemini settings → Use local agents** disconnects it. Developers can also set `GEMINI_API_KEY` in the environment before launching. API calls consume the Google project's quota.
+
+| Robot | Default model | What it sees and wants |
+| --- | --- | --- |
+| Pip | `gemini-3.1-flash-lite` | Nearby play and passes it has witnessed. It wants to win back the star. |
+| Morrow | `gemini-3.6-flash` | The widest view and each pilot's observed shot tendencies. It wants to protect its ring. |
+| Zip | `gemini-3.5-flash-lite` | Passing opportunities, lanes and prior dealings. It wants to get ahead of the carrier. |
+
+Each robot has its own request channel, scout report, relationships and learned estimates. Every eight seconds during play, each connected robot can ask for a short playbook covering four situations. The game uses a proposed move only when it is legal and the local learner accepts it. A change of jersey invalidates the old playbook. While Google is responding, local play continues. HTTP errors appear in the robot's Tab notebook. Access and quota are specific to the key. To use a different supported model, set `LAST_LIGHT_MODEL_PIP`, `LAST_LIGHT_MODEL_MORROW` or `LAST_LIGHT_MODEL_ZIP` to a model ID that supports structured JSON and minimal thinking.
+
+The contextual bandit learns locally from deterministic outcomes. Gemini's hosted weights stay fixed. Each request receives the robot's recent *world outcomes*, such as who gained possession, with verifier scores withheld. The game records a short public reason for each proposed move. Recorded playbooks can be replayed offline.
+
 ## Bruin and replay
 
-The native launcher starts the watcher if Bruin is installed. Each match writes a locally buffered JSONL trajectory, including a four-Hz court trace, ownership, releases, social changes, tactic decisions, outcomes, verifier flags and scores. Bruin refreshes a DuckDB database from sealed lines approximately every two seconds. Its checks include unique sequence IDs, bounded grading, one resolved learning example per decision, and machine attribution for beacon events. Local verified response summaries feed back into the next launch. The release stores data under the existing `Godot/app_userdata/This Side Up` directory so existing runs stay readable.
+The native launcher starts the watcher if Bruin is installed. Each match writes a locally buffered JSONL trajectory, including a four-Hz court trace, ownership, releases, social changes, tactic decisions, outcomes, verifier flags and scores. Bruin refreshes a DuckDB database from sealed lines approximately every two seconds. Its checks include unique sequence IDs, bounded grading, one resolved learning example per decision, and machine attribution for beacon events. For connected matches, `flight.model_calls` reports the scout snapshot, requested and served model, request status, measured latency, token counts and returned playbook. `flight.agent_decisions` links each decision to its public reason, proposal, whether it was applied, overridden or illegal, most recent transport state and eventual verifier checks. Local verified response summaries feed back into the next launch. The release stores data under the existing `Godot/app_userdata/This Side Up` directory so existing runs stay readable.
 
 ```sh
 python3 telemetry/watch.py --watch
 bruin query --config-file telemetry/local/bruin.yml -c nursery -q 'select * from flight.court_scoreboard'
 bruin query --config-file telemetry/local/bruin.yml -c nursery -q 'select * from flight.failure_modes'
+bruin query --config-file telemetry/local/bruin.yml -c nursery -q 'select robot,tick,tactic,public_reason,decision_source,score from flight.agent_decisions order by run desc,tick desc limit 12'
 ```
 
 The [recorded Gold win](docs/match-87.jsonl) includes the starting policy and both pilots’ input changes. Replay it with `godot --headless --path . -s tools/replay_court.gd -- docs/match-87.jsonl`. The replay checks every recorded event against a fresh simulation.
 
-For seeded runs, launch the app with `-- --seed=87`. Training and automated playtests isolate fixture logs from live player trajectories. Reproduce the checks with Godot 4.7.2. The second command uses both keyboard seats and the regular opening, menu, pause and finish flow.
+For seeded runs, launch the app with `-- --seed=87`. Training and automated playtests isolate fixture logs from live player trajectories. Reproduce the checks with Godot 4.7.2. The court playtest uses both keyboard seats and the regular opening, menu, pause and finish flow.
 
 ```sh
 godot --headless --path . -s tests/star_match_test.gd
+godot --headless --path . -s tests/gemini_court.gd
 godot --headless --fixed-fps 60 --path . -s tests/court_playtest.gd -- --court-playtest --seed=87
 godot --headless --path . -s learning/star_train.gd
 docker build -t last-light-harbor:4.7.2 -f tasks/Dockerfile .

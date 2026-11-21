@@ -3,6 +3,9 @@ const Game = preload("res://game/star_match.gd")
 const Room = preload("res://game/room_art.gd")
 const Performer = preload("res://game/crew_visual.gd")
 const Front = preload("res://game/star_ui.gd")
+const Coach = preload("res://game/gemini_coach.gd")
+var coach: Coach
+var session_key := ""
 const Recorder = preload("res://game/flight_recorder.gd")
 const AMBER := Color("#ffce76")
 const BLUE := Color("#78e2ed")
@@ -136,6 +139,12 @@ func _ready() -> void:
 	voice.volume_db = -1
 	effects.volume_db = -10
 	add_child(front)
+	front.key_changed.connect(set_session_key)
+	if not test_session and not capture_session:
+		var key := OS.get_environment("GEMINI_API_KEY")
+		if key.is_empty():
+			key = OS.get_environment("GOOGLE_API_KEY")
+		set_session_key(key)
 	front.chosen.connect(handle)
 	var pretrained = Game.Policy.new()
 	pretrained.load_checkpoint("res://learning/star_checkpoint.json")
@@ -349,6 +358,13 @@ func handle(cmd: String) -> void:
 			front.match_view()
 
 
+func set_session_key(value: String) -> void:
+	session_key = value.strip_edges()
+	if session_key != session_key.strip_escapes() or session_key.contains(" "):
+		session_key = ""
+	front.key_set = not session_key.is_empty()
+
+
 func start() -> void:
 	end_log()
 	goal_pose.clear()
@@ -357,6 +373,10 @@ func start() -> void:
 	sim.configure_agents(training, social_memory)
 	var seed_value := forced_seed if forced_seed >= 0 else int(random.randi())
 	sim.setup(seed_value, crews)
+	if not session_key.is_empty() and not test_session and not capture_session:
+		coach = Coach.new()
+		add_child(coach)
+		coach.configure(session_key)
 	phase = "play"
 	beacon.scale = Vector3.ONE
 	beacon.hide()
@@ -397,19 +417,26 @@ func start() -> void:
 			"kind": "header",
 			"run": run,
 			"seed": seed_value,
-			"game": "last-light-v3",
+			"game": "last-light-v4",
 			"origin": "capture" if test_session or capture_session else "local_play",
 			"open_crews": crews,
 			"input_schema": 1,
 			"starting_policy": sim.learned_weights().duplicate(true),
 			"starting_relationships": sim.relationships(),
-			"seat_pilots": pilot_names()
+			"seat_pilots": pilot_names(),
+			"gemini_models": coach.models.duplicate() if coach else []
 		}
 	)
 	update_hud()
 
 
 func end_log() -> void:
+	if coach:
+		sim.apply_model_packets(coach.close(), true)
+		recorder.append(sim.events)
+		sim.events = []
+		coach.queue_free()
+		coach = null
 	if recorder.opened:
 		training = sim.learned_weights()
 		social_memory = sim.relationships()
@@ -462,6 +489,8 @@ func sound(key: String) -> void:
 
 
 func _input(ev: InputEvent) -> void:
+	if front.key_dialog and front.key_dialog.visible:
+		return
 	if not ev is InputEventKey or not ev.pressed or ev.echo:
 		return
 	var k: int = ev.physical_keycode
@@ -537,7 +566,7 @@ func _physics_process(_dt: float) -> void:
 			pad_edges[seat][binding[0]] = down
 	positions = sim.pos.duplicate()
 	old_ball = sim.ball
-	sim.step(command_edges)
+	sim.step(command_edges, coach.poll(sim) if coach else [])
 	command_edges = [{}, {}]
 	for e in sim.events:
 		present(e)
@@ -609,7 +638,7 @@ func update_hud() -> void:
 		front.show_plans(sim)
 	var left := ceili((Game.END - sim.tick) / 60.)
 	front.score.text = (
-		"GOLD   %d      /      %d   BLUE      ·      %d:%02d"
+		"GOLD  %d    /    %d  BLUE    ·    %d:%02d"
 		% [sim.goals[0], sim.goals[1], left / 60, left % 60]
 	)
 	var prompt := "Loose star   ·   Run to catch it"

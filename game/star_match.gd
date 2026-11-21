@@ -245,6 +245,7 @@ func launch(i: int, passing: bool, requested: int = -1) -> bool:
 				if ignored[ally] >= 2:
 					settle(ally)
 					team[ally] = BLUE
+					agents[ally - 2].change_team()
 					pact[ally] = -1
 					trust[ally] -= 1
 					agents[ally - 2].remember(i, -1, NAMES[i] + " ignored two openings.")
@@ -373,6 +374,7 @@ func invite(human: int) -> void:
 	if next != team[j]:
 		settle(j)
 		team[j] = next
+		actor.change_team()
 		ignored[j] = 0
 		pact[j] = human if next == GOLD else -1
 		robot_chain = false
@@ -450,6 +452,10 @@ func plan(i: int) -> void:
 	)
 	if sample_time:
 		timings.append(Time.get_ticks_usec() - us)
+	actor.local_preference = choice
+	var advice: Dictionary = actor.advice(phase, context, legal, tick)
+	if advice.get("disposition") == "applied":
+		choice = advice.proposal
 	tactics[i] = choice
 	var anchor: Vector2 = aim(i)
 	var source := seq + 1
@@ -474,6 +480,11 @@ func plan(i: int) -> void:
 			else ("weighed past outcomes" if samples > 0 else "starting preference")
 		)
 	)
+	if advice.get("disposition") == "applied":
+		explanation = advice.rationale
+		basis = "Gemini playbook"
+	elif advice.get("disposition") == "learner_override":
+		basis = "adjusted after failed plays"
 	actor.last_plan = explanation
 	actor.plan_basis = basis
 	actor.prior_attempts = samples
@@ -517,6 +528,8 @@ func plan(i: int) -> void:
 				"observed_passes": witness[1]
 			}
 		)
+	if not advice.is_empty():
+		intent["gemini"] = advice
 	emit("response_intent", i, intent)
 
 
@@ -638,7 +651,21 @@ func settle(i: int) -> void:
 		if checks[n]:
 			points += [10, 10, 20, 25, 35][n]
 	var us := Time.get_ticks_usec() if sample_time else 0
-	agents[i - 2].record_grade(p.context, p.choice, points)
+	var actor = agents[i - 2]
+	actor.record_grade(p.context, p.choice, points)
+	actor.recent_plays.push_back(
+		{
+			"move": p.choice,
+			"phase": p.phase,
+			"scored": p.scored,
+			"completed_pass": p.passed,
+			"won_possession": p.won,
+			"lost_possession": p.lost,
+			"holder_after": NAMES[owner] if owner >= 0 else "loose"
+		}
+	)
+	if actor.recent_plays.size() > 4:
+		actor.recent_plays.pop_front()
 	if sample_time:
 		timings.append(Time.get_ticks_usec() - us)
 	emit(
@@ -689,10 +716,20 @@ func brain(i: int) -> Vector2:
 	return delta.limit_length(.45) / .45
 
 
-func step(commands: Array = [{}, {}]) -> void:
+func apply_model_packets(packets: Array, after_step: bool = false) -> void:
+	for packet in packets:
+		var i := int(packet.actor)
+		if i < 2 or i > 4:
+			continue
+		var result: String = agents[i - 2].accept_packet(packet, tick)
+		emit("model_transport", i, {"packet": packet, "result": result, "after_step": after_step})
+
+
+func step(commands: Array = [{}, {}], packets: Array = []) -> void:
 	if finished:
 		return
 	tick += 1
+	apply_model_packets(packets)
 	if tick < restart_until:
 		if tick >= END:
 			finish_match()

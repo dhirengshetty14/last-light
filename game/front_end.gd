@@ -1,5 +1,8 @@
 extends CanvasLayer
 signal chosen(cmd: String)
+const DISPLAY_FACE = preload("res://assets/fonts/BarlowCondensed-SemiBold.ttf")
+const BODY_FACE = preload("res://assets/fonts/Barlow-Regular.ttf")
+const INSTRUMENT_FACE = preload("res://assets/fonts/SpaceMono-Regular.ttf")
 var root: Control
 var nav: VBoxContainer
 var copy: Label
@@ -20,11 +23,7 @@ func ink_label(content: String, size: int, tint: Color, serif: bool = false) -> 
 	var l := Label.new()
 	l.text = content
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var font := SystemFont.new()
-	font.font_names = PackedStringArray(
-		["Georgia", "Times New Roman"] if serif else ["Inter", "Helvetica Neue", "Arial"]
-	)
-	l.add_theme_font_override("font", font)
+	l.add_theme_font_override("font", DISPLAY_FACE if serif else BODY_FACE)
 	l.add_theme_font_size_override("font_size", size)
 	l.add_theme_color_override("font_color", tint)
 	return l
@@ -63,9 +62,16 @@ func _ready() -> void:
 	full(hero, root)
 	shade(root, "title")
 	where_label = ink_label("SATURN  /  NURSERY DOCK", 15, Color("#ffdea1"))
+	where_label.add_theme_font_override("font", INSTRUMENT_FACE)
 	root.add_child(where_label)
 	where_label.position = Vector2(51, 36)
 	heading = ink_label("This Side Up", 73, Color("#fff4d8"), true)
+	var display := FontVariation.new()
+	display.base_font = DISPLAY_FACE
+	display.spacing_glyph = 2
+	heading.add_theme_font_override("font", display)
+	heading.add_theme_font_size_override("font_size", 84)
+	heading.uppercase = true
 	root.add_child(heading)
 	heading.position = Vector2(46, 58)
 	var lower := VBoxContainer.new()
@@ -100,6 +106,8 @@ func _ready() -> void:
 	story_name = ink_label("", 15, Color("#f3c984"))
 	story_line = ink_label("", 29, Color("#fff4df"), true)
 	story_key = ink_label("", 14, Color("#b7cbc9"))
+	story_name.add_theme_font_override("font", INSTRUMENT_FACE)
+	story_line.add_theme_font_override("font", BODY_FACE)
 	story_line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	for c in [story_name, story_line, story_key]:
 		credits.add_child(c)
@@ -118,8 +126,9 @@ func set_controls(items: Dictionary) -> void:
 	for command in items:
 		var b := Button.new()
 		b.text = items[command]
+		b.add_theme_font_override("font", DISPLAY_FACE)
 		b.custom_minimum_size = Vector2(135, 45)
-		b.add_theme_font_size_override("font_size", 17)
+		b.add_theme_font_size_override("font_size", 21)
 		var normal := StyleBoxFlat.new()
 		normal.bg_color = Color("#e4c894") if i == 0 else Color(.055, .09, .11, .87)
 		normal.set_corner_radius_all(4)

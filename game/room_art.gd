@@ -86,6 +86,7 @@ func torus(p: Node3D, at: Vector3, inner: float, outer: float, m: Material) -> M
 
 func placard(p: Node3D, words: String, at: Vector3, tint: Color, size: int = 40) -> Label3D:
 	var l := Label3D.new()
+	l.font = preload("res://assets/fonts/BarlowCondensed-SemiBold.ttf")
 	l.text = words
 	l.font_size = size
 	l.pixel_size = .0055
@@ -154,7 +155,7 @@ func build(arena: bool = false) -> void:
 		box(self, Vector3(0, -.12, 3.16 + axis * .06), Vector3(15, .24, .041), iron)
 	for n in 34:
 		box(self, Vector3(-7.25 + n * .44, .042, 2.74), Vector3(.23, .023, .065), brass).rotation.y = -.33
-	for z in (0 if arena else 3):
+	for z in 0 if arena else 3:
 		var p: Vector3 = PADS[z]
 		var ringmat := metal("p" + str(z), PAD_TINT[z].to_html(false), .4, .17, .7)
 		torus(self, p + Vector3.UP * .06, .80, .86, ringmat)

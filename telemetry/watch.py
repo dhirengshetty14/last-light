@@ -65,12 +65,12 @@ def stage(paths):
 
 
 @contextmanager
-def single_writer(lock_file, watch):
+def single_writer(lock_file, skip_if_busy):
     if os.name == "posix":
         import fcntl
 
         try:
-            fcntl.flock(lock_file, fcntl.LOCK_EX | (fcntl.LOCK_NB if watch else 0))
+            fcntl.flock(lock_file, fcntl.LOCK_EX | (fcntl.LOCK_NB if skip_if_busy else 0))
         except BlockingIOError:
             yield False
             return
@@ -123,13 +123,14 @@ def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument("inputs", nargs="*", type=Path)
     cli.add_argument("--watch", action="store_true")
+    cli.add_argument("--if-idle", action="store_true", help="Leave a running watcher in charge of the final refresh.")
     args = cli.parse_args()
     LOCAL.mkdir(exist_ok=True)
     config = LOCAL / "bruin.yml"
     bruin = shutil.which("bruin") or str(Path.home() / ".local/bin/bruin")
     with (
         (LOCAL / "writer.lock").open("a") as lock,
-        single_writer(lock, args.watch) as acquired,
+        single_writer(lock, args.watch or args.if_idle) as acquired,
     ):
         if not acquired:
             return
@@ -157,7 +158,7 @@ def main():
                         cwd=ROOT,
                         check=True,
                     )
-                    if args.watch and not args.inputs:
+                    if not args.inputs:
                         export_memory(
                             bruin,
                             config,

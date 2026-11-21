@@ -135,6 +135,7 @@ func setup(i: int, show_name: bool = true) -> void:
 		for item in optics:
 			item[0].hide()
 	tag = Label3D.new()
+	tag.font = preload("res://assets/fonts/BarlowCondensed-SemiBold.ttf")
 	tag.text = FILES[i].capitalize()
 	tag.font_size = 36
 	tag.pixel_size = .0056

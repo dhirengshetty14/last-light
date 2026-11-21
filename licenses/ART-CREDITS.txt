@@ -15,3 +15,6 @@ Godot Engine is distributed under its MIT license. The full engine and third-par
 
 Last Light uses an original eight-bar dock theme, match sounds and a separate new dialogue bank. The voice clips were generated offline with Kyutai Pocket TTS using the standard Alba, Marius, Cosette, Jean and Javert speaker presets. The audio generator and exact lines are in art/source/star_voices.py.
 https://github.com/kyutai-labs/pocket-tts
+
+Typography
+Barlow Condensed SemiBold and Barlow Regular by the Barlow Project Authors, and Space Mono Regular by the Space Mono Project Authors. Distributed under the SIL Open Font License 1.1. The accompanying BarlowCondensed-OFL.txt, Barlow-OFL.txt and SpaceMono-OFL.txt include copyright notices and terms.

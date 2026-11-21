@@ -9,6 +9,78 @@ var reputation := [0, 0]
 var last_deal := ["", ""]
 var last_plan := ""
 var decisions_graded := 0
+var team_epoch := 0
+var requested_plan := 0
+var answered_plan := 0
+var recent_plays: Array = []
+var model_plan: Dictionary = {}
+var model_status := "Local policy"
+var local_preference := ""
+const MAX_PLAN_TICKS := 720
+
+
+func change_team() -> void:
+	team_epoch += 1
+	model_plan = {}
+
+
+func accept_packet(packet: Dictionary, tick: int) -> String:
+	if packet.actor != role:
+		return "wrong_robot"
+	if packet.state == "request":
+		if int(packet.id) <= requested_plan:
+			return "superseded"
+		requested_plan = int(packet.id)
+		model_status = "Waiting for " + str(packet.model)
+		return "requested"
+	if int(packet.id) != requested_plan or answered_plan >= requested_plan:
+		return "superseded"
+	answered_plan = requested_plan
+	if packet.state != "ready":
+		model_status = (
+			"%s · %s"
+			% [
+				packet.model,
+				packet.state if packet.state != "http_error" else "HTTP " + str(packet.http_status)
+			]
+		)
+		return packet.state
+	if int(packet.team_epoch) != team_epoch or tick - int(packet.asked_tick) > MAX_PLAN_TICKS:
+		model_status = "Situation changed"
+		return "stale"
+	model_plan = packet
+	model_status = packet.model
+	return "available"
+
+
+func advice(phase: String, context: String, legal: Array, tick: int) -> Dictionary:
+	if model_plan.is_empty():
+		return {}
+	if tick - int(model_plan.asked_tick) > MAX_PLAN_TICKS:
+		model_plan = {}
+		model_status = "Plan expired"
+		return {}
+	var entry: Dictionary = model_plan.plan[phase]
+	var move: String = entry.move
+	var live: Array = recent.get(context + "/" + move, [0., 0.])
+	var outcome := "applied"
+	if move not in legal:
+		outcome = "illegal_here"
+	elif (
+		move != local_preference
+		and float(live[0]) >= 1.55
+		and float(live[1]) / float(live[0]) < .40
+	):
+		outcome = "learner_override"
+	return {
+		"model": model_plan.model,
+		"request_id": model_plan.id,
+		"proposal": move,
+		"rationale": entry.reason,
+		"disposition": outcome
+	}
+
+
 var plan_basis := ""
 var prior_attempts := 0
 

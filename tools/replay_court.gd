@@ -36,6 +36,8 @@ func verify(path: String) -> bool:
 	s.configure_agents(head.starting_policy, head.get("starting_relationships", {}))
 	var inputs: Dictionary = {}
 	var expected: Array = []
+	var remote: Dictionary = {}
+	var closing: Dictionary = {}
 	var final_tick := 0
 	var sealed := false
 	while f.get_position() < f.get_length():
@@ -47,6 +49,12 @@ func verify(path: String) -> bool:
 			sealed = true
 			break
 		expected.append(event)
+		if event.kind == "model_transport":
+			var stream: Dictionary = closing if event.after_step else remote
+			var t := int(event.tick)
+			if not stream.has(t):
+				stream[t] = []
+			stream[t].append(event.packet)
 		if event.kind == "human_input":
 			var at := int(event.tick)
 			if not inputs.has(at):
@@ -65,7 +73,8 @@ func verify(path: String) -> bool:
 				cmd[seat][button] = true
 		for seat in 2:
 			cmd[seat]["move"] = stick[seat]
-		s.step(cmd)
+		s.step(cmd, remote.get(at, []))
+		s.apply_model_packets(closing.get(at, []), true)
 		for actual in s.events:
 			if cursor >= expected.size() or not equivalent(actual, expected[cursor]):
 				printerr("First divergent event at tick ", at, ", sequence ", cursor + 1)

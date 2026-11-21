@@ -12,6 +12,7 @@ finish() {
     if [ -n "$watcher" ] && jobs -pr | grep -Fxq -- "$watcher"; then
         kill "$watcher" 2>/dev/null || true
         wait "$watcher" 2>/dev/null || true
+        python3 telemetry/watch.py --if-idle >>telemetry/local/live.log 2>&1 || true
     fi
 }
 trap finish EXIT
