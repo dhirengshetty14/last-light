@@ -51,12 +51,14 @@ class RadioTest(unittest.TestCase):
                     }
                 ],
             }
+            provider = "vertex" if name == "Morrow" else "developer"
             with patch.object(
                 radio, "urlopen", return_value=io.BytesIO(json.dumps(body).encode())
             ) as upstream:
-                reply = radio.google_plan("fixture-only", seen)
+                reply = radio.google_plan("fixture-only", seen, provider)
             request = upstream.call_args.args[0]
-            self.assertEqual(request.full_url, radio.GOOGLE)
+            self.assertEqual(request.full_url, radio.ENDPOINTS[provider])
+            self.assertEqual(request.get_header("X-goog-api-key"), "fixture-only")
             self.assertIn(
                 name, json.loads(request.data)["systemInstruction"]["parts"][0]["text"]
             )

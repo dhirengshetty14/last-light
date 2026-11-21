@@ -24,7 +24,8 @@ func configure(url: String) -> void:
 	for i in 3:
 		models.append(MODEL)
 		var http := HTTPRequest.new()
-		http.use_threads = true
+		# HTTPRequest polls nonblocking sockets. A pending radio call can be cancelled at the whistle immediately.
+		http.use_threads = false
 		http.timeout = 6.
 		http.max_redirects = 0
 		http.body_size_limit = 65536

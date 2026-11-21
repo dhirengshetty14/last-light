@@ -19,6 +19,10 @@ MODEL = "gemini-3.1-flash-lite"
 GOOGLE = (
     f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent"
 )
+ENDPOINTS = {
+    "developer": GOOGLE,
+    "vertex": f"https://aiplatform.googleapis.com/v1/publishers/google/models/{MODEL}:generateContent",
+}
 ROBOTS = ("Pip", "Morrow", "Zip")
 NAMES = ("Nell", "Rafi") + ROBOTS
 PERSONAS = (
@@ -34,6 +38,7 @@ MOVES = {
 }
 TACTICS = {move for options in MOVES.values() for move in options}
 KEY_PATH = Path.home() / "Library/Application Support/Last Light Host/gemini.key"
+PROVIDER_PATH = KEY_PATH.with_suffix(".provider")
 PATH = "/v1/playbook"
 
 
@@ -162,10 +167,10 @@ def payload(seen):
     }
 
 
-def google_plan(key, seen):
+def google_plan(key, seen, provider="developer"):
     data = json.dumps(payload(seen)).encode()
     req = Request(
-        GOOGLE,
+        ENDPOINTS[provider],
         data=data,
         headers={"Content-Type": "application/json", "x-goog-api-key": key},
     )
@@ -275,7 +280,7 @@ class Handler(BaseHTTPRequestHandler):
         self.reply(200, result)
 
 
-def configure():
+def configure(provider):
     key = getpass.getpass("Publisher's Gemini key (hidden): ").strip()
     if not re.fullmatch(r"[A-Za-z0-9._-]{16,512}", key):
         raise SystemExit("Enter a valid Gemini key.")
@@ -283,19 +288,32 @@ def configure():
     with tempfile.NamedTemporaryFile("w", dir=KEY_PATH.parent, delete=False) as temp:
         temp.write(key)
     os.replace(temp.name, KEY_PATH)
+    PROVIDER_PATH.write_text(provider)
     print("Host configured. Start Last Light normally.")
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--configure", action="store_true")
+    parser.add_argument("--provider", choices=ENDPOINTS)
     parser.add_argument("--port", type=int, default=int(os.getenv("PORT", "8947")))
     parser.add_argument("--bind", default="127.0.0.1")
     parser.add_argument("--ready", type=Path)
     parser.add_argument("--parent", type=int)
     args = parser.parse_args()
+    provider = (
+        args.provider
+        or os.getenv("LAST_LIGHT_GEMINI_PROVIDER")
+        or (
+            PROVIDER_PATH.read_text().strip()
+            if PROVIDER_PATH.is_file()
+            else "developer"
+        )
+    )
+    if provider not in ENDPOINTS:
+        raise SystemExit("Select a supported Gemini provider.")
     if args.configure:
-        configure()
+        configure(provider)
         return
     key = (
         os.getenv("GEMINI_API_KEY")
@@ -304,7 +322,9 @@ def main():
     )
     if not key:
         raise SystemExit("Publisher credential is missing.")
-    with Radio((args.bind, args.port), lambda seen: google_plan(key, seen)) as radio:
+    with Radio(
+        (args.bind, args.port), lambda seen: google_plan(key, seen, provider)
+    ) as radio:
         if args.ready:
             temp = args.ready.with_suffix(".next")
             temp.write_text(str(radio.server_port))

@@ -5,7 +5,6 @@ var endpoint := ""
 var _ready_file := ""
 var _script := ""
 var _pid := -1
-var _deadline := 0
 
 
 func start() -> void:
@@ -39,7 +38,6 @@ func start() -> void:
 		return
 	helper.store_buffer(FileAccess.get_file_as_bytes(HOST_SCRIPT))
 	helper.close()
-	_deadline = Time.get_ticks_msec() + 15000
 	_pid = OS.create_process(
 		"/usr/bin/python3",
 		[_script, "--port", "0", "--ready", _ready_file, "--parent", str(OS.get_process_id())]
@@ -47,12 +45,7 @@ func start() -> void:
 
 
 func address() -> String:
-	if (
-		endpoint.is_empty()
-		and _pid > 0
-		and Time.get_ticks_msec() < _deadline
-		and FileAccess.file_exists(_ready_file)
-	):
+	if endpoint.is_empty() and _pid > 0 and FileAccess.file_exists(_ready_file):
 		var number := FileAccess.get_file_as_string(_ready_file).strip_edges().to_int()
 		if number > 0 and number <= 65535:
 			endpoint = "http://127.0.0.1:%d/v1/playbook" % number
