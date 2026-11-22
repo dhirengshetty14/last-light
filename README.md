@@ -10,7 +10,7 @@ The earlier compact court appears in [Pip’s beacon play in Open Crews](docs/ha
 
 ## Play on this Mac
 
-Double-click **Play Last Light.command** to start the native game and its local Bruin watcher. **exports/Last Light.app** also runs independently. The opening plays the theme, Morrow tells the story in three spoken lines, and each of the five is introduced in a voiced close-up with one line on what only they can do. Then you choose one of three modes. Use Space to advance an introduction or Escape to choose a mode immediately. After choosing a mode, select **P1 Nell · P2 Rafi** or **P1 Rafi · P2 Nell**. Each pilot keeps their own ability. The key bindings follow the player number. [See the pilot picker](docs/choose-pilots.jpg). Click **Take the court** after the briefing. Two players can share a keyboard and screen.
+Double-click **Play Last Light.command** to start the native game and its local Bruin watcher, or run it from source with Godot 4.7.2. The game opens on its title: the name lights up letter by letter like harbor lamps. Press any key and Morrow tells the story as comic pages, then each of the five gets a page with their power. Escape skips straight on. **How to play** shows both players' keys side by side and lets you swap who plays Nell and who plays Rafi. **Choose your game** explains the three modes on cards; pick one and the match starts with a three-two-one countdown. Two players share a keyboard and screen.
 
 | Action | Player 1 | Player 2 |
 | --- | --- | --- |
@@ -22,7 +22,11 @@ Two buttons do everything. The bars at the bottom of the screen always say what 
 
 Tab opens the robot notebooks. Each entry shows the robot’s current goal and tactic, what it saw, and how many of its decisions have been graded this match. Escape pauses. M mutes all audio. B reduces background movement. A single gamepad controls Player 2. With two connected pads, each controls a seat in connection order. Use the left stick, A for GO and X for SHARE. Right shoulder, Y and B keep their single purposes: dash, offer and pass to a robot.
 
-**The harbor.** Beyond the rail the dock looks out on a sea that mirrors the sky. The sun sets beside a ringed Saturn during the match and it is night by the whistle. Whales fly and surface around the dock, a lighthouse sweeps the water, ferries cross, lanterns rise, and the crowd behind the rail jumps for the crew that scores. When the robots walk out the harbor goes dark and the whales glow. B reduces all of this motion.
+**Rendering and sound.** The game uses Godot's Forward+ renderer (Metal on a Mac) with 4x anti-aliasing, soft shadows, ambient occlusion, bloom and haze, and its lights follow the sunset through the match. Every menu move, page turn, countdown, goal, splash and firework has a sound, and the sea plays under everything. On an Apple M5 a full match runs at about 120 frames a second; the slowest frame in two benchmark matches took 24 ms.
+
+**The harbor.** Beyond the rail the dock looks out on a sea that mirrors the sky. The sun sets beside a ringed Saturn during the match and it is night by the whistle. The whales are simulated: each steers, speeds up for a run at the surface, leaps under gravity, turns over in the air and throws up spray, a ring of foam and ripples that spread across the water. Two of them fly, and now and then fold their fins and drop into the sea. A lighthouse sweeps the water, ferries ride the swell, lanterns rise, and the bleachers behind the rail are full of small hovering dock-bots with light sticks that jump for the crew that scores. Goals send up fireworks. When the robots walk out the harbor goes dark and the whales glow. B reduces all of this motion.
+
+**The rings on the court.** The small ring under each player is their crew's colour. The white circle in the middle is the centre mark. The turning dashed ring around Morrow is his slow zone: carry the star inside it and you slow down.
 
 **The comic.** The opening is told as comic pages: a caption box for the story, then a page for each of the five with their name, their own words in a speech balloon and their power. During a match, sound words land on the court (YOINK!, PAID!, CHEAT!, STRIKE!, GOAL!), a small panel with the speaker's face and a balloon shows every line a robot says, and the picture turns to print for the pause after a goal.
 

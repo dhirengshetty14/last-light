@@ -46,6 +46,9 @@ func _initialize() -> void:
 
 
 func click(n: int) -> void:
+	if game.phase in ["controls", "select"]:
+		game.screens.buttons[n].pressed.emit()
+		return
 	var button: Button = game.front.nav.get_child(0).get_child(n)
 	button.pressed.emit()
 
@@ -110,6 +113,13 @@ func _physics_process(_dt: float) -> bool:
 			visited[game.chapter] = true
 			if game.chapter_time > 1.2:
 				snap("card-%d" % game.chapter)
+		"controls":
+			if age == 60:
+				snap("controls")
+			if age == 70 and swap:
+				click(1)
+			if age == 100:
+				click(0)
 		"select":
 			if age == 60:
 				snap("modes")

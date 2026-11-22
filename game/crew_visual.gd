@@ -93,8 +93,7 @@ func setup(i: int, show_name: bool = true) -> void:
 	var scene: PackedScene = load("res://assets/cast/" + FILES[i] + ".glb")
 	figure = scene.instantiate()
 	add_child(figure)
-	if i < 2:
-		equipment()
+	# The humans wear their own clothes. The strapped-on boxes and rings read as planks, not gear.
 	# The FBX humans face +Z after glTF import. The machines face +Z as well.
 	var animation_nodes := figure.find_children("*", "AnimationPlayer", true, false)
 	if not animation_nodes.is_empty():

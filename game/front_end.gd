@@ -1,5 +1,6 @@
 extends CanvasLayer
 signal chosen(cmd: String)
+signal sound(kind: String)
 const DISPLAY_FACE = preload("res://assets/fonts/BarlowCondensed-SemiBold.ttf")
 const BODY_FACE = preload("res://assets/fonts/Barlow-Regular.ttf")
 const INSTRUMENT_FACE = preload("res://assets/fonts/SpaceMono-Regular.ttf")
@@ -151,6 +152,9 @@ func set_controls(items: Dictionary) -> void:
 		b.add_theme_stylebox_override("hover", focus)
 		b.add_theme_color_override("font_hover_color", ink)
 		b.pressed.connect(pick.bind(command))
+		b.pressed.connect(func(): sound.emit("ui_pick"))
+		b.focus_entered.connect(func(): if active: sound.emit("ui_move"))
+		b.mouse_entered.connect(b.grab_focus)
 		row.add_child(b)
 		if i == 0:
 			first = b

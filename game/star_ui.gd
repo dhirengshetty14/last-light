@@ -276,7 +276,7 @@ func briefing(mode: String, names: Array) -> void:
 			"Keep your word",
 			mode,
 			(
-				"Nell attacks the gold ring on the right. Rafi attacks the blue ring on the left. Most goals in two minutes wins. Every robot signs for a promise: Pip wants the next shot, Zip wants passes, Morrow wants a shot that comes off a pass. A promise only runs down while your crew holds the star. Break one and that robot walks out. If both captains break one, the robots vote on playing for themselves.\nTwo buttons each. P1 %s  ·  WASD to move, SPACE to shoot or dash, F to pass, pay a promise or make an offer.     P2 %s  ·  ARROWS, ENTER and slash do the same. The words over your head say what each button will do."
+				"Nell attacks the gold ring on the right. Rafi attacks the blue ring on the left. Most goals in two minutes wins. Every robot signs for a promise: Pip wants the next shot, Zip wants passes, Morrow wants a shot that comes off a pass. A promise only runs down while your crew holds the star. Break one and that robot walks out. If both captains break one, the robots vote on playing for themselves.\nTwo buttons each. P1 %s  ·  WASD to move, SPACE to shoot or dash, F to pass, pay a promise or make an offer.     P2 %s  ·  ARROWS, ENTER and slash do the same. The bars at the bottom say what each button will do. The ring under a player is their crew's colour. The turning dashed ring is Morrow's slow zone."
 				% names
 			),
 			{"play": "Take the court", "pilots": "Change pilots", "select": "Change mode"}

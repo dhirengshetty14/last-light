@@ -221,12 +221,9 @@ void fragment() {
 	float tr = luma(texture(SOURCE, uv + px * vec2(1.0, -1.0)).rgb);
 	float bl = luma(texture(SOURCE, uv + px * vec2(-1.0, 1.0)).rgb);
 	float br = luma(texture(SOURCE, uv + px * vec2(1.0, 1.0)).rgb);
-	float le = luma(texture(SOURCE, uv + px * vec2(-1.0, 0.0)).rgb);
-	float ri = luma(texture(SOURCE, uv + px * vec2(1.0, 0.0)).rgb);
-	float to = luma(texture(SOURCE, uv + px * vec2(0.0, -1.0)).rgb);
-	float bo = luma(texture(SOURCE, uv + px * vec2(0.0, 1.0)).rgb);
-	float gx = (tr + 2.0 * ri + br) - (tl + 2.0 * le + bl);
-	float gy = (bl + 2.0 * bo + br) - (tl + 2.0 * to + tr);
+	// Two diagonal differences are enough to find an edge, at half the cost of a full kernel.
+	float gx = (tl - br) * 2.0;
+	float gy = (tr - bl) * 2.0;
 	float line = smoothstep(0.26, 0.62, length(vec2(gx, gy)));
 	float y = luma(c);
 	// Flatten the colours most of the way, so faces and skies keep some of their shading.
@@ -269,6 +266,40 @@ func _ready() -> void:
 	build_cut()
 	page.hide()
 	cut.hide()
+	warm()
+
+
+## Draw every sound word once, almost invisibly, so its letters are ready before the first goal.
+## Lettering this large is costly to prepare and would otherwise stall the frame it first appears.
+func warm() -> void:
+	var holder := Control.new()
+	holder.modulate.a = .004
+	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(holder)
+	var all := "GOAL! WALKOUT! FULL TIME! YOINK SNATCH MINE DENIED ZOOM ANCHOR PAID CHEAT STRIKE FORGIVEN I QUIT SIGNED VOTE"
+	for size in [[74, 16], [40, 11]]:
+		var sample := words(all, size[0], YELLOW, loud, size[1])
+		sample.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		sample.size = Vector2(1200, 400)
+		holder.add_child(sample)
+	var star := Burst.new()
+	star.size = Vector2(300, 190)
+	holder.add_child(star)
+	booth.world_3d = get_viewport().find_world_3d()
+	booth.render_target_update_mode = SubViewport.UPDATE_ONCE
+	# The speech panel as well: its portrait, balloon and print effect are all drawn once.
+	cut.modulate.a = .004
+	cut.position = Vector2(40, 200)
+	cut_text.text = "Ready."
+	cut.show()
+	var done := create_tween()
+	done.tween_interval(1.5)
+	done.tween_callback(holder.queue_free)
+	done.tween_callback(func():
+		if showing <= 0.:
+			cut.hide()
+		cut.modulate.a = 1.
+	)
 
 
 func build_page() -> void:
@@ -346,9 +377,7 @@ func build_cut() -> void:
 	shot.texture = booth.get_texture()
 	shot.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	shot.stretch_mode = TextureRect.STRETCH_SCALE
-	var look := ShaderMaterial.new()
-	look.shader = print_shader("", "UV", "TEXTURE_PIXEL_SIZE")
-	shot.material = look
+	booth.msaa_3d = Viewport.MSAA_4X
 	frame.add_child(shot)
 	shot.position = Vector2(7, 7)
 	shot.size = Vector2(152, 152)
@@ -368,9 +397,10 @@ func build_cut() -> void:
 	cut_text.size = Vector2(354, 96)
 
 
-## How strongly the printed look covers the picture, 0 to 1. It fades, it does not snap.
-func ink(strength: float) -> void:
-	ink_goal = strength
+## The full-screen print look is retired: it muddied the render and drew bands across faces.
+## Pages, panels and lettering stay comic. Kept so callers need not change.
+func ink(_strength: float) -> void:
+	ink_goal = 0.
 
 
 func place_page() -> void:
@@ -498,8 +528,8 @@ func _process(dt: float) -> void:
 		showing -= dt
 		# Slide up from the bottom edge, hold, and drop away.
 		var rise := smoothstep(0., .18, 2.5 - showing) * smoothstep(0., .2, showing)
-		# Right of centre, clear of the line that says who has the star.
-		cut.position = Vector2(area.x * .5 - 190., area.y - 76. - 178. * rise)
+		# Bottom right, above player 2's buttons and clear of the line about who has the star.
+		cut.position = Vector2(area.x - 640., area.y - 92. - 178. * rise)
 		if is_instance_valid(subject):
 			var face := subject.global_position + Vector3(0, subject_height, 0)
 			# Stand in front of the speaker, a little to one side.
@@ -520,5 +550,5 @@ func _process(dt: float) -> void:
 		booth.world_3d = get_viewport().find_world_3d()
 		booth.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 		showing = 2.5
-		cut.position = Vector2(area.x * .5 - 190., area.y)
+		cut.position = Vector2(area.x - 640., area.y)
 		cut.show()

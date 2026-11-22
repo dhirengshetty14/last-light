@@ -15,6 +15,10 @@ var markers: Array = []
 var dust: Array = []
 var sun: DirectionalLight3D
 var world_env: Environment
+## The sky that lights the scene and shows in reflections. The visible sky is a mesh in the harbor.
+var sky_paint := ProceduralSkyMaterial.new()
+## Cool light from the camera side, so faces turned towards us are not lost against the sunset.
+var fill := DirectionalLight3D.new()
 var window: MeshInstance3D
 var projected: Array = []
 var training_buoy: Node3D
@@ -104,37 +108,69 @@ func build(arena: bool = false) -> void:
 	var env := Environment.new()
 	env.background_mode = Environment.BG_COLOR
 	env.background_color = Color("#091628")
-	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color("#8aa6bb")
-	env.ambient_light_energy = .83
-	var sky_material := ProceduralSkyMaterial.new()
-	sky_material.sky_top_color = Color("#516579")
-	sky_material.sky_horizon_color = Color("#bca28b")
-	sky_material.ground_horizon_color = Color("#816e65")
-	sky_material.ground_bottom_color = Color("#303640")
+	# Ambient light and reflections come from a sunset sky, so metal and skin pick up its colours.
+	sky_paint.sky_top_color = Color("#4a4f8c")
+	sky_paint.sky_horizon_color = Color("#ffb07a")
+	sky_paint.ground_horizon_color = Color("#8a5a5a")
+	sky_paint.ground_bottom_color = Color("#1d2433")
+	sky_paint.sun_angle_max = 18.
 	var sky := Sky.new()
-	sky.sky_material = sky_material
+	sky.sky_material = sky_paint
+	sky.radiance_size = Sky.RADIANCE_SIZE_128
+	sky.process_mode = Sky.PROCESS_MODE_INCREMENTAL
 	env.sky = sky
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
+	env.ambient_light_energy = .7
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
-	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+	env.tonemap_mode = Environment.TONE_MAPPER_ACES
+	env.tonemap_exposure = .92
+	# Bright things bleed light, like a night game under lamps.
+	# Only truly bright things bloom: lamps, the star, neon. The sky stays crisp.
+	env.glow_enabled = true
+	env.glow_intensity = .7
+	env.glow_strength = 1.
+	env.glow_bloom = 0.
+	env.glow_hdr_threshold = 1.35
+	env.glow_hdr_scale = 2.
+	env.glow_blend_mode = Environment.GLOW_BLEND_MODE_ADDITIVE
+	for level in 7:
+		env.set_glow_level(level, [0., .6, .8, .6, .35, 0., 0.][level])
+	# Contact shadows where feet, crates and rails meet the deck.
+	env.ssao_enabled = true
+	env.ssao_radius = 1.1
+	env.ssao_intensity = 1.8
+	env.ssao_power = 1.4
+	# The far harbor fades into the haze at the horizon. The court stays clear.
+	env.fog_enabled = true
+	env.fog_mode = Environment.FOG_MODE_DEPTH
+	env.fog_depth_begin = 45.
+	env.fog_depth_end = 260.
+	env.fog_density = .4
+	env.fog_light_color = Color("#f0a27e")
+	env.fog_sky_affect = 0.
+	env.adjustment_enabled = true
+	env.adjustment_saturation = 1.22
+	env.adjustment_contrast = 1.1
 	var world := WorldEnvironment.new()
 	world.environment = env
 	world_env = env
 	add_child(world)
 	sun = DirectionalLight3D.new()
 	add_child(sun)
-	sun.rotation_degrees = Vector3(-58, -31, 0)
-	sun.light_color = Color("#efcda7")
-	sun.light_energy = .86
+	# A low, warm sun behind the far rail, the same one that sets in the sky.
+	sun.rotation_degrees = Vector3(-27, -157, 0)
+	sun.light_color = Color("#ffb67a")
+	sun.light_energy = 1.35
+	sun.light_angular_distance = .8
 	sun.shadow_enabled = true
-	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
-	sun.directional_shadow_max_distance = 27
-	var fill := OmniLight3D.new()
+	sun.shadow_blur = 1.4
+	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
+	sun.directional_shadow_max_distance = 48
 	add_child(fill)
-	fill.position = Vector3(-1, 4.5, 5)
-	fill.omni_range = 19
-	fill.light_color = Color("#a0cbdf")
-	fill.light_energy = .60
+	fill.rotation_degrees = Vector3(-34, 8, 0)
+	fill.light_color = Color("#9fb6ff")
+	fill.light_energy = .55
+	fill.shadow_enabled = false
 	var iron := metal("iron", "#30404b", .52, .48)
 	var dark := metal("dark", "#202d39", .55, .52)
 	var brass := metal("brass", "#ac8050", .39, .60)
@@ -532,4 +568,3 @@ func location(mode: int) -> void:
 	life.plate.set_shader_parameter(
 		"eye_position", Vector2(.229, .153) if mode == 1 else Vector2(.248, .102)
 	)
-	sun.light_color = Color("#c7dbed") if mode == 1 else Color("#efcda7")

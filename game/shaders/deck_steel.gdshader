@@ -16,8 +16,10 @@ void fragment() {
     float lip = smoothstep(0.484, 0.497, max(plate.x, plate.y));
     ALBEDO = mix(scan * vec3(0.96, 1.04, 1.09), vec3(0.12, 0.14, 0.15) + 0.23 * scan, 0.28);
     ALBEDO = mix(ALBEDO, vec3(0.048, 0.056, 0.061), lip * 0.78);
-    METALLIC = 0.22 + 0.36 * props.b;
-    ROUGHNESS = clamp(props.g * 0.81 + 0.11 - 0.14 * wear, 0.21, 0.91);
+    // Painted deck plate: a little metal shows through the wear, but it does not mirror the sun.
+    METALLIC = 0.08 + 0.18 * props.b;
+    ROUGHNESS = clamp(props.g * 0.7 + 0.3 - 0.1 * wear, 0.42, 0.95);
+    SPECULAR = 0.35;
     AO = mix(0.70, 1.0, props.r);
     NORMAL_MAP = texture(steel_normal, uv).rgb;
     NORMAL_MAP_DEPTH = 0.65;

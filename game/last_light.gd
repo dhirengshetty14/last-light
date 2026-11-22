@@ -82,10 +82,17 @@ const ROBOT_CUES = [
 ]
 const EFFECTS = [
 	"dash", "catch", "throw", "steal", "goal_big", "deal", "paid", "broken", "strike", "radio",
-	"vote", "powerdown", "whistle", "tick"
+	"vote", "powerdown", "whistle", "tick", "ui_move", "ui_pick", "ui_back", "page", "whoosh",
+	"title_hit", "lamp", "count", "count_go", "crowd_cheer", "splash", "firework", "fanfare"
 ]
+## How loud each sound sits against the others, in decibels.
+const MIX = {
+	"ui_move": -8., "ui_pick": -3., "ui_back": -4., "page": -5., "whoosh": -6., "lamp": -9.,
+	"title_hit": -1., "count": -4., "count_go": -2., "crowd_cheer": -2., "splash": -2.,
+	"firework": -3., "fanfare": -1.
+}
 var tale := -1
-var anchor_ring: MeshInstance3D
+var anchor_ring: Node3D
 var voice_queue: Array[String] = []
 var sfx_pool: Array[AudioStreamPlayer] = []
 var sfx_turn := 0
@@ -97,6 +104,10 @@ var dock_lights = preload("res://game/court_lights.gd").new()
 var harbor = preload("res://game/harbor_world.gd").new()
 ## Comic-book pages, sound words and speech balloons.
 var comics = preload("res://game/comics.gd").new()
+## The animated title, how to play, and the choice of game.
+var screens = preload("res://game/start_screens.gd").new()
+## Waves on the hulls, under everything.
+var ambience := AudioStreamPlayer.new()
 ## Each character's colour on their comic page, and how high their face is.
 const PAGE_TINT = [Color("#5fe6c4"), Color("#e08fd8"), Color("#ff9450"), Color("#f0c869"), Color("#bfeaf5")]
 const FACE = [1.56, 1.62, .78, 1.52, 1.36]
@@ -127,9 +138,17 @@ var dusk := 0.
 var capture_mode := "rivals"
 ## Free Agents robots weigh their own past outcomes. This flag puts them back on the written rules.
 var written_rules := false
+var anchor_paint: StandardMaterial3D
+var anchor_note := Label3D.new()
+var ring_glow: Array = []
+var court_glow := ShaderMaterial.new()
+var sky_step := -1.
+## Five trails of sparks for dashes, and a sixth that follows the star.
+var wakes: Array = []
 ## Where each pilot is steering, so a pass can follow it.
 var steer := [Vector2.ZERO, Vector2.ZERO]
 var last_lesson := [-1, -1, -1, -1, -1]
+var last_count := -1
 var pilot_for_seat: Array[int] = [0, 1]
 var positions: Array = Game.START.duplicate()
 var scoring_team := -1
@@ -149,7 +168,7 @@ var camera_distance := 17.2
 var whistle_age := 0.
 var gather_tick := -20
 var gather_offset := Vector3.ZERO
-const WALK_ON_SECONDS := 2.1
+const WALK_ON_SECONDS := 3.2
 var last_voice := -150
 var last_ledger := [-1, -1, -99, -99, -99]
 var command_edges := [{}, {}]
@@ -205,6 +224,7 @@ func _ready() -> void:
 	room.window.hide()
 	add_child(harbor)
 	harbor.build(room)
+	harbor.warm()
 	court()
 	add_child(camera)
 	camera.current = true
@@ -277,10 +297,22 @@ func _ready() -> void:
 	music.volume_db = -9
 	if DisplayServer.get_name() != "headless":
 		music.play()
+	# The sea against the dock, looped under everything.
+	if ResourceLoader.exists("res://assets/last_light/waves.wav"):
+		add_child(ambience)
+		ambience.stream = load("res://assets/last_light/waves.wav")
+		ambience.volume_db = -19.
+		if DisplayServer.get_name() != "headless":
+			ambience.play()
 	voice.volume_db = -1
 	effects.volume_db = -10
 	add_child(front)
 	add_child(comics)
+	add_child(screens)
+	screens.chosen.connect(handle)
+	screens.cue.connect(func(kind: String, pitch: float): sound(kind, 0., pitch))
+	front.sound.connect(func(kind: String): sound(kind))
+	harbor.heard.connect(heard)
 	if not test_session and not capture_session:
 		radio_host.start()
 	front.chosen.connect(handle)
@@ -310,9 +342,53 @@ func _ready() -> void:
 	intro()
 
 
+## Light painted on the deck: each half glows in its crew's colour, and the lines, arcs and centre
+## circle shine, brighter as night comes. It adds light and never hides the deck under it.
+const COURT_GLOW := """shader_type spatial;
+render_mode unshaded, blend_add, depth_draw_never, shadows_disabled, cull_disabled;
+uniform vec2 half_size = vec2(11.0, 4.65);
+uniform float ring = 11.0;
+uniform float shot = 3.55;
+uniform float night = 0.0;
+uniform float seconds = 0.0;
+uniform vec3 gold : source_color = vec3(1.0, 0.75, 0.34);
+uniform vec3 blue : source_color = vec3(0.34, 0.85, 0.93);
+varying vec2 at;
+void vertex() { at = VERTEX.xz; }
+float line(float d, float w) { return 1.0 - smoothstep(w * 0.5, w * 0.5 + 0.03, abs(d)); }
+void fragment() {
+	float x = at.x / half_size.x;
+	vec3 side = x > 0.0 ? gold : blue;
+	float wash = smoothstep(0.1, 1.0, abs(x)) * 0.10 + 0.025;
+	float edge = max(line(abs(at.y) - (half_size.y + 0.2), 0.06), line(abs(at.x) - ring, 0.05));
+	float middle = max(line(at.x, 0.05), line(length(at) - 1.19, 0.06));
+	vec2 hoop = vec2(ring * sign(at.x), 0.0);
+	float arc = line(length(at - hoop) - shot, 0.07) * step(abs(at.x), ring);
+	float inside = (1.0 - smoothstep(shot - 0.05, shot, length(at - hoop))) * 0.08;
+	float run = 0.75 + 0.25 * sin(seconds * 2.2 - length(at) * 0.9);
+	float glow = 0.55 + 1.1 * night;
+	vec3 col = side * (wash + inside) * (0.6 + 0.8 * night);
+	col += vec3(1.0, 0.93, 0.8) * (edge + middle) * 0.55 * glow * run;
+	col += side * arc * 1.6 * glow * run;
+	ALBEDO = col;
+}
+"""
+
+
 func court() -> void:
 	add_child(dock_lights)
 	dock_lights.build(room)
+	var floor_paint := PlaneMesh.new()
+	floor_paint.size = Vector2(Game.RING * 2. + 1.2, Game.BOUNDS.y * 2. + 1.2)
+	court_glow.shader = Shader.new()
+	court_glow.shader.code = COURT_GLOW
+	court_glow.set_shader_parameter("half_size", Vector2(Game.RING, Game.BOUNDS.y))
+	court_glow.set_shader_parameter("ring", Game.RING)
+	court_glow.set_shader_parameter("shot", Game.SHOT_RANGE)
+	court_glow.set_shader_parameter("gold", harbor.CREW[0])
+	court_glow.set_shader_parameter("blue", harbor.CREW[1])
+	var painted: MeshInstance3D = room.draw(self, floor_paint, Vector3(0, .062, 0), court_glow)
+	painted.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	var enamel = room.metal("ivory chalk", "#ada18b", .68, .14)
 	var colored = [
 		room.metal("gold beacon", "#ffba47", .32, .23, 2.),
@@ -421,14 +497,68 @@ func court() -> void:
 		aim_dots.append(dot)
 	shade_disc = room.torus(self, Vector3.ZERO, .18, .204, colored[0])
 	# The edge of Morrow's anchor: carry the star inside it and you slow down.
-	anchor_ring = room.torus(
-		self,
-		Vector3.ZERO,
-		Game.ANCHOR_RANGE - .035,
-		Game.ANCHOR_RANGE,
-		room.metal("anchor ring", "#c9b48a", .5, .3, .55)
-	)
+	# It must not look like a court marking, so it is dashed, it turns and it carries a label.
+	anchor_ring = Node3D.new()
+	add_child(anchor_ring)
+	anchor_paint = StandardMaterial3D.new()
+	anchor_paint.emission_enabled = true
+	anchor_paint.emission_energy_multiplier = 1.6
+	for n in 22:
+		var a := TAU * n / 22.
+		var dash: MeshInstance3D = room.box(
+			anchor_ring, Vector3(cos(a), 0, sin(a)) * (Game.ANCHOR_RANGE - .03), Vector3(.3, .022, .075), anchor_paint
+		)
+		dash.rotation.y = PI * .5 - a
+		dash.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	anchor_note.text = "MORROW'S SLOW ZONE"
+	anchor_note.font = preload("res://assets/fonts/BarlowCondensed-SemiBold.ttf")
+	anchor_note.font_size = 42
+	anchor_note.pixel_size = .0056
+	anchor_note.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	anchor_note.outline_size = 8
+	anchor_note.no_depth_test = true
+	anchor_note.layers = 2
+	add_child(anchor_note)
 	anchor_ring.hide()
+	anchor_note.hide()
+	# Each ring throws its own colour across its end of the court.
+	for side in 2:
+		var wash := OmniLight3D.new()
+		add_child(wash)
+		wash.position = Vector3((Game.RING - 1.4) * (1 if side == 0 else -1), 2.4, 0)
+		wash.omni_range = 9.5
+		wash.light_color = harbor.CREW[side]
+		wash.light_energy = 1.15
+		ring_glow.append(wash)
+	# A comet tail of motes behind the star, and sparks behind anyone who dashes.
+	var mote := SphereMesh.new()
+	mote.radius = .05
+	mote.height = .1
+	mote.radial_segments = 6
+	mote.rings = 3
+	var shine := StandardMaterial3D.new()
+	shine.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	shine.vertex_color_use_as_albedo = true
+	shine.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mote.material = shine
+	for n in 6:
+		var trail := CPUParticles3D.new()
+		add_child(trail)
+		trail.mesh = mote
+		trail.amount = 34 if n == 5 else 26
+		trail.lifetime = .55 if n == 5 else .4
+		trail.emitting = false
+		trail.spread = 180.
+		trail.gravity = Vector3(0, .6, 0) if n == 5 else Vector3(0, -1.5, 0)
+		trail.initial_velocity_min = .15
+		trail.initial_velocity_max = .7 if n == 5 else 1.6
+		trail.scale_amount_min = .5
+		trail.scale_amount_max = 1.5
+		var fade := Gradient.new()
+		fade.set_color(0, Color(1, 1, 1, 1))
+		fade.set_color(1, Color(1, .8, .4, 0.))
+		trail.color_ramp = fade
+		wakes.append(trail)
 	beacon = room.make_whale(self, 3.8)
 	beacon.hide()
 
@@ -440,14 +570,14 @@ func intro() -> void:
 	phase = "title"
 	comics.quiet()
 	comics.close_page()
-	comics.ink(.9)
 	chapter = -1
 	tale = -1
 	voice_queue.clear()
 	chapter_time = 0
 	duration = 3.7
 	front.match_hud.hide()
-	front.home()
+	front.leave()
+	screens.title()
 	voice.stop()
 	star.show()
 	for doll in cast:
@@ -486,11 +616,15 @@ func next_card() -> void:
 			say(told)
 			duration = maxf(3.6, clips[told].get_length() + .85)
 		front.leave()
-		comics.tale(TALE[tale][0], TALE[tale][1], "SPACE  next page      ESC  choose mode")
+		if tale == 0:
+			screens.leave()
+			sound("whoosh")
+		sound("page")
+		comics.tale(TALE[tale][0], TALE[tale][1], "SPACE  next page      ESC  skip to the controls")
 		vista(0.)
 		return
 	if chapter >= 4:
-		select_mode()
+		show_controls()
 		return
 	phase = "story"
 	chapter += 1
@@ -499,6 +633,7 @@ func next_card() -> void:
 	say(key)
 	duration = maxf(4.4, clips[key].get_length() + 1.25)
 	front.leave()
+	sound("page")
 	portrait(0.)
 	# The star stays in Nell's hands for her page and out of the way for the others.
 	star.visible = chapter == 0
@@ -513,7 +648,7 @@ func next_card() -> void:
 		gift[1].strip_edges(),
 		PAGE_TINT[chapter],
 		camera.unproject_position(cast[chapter].position + Vector3(0, FACE[chapter] + .12, 0)),
-		"SPACE  next page      ESC  choose mode"
+		"SPACE  next page      ESC  skip to the controls"
 	)
 
 
@@ -565,7 +700,19 @@ func select_mode() -> void:
 	intro()
 	comics.close_page()
 	phase = "select"
-	front.modes()
+	screens.modes()
+
+
+## How to play: both players' keys, side by side, with who each of them is playing.
+func show_controls() -> void:
+	if phase in ["prologue", "story"] or phase == "title":
+		sound("whoosh")
+	end_log()
+	intro()
+	comics.close_page()
+	voice.stop()
+	phase = "controls"
+	screens.controls(pilot_for_seat)
 
 
 func pilot_names() -> Array:
@@ -585,9 +732,32 @@ func side_names() -> Array:
 ## The robots take the harbor lights with them when they walk out.
 func set_dusk(amount: float) -> void:
 	dusk = amount
-	room.sun.light_energy = lerpf(.86, .05, amount)
-	room.world_env.ambient_light_energy = lerpf(.83, .15, amount)
 	star_lamp.light_energy = 4.2 * amount
+
+
+## The scene's lights follow the sky: a warm low sun at kickoff, moonlight and court lamps by the
+## whistle, and near darkness when the robots walk out.
+func light_scene() -> void:
+	var night: float = harbor.dusk
+	var cold: float = harbor.cold
+	var out: float = dusk
+	room.sun.light_energy = lerpf(1.35, .16, night) * (1. - .8 * out)
+	room.sun.light_color = Color("#ffb67a").lerp(Color("#9db4ff"), maxf(night, cold * .7))
+	room.fill.light_energy = lerpf(.55, .34, night) * (1. - .5 * out)
+	room.world_env.ambient_light_energy = lerpf(.7, .42, night) * (1. - .55 * out)
+	room.world_env.fog_light_color = Color("#f0a27e").lerp(Color("#28305a"), night).lerp(
+		Color("#3a4f78"), cold * .6
+	)
+	# The lighting sky is re-baked whenever it changes, so it changes in small steps, not every frame.
+	var step: float = snappedf(night, .05)
+	if not is_equal_approx(step, sky_step):
+		sky_step = step
+		room.sky_paint.sky_horizon_color = Color("#ffb07a").lerp(Color("#3b3f70"), step)
+		room.sky_paint.sky_top_color = Color("#4a4f8c").lerp(Color("#10142c"), step)
+	court_glow.set_shader_parameter("night", night)
+	court_glow.set_shader_parameter("seconds", harbor.seconds)
+	for wash in ring_glow:
+		wash.light_energy = lerpf(.9, 2.1, night) * (.35 if phase in ["title", "prologue", "story"] else 1.)
 
 
 func select_pilots() -> void:
@@ -611,16 +781,34 @@ func select_pilots() -> void:
 
 func handle(cmd: String) -> void:
 	match cmd:
-		"next":
+		"next", "begin":
 			next_card()
-		"skip", "select":
+		"skip", "select", "modes":
+			if phase == "controls":
+				sound("whoosh")
 			select_mode()
+		"controls":
+			show_controls()
+		"swap":
+			pilot_for_seat.assign([pilot_for_seat[1], pilot_for_seat[0]])
+			screens.controls(pilot_for_seat)
+		"story":
+			intro()
+			screens.leave()
+			next_card()
 		"replay":
 			intro()
 		"rivals", "crews", "free":
 			crews = cmd == "crews"
 			free = cmd == "free"
-			select_pilots()
+			# The mode card already explained the game, so go straight to the court.
+			for seat in 2:
+				cast[pilot_for_seat[seat]].tag.text = (
+					"P%d  %s" % [seat + 1, Game.NAMES[pilot_for_seat[seat]]]
+				)
+			sound("whoosh")
+			screens.leave()
+			start()
 		"pilots":
 			select_pilots()
 		"nell", "rafi":
@@ -832,7 +1020,7 @@ func next_line() -> void:
 		)
 
 
-func sound(key: String) -> void:
+func sound(key: String, louder: float = 0., pitch: float = 1.) -> void:
 	# One copy of a sound per frame, on the next free layer, so effects overlap without cutting off.
 	var frame := Engine.get_process_frames()
 	if not clips.has(key) or sfx_frame.get(key, -1) == frame:
@@ -841,11 +1029,31 @@ func sound(key: String) -> void:
 	var layer: AudioStreamPlayer = sfx_pool[sfx_turn]
 	sfx_turn = (sfx_turn + 1) % sfx_pool.size()
 	layer.stream = clips[key]
+	layer.volume_db = -7. + float(MIX.get(key, 0.)) + louder
+	layer.pitch_scale = pitch
 	if DisplayServer.get_name() != "headless":
 		layer.play()
 
 
+## Something happened out on the water. The farther away, the quieter.
+func heard(kind: String, where: Vector3, power: float) -> void:
+	var far: float = maxf(8., camera.global_position.distance_to(where))
+	var louder: float = 20. * log(power * 22. / far) / log(10.)
+	if louder > -26.:
+		sound(kind, clampf(louder, -26., 2.), randf_range(.9, 1.08))
+
+
 func _input(ev: InputEvent) -> void:
+	# A click or a gamepad button works like a key on the title and the story pages.
+	if (
+		(ev is InputEventMouseButton or ev is InputEventJoypadButton)
+		and ev.pressed
+		and phase in ["title", "prologue", "story"]
+	):
+		if phase != "title" or screens.title_key():
+			next_card()
+		get_viewport().set_input_as_handled()
+		return
 	if not ev is InputEventKey or not ev.pressed or ev.echo:
 		return
 	var k: int = ev.physical_keycode
@@ -856,12 +1064,23 @@ func _input(ev: InputEvent) -> void:
 	if k == KEY_B:
 		room.life.reduced = not room.life.reduced
 		return
+	if phase == "title" and k != KEY_ESCAPE:
+		# Any key: the first finishes the title, the next starts the story.
+		if screens.title_key():
+			next_card()
+		get_viewport().set_input_as_handled()
+		return
 	if k == KEY_ESCAPE:
 		match phase:
 			"brief":
 				select_pilots()
-			"title", "story", "prologue", "pilots", "end":
-				select_mode()
+			"title", "story", "prologue":
+				show_controls()
+			"controls", "pilots", "end":
+				handle("modes")
+			"select":
+				sound("ui_back")
+				show_controls()
 			"pause":
 				handle("resume")
 			"play":
@@ -1052,6 +1271,7 @@ func present(e: Dictionary) -> void:
 		"goal":
 			dock_lights.signal_crew(e.team, true)
 			harbor.cheer(e.team)
+			sound("crowd_cheer")
 			goal_pose = positions.duplicate()
 			scoring_team = e.team
 			goal_spot = Vector3(Game.RING if scoring_team == 0 else -Game.RING, Game.HEIGHT, 0)
@@ -1266,16 +1486,12 @@ func _process(dt: float) -> void:
 	)
 	if not is_equal_approx(dusk, float(sim.union)):
 		set_dusk(move_toward(dusk, float(sim.union), dt * .75))
-	if phase in ["walk_on", "play", "pause"]:
-		# The picture turns to print for the pause after a goal or a walkout, then clears.
-		comics.ink(.9 if phase == "play" and sim.tick < sim.restart_until else 0.)
-	elif phase in ["whistle", "end"]:
-		comics.ink(.9)
 	# Sunset at kickoff, deep dusk by the whistle, and night if the robots take the lights.
 	var night := .08
 	if phase in ["play", "pause", "whistle", "end"]:
 		night = .08 + .7 * clampf(float(sim.tick) / maxf(1., float(sim.end_tick)), 0., 1.)
 	harbor.animate(dt, night, float(room.life.storm), dusk, room.life.reduced)
+	light_scene()
 	if phase in ["walk_on", "play", "whistle"]:
 		next_line()
 	if phase == "walk_on":
@@ -1287,15 +1503,26 @@ func _process(dt: float) -> void:
 				"%s serves in %d  ·  Nell attacks right  →   Rafi attacks left  ←"
 				% [Game.NAMES[sim.owner], ceili(WALK_ON_SECONDS - chapter_time)]
 			)
+		# Three, two, one, go: a number on the screen and a beep for each.
+		var count: int = ceili(WALK_ON_SECONDS - chapter_time - .2)
+		if count != last_count and count >= 1 and count <= 3:
+			last_count = count
+			sound("count")
+			comics.pop(str(count), get_viewport().get_visible_rect().size * Vector2(.5, .4), Color("#fff0cf"), true)
 		if chapter_time >= WALK_ON_SECONDS:
 			phase = "play"
+			last_count = -1
 			sound("whistle")
+			sound("count_go")
+			comics.pop("GO!", get_viewport().get_visible_rect().size * Vector2(.5, .4), Color("#ffd27a"), true)
 			update_hud()
 	if phase == "whistle":
 		whistle_age += dt
 		if whistle_age >= 1.45:
 			phase = "end"
 			comics.quiet()
+			sound("fanfare")
+			sound("crowd_cheer", -4.)
 			harbor.finale(-1 if sim.goals[0] == sim.goals[1] else int(sim.goals[1] > sim.goals[0]))
 			if free:
 				var a: int = sim.goals[0]
@@ -1343,9 +1570,12 @@ func _process(dt: float) -> void:
 				),
 				clock + .42 * i
 			)
-		if benchmark_only and phase == "title" and chapter_time > .75:
+		if benchmark_only and phase == "title" and chapter_time > 2.5:
+			# Long enough on the title for the harbor to be drawn once, as it is for a player.
 			start()
-		elif phase == "title" and chapter_time > duration:
+		elif phase == "title" and (test_session or capture_session) and chapter_time > 5.5:
+			# Unattended runs do not wait for a key on the title.
+			screens.title_key()
 			next_card()
 		elif phase == "prologue":
 			vista(chapter_time)
@@ -1492,6 +1722,24 @@ func render_game(dt: float, alpha: float) -> void:
 	shade_disc.position = Vector3(star.position.x, .055, star.position.z)
 	anchor_ring.visible = sim.powers and phase in ["walk_on", "play", "pause"] and not sim.on_strike(3)
 	anchor_ring.position = cast[3].position + Vector3.UP * .045
+	anchor_ring.rotation.y += dt * (2.4 if sim.anchoring else .5)
+	var hold: Color = tint_of(3)
+	anchor_paint.albedo_color = hold
+	anchor_paint.emission = hold
+	anchor_paint.emission_energy_multiplier = 3.2 if sim.anchoring else 1.4
+	anchor_note.visible = anchor_ring.visible
+	anchor_note.modulate = hold
+	anchor_note.position = cast[3].position + Vector3(0, .32, Game.ANCHOR_RANGE + .25)
+	# Sparks trail anyone who is dashing, and motes follow the star.
+	for i in 5:
+		var spark: CPUParticles3D = wakes[i]
+		spark.emitting = action and sim.tick < sim.dash_until[i]
+		spark.position = cast[i].position + Vector3.UP * .7
+		spark.color = tint_of(i)
+	var tail: CPUParticles3D = wakes[5]
+	tail.emitting = action
+	tail.position = star.position
+	tail.color = Color("#ffe08a")
 	anchor_ring.scale = anchor_ring.scale.lerp(
 		Vector3.ONE * (1.06 if sim.anchoring else 1.), 1. - exp(-dt * 10.)
 	)
@@ -1541,19 +1789,17 @@ func capture(dt: float) -> void:
 		name_out = "01-title"
 	elif phase == "story" and capture_step == chapter + 1:
 		name_out = "%02d-%s" % [chapter + 2, Performer.FILES[chapter]]
-	elif phase == "select" and capture_step == 6:
-		name_out = "07-modes"
-	elif phase == "pilots" and capture_step == 7:
-		name_out = "08-pilots"
-	elif phase == "brief" and capture_step == 8:
-		name_out = "09-brief"
-	elif phase == "play" and capture_step == 9 and sim.tick > 22:
+	elif phase == "controls" and capture_step == 6 and chapter_time > .9:
+		name_out = "07-controls"
+	elif phase == "select" and capture_step == 7 and chapter_time > .9:
+		name_out = "08-modes"
+	elif phase == "play" and capture_step == 8 and sim.tick > 22:
 		name_out = "10-court"
-	elif phase == "play" and capture_step == 10 and sim.surge_until > sim.tick and not free:
+	elif phase == "play" and capture_step == 9 and sim.surge_until > sim.tick and not free:
 		name_out = "11-beacon"
-	elif phase == "play" and free and capture_step == 10 and sim.tick > 420:
+	elif phase == "play" and free and capture_step == 9 and sim.tick > 420:
 		name_out = "11-promises"
-	elif phase == "play" and free and capture_step == 11 and sim.union and dusk > .9:
+	elif phase == "play" and free and capture_step == 10 and sim.union and dusk > .9:
 		name_out = "12-union"
 	elif phase == "end":
 		name_out = "13-final" if free else "12-final"
@@ -1565,12 +1811,10 @@ func capture(dt: float) -> void:
 		get_viewport().get_texture().get_image().save_png(capture_path + "/" + name_out + ".png")
 	capture_step += 1
 	capture_timer = 0
-	if phase == "select":
+	if phase == "controls":
+		handle("modes")
+	elif phase == "select":
 		handle(capture_mode)
-	elif phase == "pilots":
-		handle("nell")
-	elif phase == "brief":
-		start()
 	elif phase == "end":
 		if not frame_samples.is_empty():
 			frame_samples.sort()
