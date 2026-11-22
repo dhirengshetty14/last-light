@@ -11,9 +11,9 @@ static func drivers(s, style: int) -> Array:
 		var dest: Vector2 = s.floor_ball()
 		if s.owner == i:
 			dest = s.goal(i)
-			if style == 2 and p.x < 2.55:
-				dest.y = 1.65 if i == 0 else -1.65
-			var in_range := p.distance_to(s.goal(i)) <= 2.68
+			if style == 2 and p.x < Game.RING - Game.SHOT_RANGE - .5:
+				dest.y = 2.5 if i == 0 else -2.5
+			var in_range := p.distance_to(s.goal(i)) <= Game.SHOT_RANGE - .12
 			inputs[i]["shoot"] = in_range
 			inputs[i]["dash"] = not in_range and s.tick % 90 < 10 and style >= 2
 			inputs[i]["pass"] = (
@@ -21,8 +21,11 @@ static func drivers(s, style: int) -> Array:
 			)
 		elif s.owner >= 0 and s.team[s.owner] == s.team[i]:
 			dest = Vector2(
-				clampf(s.pos[s.owner].x + 2.1, -4.6, 4.45), 1.4 if s.pos[s.owner].y < 0 else -1.4
+				clampf(s.pos[s.owner].x + 3.2, -Game.BOUNDS.x, Game.BOUNDS.x - .5),
+				2.2 if s.pos[s.owner].y < 0 else -2.2
 			)
+		elif s.owner < 0 and s.target == i:
+			dest = s.reception_point
 		elif s.owner >= 0:
 			inputs[i]["dash"] = p.distance_to(dest) < (.94 if style == 3 else .67)
 		inputs[i]["move"] = p.direction_to(dest) if p.distance_to(dest) > .14 else Vector2.ZERO

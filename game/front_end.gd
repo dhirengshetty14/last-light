@@ -17,6 +17,7 @@ var story_root: Control
 var story_name: Label
 var story_line: Label
 var story_key: Label
+var story_power: Label
 
 
 func ink_label(content: String, size: int, tint: Color, serif: bool = false) -> Label:
@@ -100,16 +101,19 @@ func _ready() -> void:
 	credits.anchor_right = 1
 	credits.offset_left = 50
 	credits.offset_right = -48
-	credits.offset_top = -145
+	credits.offset_top = -182
 	credits.offset_bottom = -15
 	credits.add_theme_constant_override("separation", 5)
 	story_name = ink_label("", 15, Color("#f3c984"))
 	story_line = ink_label("", 29, Color("#fff4df"), true)
 	story_key = ink_label("", 14, Color("#b7cbc9"))
+	# One plain line under each introduction: what this character can do that nobody else can.
+	story_power = ink_label("", 21, Color("#ffd98a"), true)
+	story_power.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	story_name.add_theme_font_override("font", INSTRUMENT_FACE)
 	story_line.add_theme_font_override("font", BODY_FACE)
 	story_line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	for c in [story_name, story_line, story_key]:
+	for c in [story_name, story_line, story_power, story_key]:
 		credits.add_child(c)
 	story_root.hide()
 	home()
@@ -195,10 +199,12 @@ func leave() -> void:
 	story_root.hide()
 
 
-func dialogue(who: String, line: String, key: String) -> void:
+func dialogue(who: String, line: String, key: String, power: String = "") -> void:
 	active = false
 	root.hide()
 	story_root.show()
 	story_name.text = who
 	story_line.text = line
 	story_key.text = key
+	story_power.text = power
+	story_power.visible = power != ""

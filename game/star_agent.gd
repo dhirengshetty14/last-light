@@ -17,6 +17,12 @@ var model_plan: Dictionary = {}
 var model_status := "Local policy"
 var local_preference := ""
 const MAX_PLAN_TICKS := 720
+## Promises each captain has kept and broken with this robot, carried from match to match.
+var ledger := [[0, 0], [0, 0]]
+## How often a social choice is made at random. Practice matches raise it. Live play keeps it at
+## zero: nobody wants a robot that walks out on a coin flip.
+var social_exploration := 0.0
+const SOCIAL_TRIES := 8
 
 
 func change_team() -> void:
@@ -119,6 +125,41 @@ func social_snapshot() -> Dictionary:
 	return {"reputation": reputation.duplicate(), "last_deal": last_deal.duplicate()}
 
 
+## Everything this robot carries into its next match.
+func memory() -> Dictionary:
+	var out := social_snapshot()
+	out["ledger"] = ledger.duplicate(true)
+	return out
+
+
+## Pick one of this robot's legal social choices. `usual` is the written rule. The robot leaves it
+## only when its own record in the same situation says, beyond luck, that another choice has done
+## better. With little or mixed evidence it keeps the rule, so learning cannot make it worse by chance.
+func choose_social(
+	context: String, legal: Array, usual: String, rng: RandomNumberGenerator
+) -> String:
+	explored = rng.randf() < social_exploration
+	if explored:
+		return str(legal[rng.randi_range(0, legal.size() - 1)])
+	var habit: Array = estimates.get(context + "/" + usual, [0, 0, 0])
+	if int(habit[0]) < SOCIAL_TRIES:
+		return usual
+	var pick := usual
+	var best := float(habit[2]) / float(habit[0])
+	var floor_value := best
+	for move in legal:
+		var row: Array = estimates.get(context + "/" + str(move), [0, 0, 0])
+		if str(move) == usual or int(row[0]) < SOCIAL_TRIES:
+			continue
+		var value := float(row[2]) / float(row[0])
+		# Grades run from 0 to 100, so 50 bounds their spread.
+		var doubt := 50. * sqrt(1. / float(row[0]) + 1. / float(habit[0]))
+		if value - floor_value > doubt and value > best:
+			best = value
+			pick = str(move)
+	return pick
+
+
 func restore_social(data: Dictionary) -> void:
 	var scores: Variant = data.get("reputation")
 	var notes: Variant = data.get("last_deal")
@@ -130,3 +171,15 @@ func restore_social(data: Dictionary) -> void:
 	for i in 2:
 		reputation[i] = clampi(int(scores[i]), -2, 3)
 		last_deal[i] = str(notes[i]).left(120)
+	var book: Variant = data.get("ledger")
+	if not book is Array or book.size() != 2:
+		return
+	for i in 2:
+		var row: Variant = book[i]
+		if not row is Array or row.size() != 2:
+			return
+		for n in row:
+			if not (n is int or n is float) or not is_finite(n):
+				return
+	for i in 2:
+		ledger[i] = [clampi(int(book[i][0]), 0, 99), clampi(int(book[i][1]), 0, 99)]

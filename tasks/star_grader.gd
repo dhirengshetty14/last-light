@@ -5,10 +5,10 @@ const Game = preload("res://game/star_match.gd")
 func trial(cfg: Dictionary, k: int) -> int:
 	var s = Game.new()
 	s.setup(k * 113 + 17, false)
-	s.pos[0] = Vector2(1.66 + k * .063, (-1. if k % 2 else 1.) * (1.25 + k * .06))
-	s.pos[2] = Vector2(.43, -.30)
-	s.pos[3] = Vector2(3.20, -signf(s.pos[0].y) * 1.72)
-	s.pos[4] = Vector2(.10, signf(s.pos[0].y) * 1.15)
+	s.pos[0] = Vector2(Game.RING - 3.62 + k * .063, (-1. if k % 2 else 1.) * (1.25 + k * .06))
+	s.pos[2] = Vector2(Game.RING - 4.85, -.30)
+	s.pos[3] = Vector2(Game.RING - 2.08, -signf(s.pos[0].y) * 1.72)
+	s.pos[4] = Vector2(Game.RING - 5.18, signf(s.pos[0].y) * 1.15)
 	s.ball = s.hand(0)
 	while s.tick < 160:
 		var c: Dictionary = {

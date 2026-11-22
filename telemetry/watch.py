@@ -44,7 +44,11 @@ def stage(paths):
                         continue
                     row = {
                         "run": header["run"],
-                        "mode": ("Open Crews" if header["open_crews"] else "Rivals")
+                        "mode": (
+                            "Free Agents"
+                            if header.get("free_agents")
+                            else ("Open Crews" if header["open_crews"] else "Rivals")
+                        )
                         if "open_crews" in header
                         else None,
                         "origin": header.get("origin", "fixture"),

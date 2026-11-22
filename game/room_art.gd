@@ -14,6 +14,8 @@ var tape: Node3D
 var markers: Array = []
 var dust: Array = []
 var sun: DirectionalLight3D
+var world_env: Environment
+var window: MeshInstance3D
 var projected: Array = []
 var training_buoy: Node3D
 var practice := false
@@ -117,6 +119,7 @@ func build(arena: bool = false) -> void:
 	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	var world := WorldEnvironment.new()
 	world.environment = env
+	world_env = env
 	add_child(world)
 	sun = DirectionalLight3D.new()
 	add_child(sun)
@@ -343,7 +346,7 @@ func window_plate() -> void:
 	var direction := (Vector3(0, 1.26, -.60) - view).normalized()
 	var plane := QuadMesh.new()
 	plane.size = Vector2(54.8, 30.82)
-	var window := draw(self, plane, view + direction * 36., mat)
+	window = draw(self, plane, view + direction * 36., mat)
 	window.look_at(view, Vector3.UP, true)
 	window.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(life)

@@ -113,8 +113,9 @@ def scout(raw):
         "name": name,
         "team": number(raw["team"], 0, 1),
         "position": position(raw["position"]),
-        "blue_goals": number(raw["blue_goals"], 0, 3),
-        "gold_goals": number(raw["gold_goals"], 0, 3),
+        # Free Agents is a timed match, so a crew can score well past three.
+        "blue_goals": number(raw["blue_goals"], 0, 99),
+        "gold_goals": number(raw["gold_goals"], 0, 99),
         "star_holder": member(raw["star_holder"], (*NAMES, "loose")),
         "nearby": neighbors,
         "nell_rafi_shots_passes_lane": tendencies,

@@ -1,99 +1,99 @@
 {
   "held_out_start": 52001,
-  "policy_callback_p95_us": 7,
+  "policy_callback_p95_us": 8,
   "policy_callback_p99_us": 8,
-  "timing_samples": 1690,
+  "timing_samples": 2514,
   "trained": {
-    "agent_events": 84,
-    "blue_goals": 82,
+    "agent_events": 85,
+    "blue_goals": 79,
     "blue_wins": 26,
     "episodes": 32,
     "failures_by_action": {
-      "advance": 484,
-      "cut": 176,
-      "drive": 113,
-      "finish": 8,
-      "flank": 69,
-      "lead": 169,
-      "outlet": 251,
-      "pass": 9,
-      "press": 259,
-      "recover": 384,
-      "screen": 266
+      "advance": 803,
+      "cut": 295,
+      "drive": 169,
+      "finish": 20,
+      "flank": 161,
+      "lead": 185,
+      "outlet": 246,
+      "pass": 8,
+      "press": 538,
+      "recover": 397,
+      "screen": 764
     },
-    "full_passes": 714,
-    "gold_goals": 37,
+    "full_passes": 972,
+    "gold_goals": 22,
     "graded_by_robot": {
-      "Morrow": 968,
-      "Pip": 969,
-      "Zip": 965
-    },
-    "rivals": {
-      "blue_wins": 20,
-      "matches": 21
-    },
-    "verified_actions": 2902
-  },
-  "training": {
-    "agent_events": 320,
-    "blue_goals": 320,
-    "blue_wins": 100,
-    "episodes": 120,
-    "failures_by_action": {
-      "advance": 2143,
-      "cut": 1113,
-      "drive": 407,
-      "finish": 83,
-      "flank": 263,
-      "lead": 775,
-      "outlet": 940,
-      "pass": 56,
-      "press": 801,
-      "recover": 1329,
-      "screen": 1134
-    },
-    "full_passes": 2717,
-    "gold_goals": 120,
-    "graded_by_robot": {
-      "Morrow": 3938,
-      "Pip": 3964,
-      "Zip": 3859
-    },
-    "rivals": {
-      "blue_wins": 77,
-      "matches": 80
-    },
-    "verified_actions": 11761
-  },
-  "untrained": {
-    "agent_events": 94,
-    "blue_goals": 95,
-    "blue_wins": 31,
-    "episodes": 32,
-    "failures_by_action": {
-      "advance": 785,
-      "cut": 68,
-      "drive": 202,
-      "finish": 28,
-      "flank": 51,
-      "lead": 213,
-      "outlet": 144,
-      "pass": 1,
-      "press": 358,
-      "recover": 376,
-      "screen": 575
-    },
-    "full_passes": 709,
-    "gold_goals": 35,
-    "graded_by_robot": {
-      "Morrow": 1172,
-      "Pip": 1175,
-      "Zip": 1163
+      "Morrow": 1519,
+      "Pip": 1529,
+      "Zip": 1510
     },
     "rivals": {
       "blue_wins": 21,
       "matches": 21
     },
-    "verified_actions": 3510
+    "verified_actions": 4558
+  },
+  "training": {
+    "agent_events": 314,
+    "blue_goals": 325,
+    "blue_wins": 106,
+    "episodes": 120,
+    "failures_by_action": {
+      "advance": 2888,
+      "cut": 1677,
+      "drive": 495,
+      "finish": 96,
+      "flank": 211,
+      "lead": 1000,
+      "outlet": 1319,
+      "pass": 111,
+      "press": 1622,
+      "recover": 1646,
+      "screen": 2848
+    },
+    "full_passes": 3717,
+    "gold_goals": 70,
+    "graded_by_robot": {
+      "Morrow": 5895,
+      "Pip": 5949,
+      "Zip": 5786
+    },
+    "rivals": {
+      "blue_wins": 80,
+      "matches": 80
+    },
+    "verified_actions": 17630
+  },
+  "untrained": {
+    "agent_events": 84,
+    "blue_goals": 84,
+    "blue_wins": 28,
+    "episodes": 32,
+    "failures_by_action": {
+      "advance": 735,
+      "cut": 243,
+      "drive": 138,
+      "finish": 22,
+      "flank": 65,
+      "lead": 203,
+      "outlet": 275,
+      "pass": 7,
+      "press": 463,
+      "recover": 425,
+      "screen": 792
+    },
+    "full_passes": 919,
+    "gold_goals": 18,
+    "graded_by_robot": {
+      "Morrow": 1430,
+      "Pip": 1435,
+      "Zip": 1422
+    },
+    "rivals": {
+      "blue_wins": 21,
+      "matches": 21
+    },
+    "verified_actions": 4287
   }
 }

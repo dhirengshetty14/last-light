@@ -30,12 +30,29 @@ func verify(path: String) -> bool:
 	var head: Variant = JSON.parse_string(f.get_line())
 	if not head is Dictionary or head.get("input_schema") != 1:
 		return false
-	var s = Game.new()
-	s.setup(int(head.seed), head.open_crews)
+	var s = (
+		Game.new()
+		if head.get("court_version", 5) >= 6
+		else preload("res://tools/court_rules_v5.gd").new()
+	)
+	if head.get("court_version", 5) >= 6 and head.get("court_version", 5) < 9:
+		# Versions 6 to 8 were played on the earlier, smaller court.
+		s.call("old_court")
+	if head.get("free_agents", false):
+		# Dynamic calls: the frozen version 5 court has neither the third argument nor a draft.
+		s.call("setup", int(head.seed), false, true)
+	else:
+		s.setup(int(head.seed), head.open_crews)
+	if head.get("court_version", 5) >= 6:
+		s.set("powers", head.get("court_version", 5) >= 7)
+		s.set("social_learning", head.get("social_learning", false))
 	s.moving_passes = head.get("moving_passes", false)
 	s.relay_rules = head.get("dock_relay", false)
 	s.legacy_replay = not head.has("starting_relationships")
 	s.configure_agents(head.starting_policy, head.get("starting_relationships", {}))
+	if head.get("free_agents", false):
+		# The draft reads each robot's restored memory, so it runs after the policy is loaded.
+		s.call("draft")
 	var inputs: Dictionary = {}
 	var expected: Array = []
 	var remote: Dictionary = {}
@@ -62,7 +79,8 @@ func verify(path: String) -> bool:
 			if not inputs.has(at):
 				inputs[at] = []
 			inputs[at].append(event)
-	if not sealed or final_tick > Game.END:
+	# Free Agents runs a longer clock and adds time when the robots form a union.
+	if not sealed or final_tick > 60 * 400:
 		return false
 	var stick := [Vector2.ZERO, Vector2.ZERO]
 	var cursor := 0

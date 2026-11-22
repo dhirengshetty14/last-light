@@ -51,7 +51,54 @@ func check_relay() -> void:
 	check(s.relay_passes == 0, "intercepted throw cannot complete relay")
 
 
+func check_court_geometry() -> void:
+	var game = court(true)
+	game.team[2] = 0
+	game.pos[2] = game.pos[0] + Vector2(.8, .4)
+	game.step([{"pass": true}, {}])
+	check(game.target == 1, "regular pass picks Rafi even with a closer machine ally")
+	game.possession(1, "fixture")
+	game.step([{}, {"pass": true}])
+	check(game.target == 0, "second human can pass directly back to Nell")
+	game.possession(0, "fixture")
+	game.step([{"ally_pass": true}, {}])
+	check(game.target == 2, "separate ally button reaches a recruited machine")
+	game.team[2] = 1
+	game.tick += 15
+	game.throw_checks.flight = true
+	game.possession(2, "catch")
+	var turnover_grade: Dictionary = (
+		game.events.filter(func(e): return e.kind == "action_grade").back()
+	)
+	check(
+		not turnover_grade["pass"] and not turnover_grade.flags[3],
+		"a receiver who switched sides cannot earn teammate credit"
+	)
+	var defend = court()
+	defend.pos[0] = Vector2.ZERO
+	defend.pos[2] = Vector2(.55, 0)
+	defend.safe_until = 0
+	defend.burst(2, Vector2.LEFT)
+	defend.step([{"dash": true, "move": Vector2.UP}, {}])
+	check(
+		defend.owner == 0 and defend.dash_until[0] > defend.tick,
+		"timed dodge protects the carrier from a live tackle"
+	)
+	for backwards in [false, true]:
+		var rim = court()
+		rim.launch(0, false)
+		rim.ball = Vector3(
+			Game.RING + (.04 if backwards else -.04), Game.HEIGHT, 0. if backwards else .61
+		)
+		rim.motion = Vector3(-5. if backwards else 5., 0, 0)
+		rim.advance_ball()
+		check(rim.goals == [0, 0], "backwards entry and clipping the rim cannot score")
+		if not backwards:
+			check(rim.motion.x < 0., "a clipped shot rebounds onto the deck")
+
+
 func _initialize() -> void:
+	check_court_geometry()
 	check_relay()
 	var moving = court()
 	moving.pos[0] = Vector2(-3.5, -1.)
@@ -68,7 +115,7 @@ func _initialize() -> void:
 	check(moving.owner == 1, "ballistic lead reaches a receiver sprinting across court")
 	for seat in 2:
 		var s = court()
-		s.pos[seat] = Vector2(3.5, -.5)
+		s.pos[seat] = Vector2(Game.RING - 1.78, -.5)
 		s.possession(seat, "fixture")
 		check(s.launch(seat, false), "legal human shot")
 		check(not s.launch(seat, false), "airborne ball cannot launch twice")
@@ -96,7 +143,7 @@ func _initialize() -> void:
 	s.pos[2] = s.pos[0] + Vector2(.71, 0)
 	s.invite(0)
 	check(s.team[2] == 0, "Pip accepts")
-	s.pos[2] = Vector2(1.8, .85)
+	s.pos[2] = Vector2(-1.6, .85)
 	s.pos[1] = Vector2(-3., -1.5)
 	s.launch(0, true, 2)
 	for t in 90:

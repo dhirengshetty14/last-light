@@ -7,7 +7,7 @@ uniform float strength = 0.;
 uniform bool still = false;
 varying float along;
 void vertex() {
-	along = clamp(.5 + direction * (MODEL_MATRIX[3].x / 11.), 0., 1.);
+	along = clamp(.5 + direction * (MODEL_MATRIX[3].x / 17.7), 0., 1.);
 }
 void fragment() {
 	float wave = 1. - smoothstep(0., .32, abs(along - mix(-.15, 1.15, progress)));
