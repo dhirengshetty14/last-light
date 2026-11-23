@@ -1,0 +1,171 @@
+{
+  "run": "1795295028549960-87",
+  "mode": "Open Crews",
+  "model": "gemini-3.1-flash-lite",
+  "provider": "Vertex AI express",
+  "pilot_input": "Automated two-seat keyboard inputs",
+  "pilots": [
+    "Rafi",
+    "Nell"
+  ],
+  "score_gold_blue": [
+    3,
+    1
+  ],
+  "match_ticks": 1057,
+  "active_match_s": 17.62,
+  "movie_s": 49.35,
+  "kickoff_in_movie_s": 28.98,
+  "results_in_movie_s": 46.56,
+  "robots": [
+    {
+      "name": "Pip",
+      "requests": 3,
+      "http_200_playbooks": 3,
+      "round_trip_ms": [
+        1650,
+        1278,
+        1083
+      ],
+      "median_round_trip_ms": 1278,
+      "applied_tactics": 10,
+      "first_use_after_reply_ms": [
+        350,
+        133
+      ],
+      "status_counts": {
+        "stale": 1,
+        "available": 2
+      },
+      "example": {
+        "tick": 579,
+        "tactic": "cut",
+        "public_reason": "Intercepting Morrow's passing lane to force a turnover."
+      }
+    },
+    {
+      "name": "Morrow",
+      "requests": 3,
+      "http_200_playbooks": 2,
+      "round_trip_ms": [
+        1101,
+        1304
+      ],
+      "median_round_trip_ms": 1202.5,
+      "applied_tactics": 22,
+      "first_use_after_reply_ms": [
+        500,
+        1550
+      ],
+      "status_counts": {
+        "available": 2,
+        "cancelled": 1
+      },
+      "example": {
+        "tick": 130,
+        "tactic": "flank",
+        "public_reason": "Creating lateral space to bypass Nell's defensive shadow."
+      }
+    },
+    {
+      "name": "Zip",
+      "requests": 3,
+      "http_200_playbooks": 2,
+      "round_trip_ms": [
+        1317,
+        1231
+      ],
+      "median_round_trip_ms": 1274.0,
+      "applied_tactics": 24,
+      "first_use_after_reply_ms": [
+        300,
+        1050
+      ],
+      "status_counts": {
+        "available": 2,
+        "cancelled": 1
+      },
+      "example": {
+        "tick": 165,
+        "tactic": "outlet",
+        "public_reason": "Positioning for a quick transition pass to maximize open space."
+      }
+    }
+  ],
+  "live_frames": {
+    "frame_intervals": 1645,
+    "median_ms": 10.14,
+    "p95_ms": 14.06,
+    "max_ms": 32.61,
+    "last_play_to_first_results_ms": 18.5
+  },
+  "audio": {
+    "source": "Decoded AAC from the MP4, compared with the recorded character performances",
+    "verified_voice_cues": 10,
+    "voice_correlations": [
+      {
+        "clip": "nell_intro.wav",
+        "correlation": 0.984,
+        "audio_start_s": 3.418,
+        "offset_ms": -25
+      },
+      {
+        "clip": "rafi_intro.wav",
+        "correlation": 0.883,
+        "audio_start_s": 8.376,
+        "offset_ms": -9
+      },
+      {
+        "clip": "pip_intro.wav",
+        "correlation": 0.986,
+        "audio_start_s": 12.137,
+        "offset_ms": -16
+      },
+      {
+        "clip": "morrow_intro.wav",
+        "correlation": 0.974,
+        "audio_start_s": 16.375,
+        "offset_ms": -10
+      },
+      {
+        "clip": "zip_intro.wav",
+        "correlation": 0.943,
+        "audio_start_s": 19.846,
+        "offset_ms": -18
+      },
+      {
+        "clip": "pip_join.wav",
+        "correlation": 0.887,
+        "audio_start_s": 29.122,
+        "offset_ms": -14
+      },
+      {
+        "clip": "morrow_steal.wav",
+        "correlation": 0.948,
+        "audio_start_s": 32.489,
+        "offset_ms": -19
+      },
+      {
+        "clip": "morrow_steal.wav",
+        "correlation": 0.95,
+        "audio_start_s": 35.508,
+        "offset_ms": -20
+      },
+      {
+        "clip": "pip_outlet.wav",
+        "correlation": 0.866,
+        "audio_start_s": 40.326,
+        "offset_ms": -9
+      },
+      {
+        "clip": "pip_outlet.wav",
+        "correlation": 0.826,
+        "audio_start_s": 45.957,
+        "offset_ms": -18
+      }
+    ]
+  },
+  "movie_fps": 30,
+  "capture_queue_drops": 0,
+  "capture_write_errors": 0
+}

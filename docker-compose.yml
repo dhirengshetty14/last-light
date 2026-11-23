@@ -1,0 +1,29 @@
+# Docker for Last Light. Nothing here is a shared or public service: the radio only listens on
+# this machine (127.0.0.1), and it uses the Gemini key from your own shell.
+services:
+  # Every headless check. Add --full for the six full-game playtests.
+  checks:
+    build: .
+    image: last-light-checks:4.7.2
+
+  # The steal test: do the robots stop handing the star to pilots who keep robbing them?
+  # Writes learning/steal_eval.json in your checkout.
+  steal-eval:
+    image: last-light-checks:4.7.2
+    build: .
+    entrypoint: ["godot", "--headless", "--path", "/game", "-s", "learning/steal_eval.gd", "--", "--series=16"]
+    volumes:
+      - ./learning:/game/learning
+
+  # The Gemini playbook host for the robots. On a Mac the game starts its own copy when it finds a
+  # key, so you only need this on Windows or Linux, or to run the host apart from the game.
+  #   export GEMINI_API_KEY=...            (your own key, in your shell, never in this repo)
+  #   docker compose up radio
+  #   LAST_LIGHT_RADIO_URL=http://127.0.0.1:8947 godot --path .
+  radio:
+    build: ./host
+    image: last-light-radio:dev
+    environment:
+      GEMINI_API_KEY: ${GEMINI_API_KEY:?Set GEMINI_API_KEY in your shell first}
+    ports:
+      - "127.0.0.1:8947:8947"

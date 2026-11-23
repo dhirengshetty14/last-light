@@ -1,0 +1,102 @@
+{
+  "held_out_start": 52001,
+  "policy_callback_p95_us": 11,
+  "policy_callback_p99_us": 13,
+  "timing_samples": 19642,
+  "trained": {
+    "agent_events": 948,
+    "blue_goals": 946,
+    "blue_wins": 32,
+    "episodes": 32,
+    "failures_by_action": {
+      "advance": 6303,
+      "cut": 4427,
+      "drive": 793,
+      "evade": 68,
+      "finish": 132,
+      "flank": 280,
+      "lead": 2461,
+      "outlet": 2388,
+      "pass": 126,
+      "press": 3006,
+      "recover": 3188,
+      "screen": 3814
+    },
+    "full_passes": 11141,
+    "gold_goals": 92,
+    "graded_by_robot": {
+      "Morrow": 12676,
+      "Pip": 12812,
+      "Zip": 12639
+    },
+    "rivals": {
+      "blue_wins": 21,
+      "matches": 21
+    },
+    "verified_actions": 38127
+  },
+  "training": {
+    "agent_events": 3249,
+    "blue_goals": 3302,
+    "blue_wins": 117,
+    "episodes": 120,
+    "failures_by_action": {
+      "advance": 21281,
+      "cut": 17648,
+      "drive": 2190,
+      "evade": 848,
+      "finish": 509,
+      "flank": 1327,
+      "lead": 9583,
+      "outlet": 11499,
+      "pass": 727,
+      "press": 9989,
+      "recover": 12178,
+      "screen": 15983
+    },
+    "full_passes": 41504,
+    "gold_goals": 325,
+    "graded_by_robot": {
+      "Morrow": 48380,
+      "Pip": 48402,
+      "Zip": 48484
+    },
+    "rivals": {
+      "blue_wins": 80,
+      "matches": 80
+    },
+    "verified_actions": 145266
+  },
+  "untrained": {
+    "agent_events": 799,
+    "blue_goals": 810,
+    "blue_wins": 31,
+    "episodes": 32,
+    "failures_by_action": {
+      "advance": 5978,
+      "cut": 4645,
+      "drive": 660,
+      "evade": 362,
+      "finish": 108,
+      "flank": 372,
+      "lead": 2168,
+      "outlet": 2718,
+      "pass": 287,
+      "press": 2263,
+      "recover": 3860,
+      "screen": 5038
+    },
+    "full_passes": 11238,
+    "gold_goals": 94,
+    "graded_by_robot": {
+      "Morrow": 13307,
+      "Pip": 13214,
+      "Zip": 13176
+    },
+    "rivals": {
+      "blue_wins": 21,
+      "matches": 21
+    },
+    "verified_actions": 39697
+  }
+}

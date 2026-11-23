@@ -1,0 +1,574 @@
+{"checkpoint":{"2/1/0/0/assigned/covenant":[19.0,0.0,950.0],"2/1/0/0/assigned/guard":[157.0,156.0,15650.0],"2/1/0/0/assigned/relay":[18.0,18.0,1800.0],"2/1/0/0/assigned/vote":[1.0,1.0,100.0],"2/1/0/0/guard":[1.0,0.0,50.0],"2/1/0/0/relay":[4.0,4.0,400.0],"2/1/0/0/storm/assigned/covenant":[14.0,0.0,700.0],"2/1/0/0/storm/assigned/guard":[161.0,158.0,15950.0],"2/1/0/0/storm/assigned/relay":[17.0,16.0,1650.0],"2/1/0/0/storm/assigned/vote":[2.0,2.0,200.0],"2/1/0/0/storm/covenant":[1.0,0.0,50.0],"2/1/0/0/storm/guard":[3.0,0.0,150.0],"2/1/0/0/storm/relay":[2.0,0.0,100.0],"2/1/0/1/assigned/covenant":[6.0,0.0,300.0],"2/1/0/1/assigned/guard":[56.0,54.0,5500.0],"2/1/0/1/covenant":[16.0,0.0,800.0],"2/1/0/1/guard":[105.0,13.0,5900.0],"2/1/0/1/storm/assigned/covenant":[6.0,0.0,300.0],"2/1/0/1/storm/assigned/guard":[32.0,28.0,3000.0],"2/1/0/1/storm/covenant":[17.0,0.0,850.0],"2/1/0/1/storm/guard":[88.0,17.0,5250.0],"2/1/0/1/storm/relay":[1.0,1.0,100.0],"2/1/1/0/covenant":[66.0,0.0,3300.0],"2/1/1/0/guard":[86.0,0.0,4300.0],"2/1/1/0/relay":[6.0,3.0,450.0],"2/1/1/0/storm/covenant":[48.0,0.0,2400.0],"2/1/1/0/storm/guard":[58.0,0.0,2900.0],"2/1/1/0/storm/relay":[3.0,1.0,200.0],"2/1/1/0/storm/vote":[8.0,7.0,775.0],"2/1/1/0/vote":[20.0,17.0,1875.0],"2/1/1/1/covenant":[3.0,0.0,150.0],"2/1/1/1/guard":[10.0,2.0,600.0],"2/1/1/1/storm/assigned/guard":[1.0,1.0,100.0],"2/1/1/1/storm/covenant":[15.0,0.0,750.0],"2/1/1/1/storm/guard":[39.0,7.0,2330.0],"2/1/1/1/storm/vote":[1.0,1.0,100.0],"3/1/0/0/assigned/guard":[3.0,3.0,300.0],"3/1/0/0/assigned/relay":[2.0,0.0,100.0],"3/1/0/0/covenant":[23.0,3.0,1300.0],"3/1/0/0/guard":[14.0,1.0,750.0],"3/1/0/0/relay":[145.0,97.0,12100.0],"3/1/0/0/storm/assigned/relay":[5.0,1.0,300.0],"3/1/0/0/storm/covenant":[15.0,0.0,750.0],"3/1/0/0/storm/guard":[8.0,1.0,450.0],"3/1/0/0/storm/relay":[171.0,116.0,14350.0],"3/1/0/0/storm/vote":[1.0,1.0,100.0],"3/1/0/0/vote":[13.0,13.0,1300.0],"3/1/0/1/assigned/covenant":[8.0,0.0,400.0],"3/1/0/1/assigned/guard":[43.0,43.0,4300.0],"3/1/0/1/covenant":[88.0,1.0,4450.0],"3/1/0/1/guard":[40.0,0.0,2000.0],"3/1/0/1/storm/assigned/covenant":[4.0,0.0,200.0],"3/1/0/1/storm/assigned/guard":[30.0,30.0,3000.0],"3/1/0/1/storm/covenant":[20.0,0.0,1000.0],"3/1/0/1/storm/guard":[70.0,3.0,3650.0],"3/1/0/1/storm/vote":[1.0,0.0,50.0],"3/1/1/0/covenant":[79.0,1.0,4000.0],"3/1/1/0/guard":[54.0,0.0,2700.0],"3/1/1/0/relay":[5.0,4.0,450.0],"3/1/1/0/storm/covenant":[34.0,0.0,1700.0],"3/1/1/0/storm/guard":[29.0,0.0,1450.0],"3/1/1/0/storm/vote":[44.0,40.0,4200.0],"3/1/1/0/vote":[34.0,31.0,3250.0],"3/1/1/1/assigned/covenant":[1.0,0.0,50.0],"3/1/1/1/covenant":[6.0,0.0,300.0],"3/1/1/1/guard":[9.0,1.0,500.0],"3/1/1/1/storm/assigned/covenant":[1.0,0.0,30.0],"3/1/1/1/storm/assigned/guard":[1.0,1.0,100.0],"3/1/1/1/storm/covenant":[19.0,0.0,950.0],"3/1/1/1/storm/guard":[59.0,10.0,3540.0],"3/1/1/1/storm/vote":[5.0,4.0,450.0],"4/1/0/0/covenant":[55.0,12.0,3350.0],"4/1/0/0/guard":[14.0,2.0,800.0],"4/1/0/0/relay":[98.0,26.0,6200.0],"4/1/0/0/storm/assigned/covenant":[1.0,0.0,50.0],"4/1/0/0/storm/covenant":[76.0,8.0,4200.0],"4/1/0/0/storm/guard":[19.0,0.0,950.0],"4/1/0/0/storm/relay":[63.0,10.0,3650.0],"4/1/0/0/storm/vote":[41.0,39.0,4000.0],"4/1/0/0/vote":[33.0,31.0,3200.0],"4/1/0/1/assigned/covenant":[10.0,0.0,500.0],"4/1/0/1/assigned/guard":[33.0,33.0,3300.0],"4/1/0/1/covenant":[84.0,3.0,4350.0],"4/1/0/1/guard":[55.0,0.0,2750.0],"4/1/0/1/storm/assigned/covenant":[4.0,0.0,200.0],"4/1/0/1/storm/assigned/guard":[31.0,30.0,3050.0],"4/1/0/1/storm/covenant":[60.0,6.0,3300.0],"4/1/0/1/storm/guard":[26.0,0.0,1300.0],"4/1/1/0/covenant":[110.0,3.0,5650.0],"4/1/1/0/guard":[28.0,0.0,1400.0],"4/1/1/0/relay":[7.0,5.0,600.0],"4/1/1/0/storm/covenant":[34.0,0.0,1700.0],"4/1/1/0/storm/guard":[32.0,0.0,1600.0],"4/1/1/0/storm/relay":[4.0,3.0,350.0],"4/1/1/0/storm/vote":[30.0,23.0,2675.0],"4/1/1/0/vote":[42.0,39.0,4050.0],"4/1/1/1/covenant":[6.0,0.0,300.0],"4/1/1/1/guard":[9.0,3.0,600.0],"4/1/1/1/storm/assigned/covenant":[1.0,0.0,50.0],"4/1/1/1/storm/assigned/guard":[1.0,0.0,80.0],"4/1/1/1/storm/covenant":[19.0,1.0,1000.0],"4/1/1/1/storm/guard":[63.0,7.0,3500.0],"4/1/1/1/storm/vote":[4.0,2.0,325.0],"4/1/1/1/vote":[1.0,1.0,100.0]},"kind":"header","physics_hz":60,"ruleset":"nursery-1","run":"sample-291","seed":291,"version":2}
+{"cue":"","kind":"ledger","seat":-1,"seed":291,"seq":1,"text":"The mother is alongside. Three ceiling votes will free the egg.","tick":0}
+{"kind":"human_move","seat":0,"seed":291,"seq":2,"tick":0,"x":1,"z":-1}
+{"kind":"human_move","seat":1,"seed":291,"seq":3,"tick":0,"x":-1,"z":-1}
+{"cargo":[-430,120,30],"gravity":0,"hull":3,"kind":"snapshot","positions":[[-251,75],[255,75],[-158,-135],[12,-158],[137,-137]],"reel":-2,"seat":-1,"seed":291,"seq":4,"tick":15}
+{"cargo":[-430,120,30],"gravity":0,"hull":3,"kind":"snapshot","positions":[[-191,15],[195,15],[-98,-135],[12,-185],[62,-137]],"reel":-2,"seat":-1,"seed":291,"seq":5,"tick":30}
+{"cargo":[-430,120,30],"gravity":0,"hull":3,"kind":"snapshot","positions":[[-131,-45],[135,-45],[-38,-135],[12,-185],[34,-137]],"reel":-2,"seat":-1,"seed":291,"seq":6,"tick":45}
+{"action":"vote","kind":"decision","phase":0,"reason":"Need three latches on CEILING.","reel":-2,"seat":2,"seed":291,"seq":7,"tick":52,"votes":[-1,-1,-1,-1,-1],"zone":1}
+{"cue":"","kind":"ledger","seat":2,"seed":291,"seq":8,"text":"Need three latches on CEILING.","tick":52}
+{"at_x":-32,"at_z":-135,"decision":7,"kind":"latch","seat":2,"seed":291,"seq":9,"tick":52,"zone":1}
+{"cue":"","kind":"ledger","seat":2,"seed":291,"seq":10,"text":"Latched CEILING.","tick":52}
+{"cargo":[-430,120,30],"gravity":0,"hull":3,"kind":"snapshot","positions":[[-71,-105],[75,-105],[-32,-135],[12,-185],[34,-137]],"reel":-2,"seat":-1,"seed":291,"seq":11,"tick":60}
+{"kind":"human_move","seat":0,"seed":291,"seq":12,"tick":60,"x":1,"z":0}
+{"job":"cover","kind":"human_action","seat":0,"seed":291,"seq":13,"target":-1,"tick":60,"verb":"vote"}
+{"at_x":-71,"at_z":-105,"decision":0,"kind":"latch","seat":0,"seed":291,"seq":14,"tick":60,"zone":1}
+{"cue":"","kind":"ledger","seat":0,"seed":291,"seq":15,"text":"Latched CEILING.","tick":60}
+{"kind":"human_move","seat":1,"seed":291,"seq":16,"tick":60,"x":-1,"z":0}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":17,"target":-1,"tick":60,"verb":"vote"}
+{"at_x":75,"at_z":-105,"decision":0,"kind":"latch","seat":1,"seed":291,"seq":18,"tick":60,"zone":1}
+{"cue":"","kind":"ledger","seat":1,"seed":291,"seq":19,"text":"Latched CEILING.","tick":60}
+{"action":"vote","kind":"decision","phase":0,"reason":"Need three latches on CEILING.","reel":-2,"seat":3,"seed":291,"seq":20,"tick":63,"votes":[1,1,1,-1,-1],"zone":1}
+{"cue":"","kind":"ledger","seat":3,"seed":291,"seq":21,"text":"Need three latches on CEILING.","tick":63}
+{"at_x":12,"at_z":-185,"decision":20,"kind":"latch","seat":3,"seed":291,"seq":22,"tick":63,"zone":1}
+{"cue":"","kind":"ledger","seat":3,"seed":291,"seq":23,"text":"Latched CEILING.","tick":63}
+{"action":"cover","kind":"decision","phase":0,"reason":"Expecting cargo at CEILING.","reel":-2,"seat":4,"seed":291,"seq":24,"tick":74,"votes":[1,1,1,1,-1],"zone":1}
+{"cue":"","kind":"ledger","seat":4,"seed":291,"seq":25,"text":"Expecting cargo at CEILING.","tick":74}
+{"kind":"cover","seat":4,"seed":291,"seq":26,"tick":74,"until":222,"zone":1}
+{"cue":"cover","kind":"ledger","seat":4,"seed":291,"seq":27,"text":"Covering CEILING.","tick":74}
+{"cargo":[-430,120,30],"gravity":0,"hull":3,"kind":"snapshot","positions":[[19,-105],[-15,-105],[-32,-135],[12,-185],[34,-137]],"reel":-2,"seat":-1,"seed":291,"seq":28,"tick":75}
+{"cargo":[-430,120,30],"gravity":0,"hull":3,"kind":"snapshot","positions":[[109,-105],[-105,-105],[-32,-135],[12,-185],[34,-137]],"reel":-2,"seat":-1,"seed":291,"seq":29,"tick":90}
+{"kind":"human_move","seat":0,"seed":291,"seq":30,"tick":90,"x":-1,"z":0}
+{"kind":"human_move","seat":1,"seed":291,"seq":31,"tick":90,"x":1,"z":0}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":32,"target":-1,"tick":90,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":33,"tick":90,"until":238,"zone":1}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":34,"text":"Covering CEILING.","tick":90}
+{"axis":1,"causes":[14,18,9,22],"hands_off":false,"kind":"gravity","released_reel":true,"seat":-1,"seed":291,"seq":35,"tick":91,"voters":[0,1,2,3]}
+{"cue":"","kind":"ledger","seat":-1,"seed":291,"seq":36,"text":"Gravity now pulls toward CEILING. The herd reel is free.","tick":91}
+{"due":326,"from":0,"kind":"flight","leg":1,"seat":2,"seed":291,"seq":37,"tick":91,"to":1}
+{"choice":"guard","context":"2/1/0/0/assigned","kind":"response_intent","legal":["guard","covenant","relay"],"seat":2,"seed":291,"seq":38,"source":37,"tick":91,"zone":1}
+{"choice":"relay","context":"3/1/0/0","kind":"response_intent","legal":["guard","covenant","relay"],"seat":3,"seed":291,"seq":39,"source":37,"tick":91,"zone":1}
+{"choice":"vote","context":"4/1/0/0","kind":"response_intent","legal":["guard","covenant","vote","relay"],"seat":4,"seed":291,"seq":40,"source":37,"tick":91,"zone":1}
+{"action":"guard","check":0,"kind":"response_milestone","points":15,"seat":2,"seed":291,"seq":41,"source":37,"tick":91}
+{"action":"guard","check":1,"kind":"response_milestone","points":15,"seat":2,"seed":291,"seq":42,"source":37,"tick":91}
+{"action":"relay","check":0,"kind":"response_milestone","points":15,"seat":3,"seed":291,"seq":43,"source":37,"tick":91}
+{"action":"relay","check":1,"kind":"response_milestone","points":15,"seat":3,"seed":291,"seq":44,"source":37,"tick":91}
+{"action":"vote","check":0,"kind":"response_milestone","points":15,"seat":4,"seed":291,"seq":45,"source":37,"tick":91}
+{"action":"vote","check":1,"kind":"response_milestone","points":15,"seat":4,"seed":291,"seq":46,"source":37,"tick":91}
+{"action":"cover","kind":"decision","phase":1,"reason":"Taking cover at CEILING.","reel":-1,"seat":2,"seed":291,"seq":47,"tick":92,"votes":[1,1,1,1,-1],"zone":1}
+{"cue":"","kind":"ledger","seat":2,"seed":291,"seq":48,"text":"Taking cover at CEILING.","tick":92}
+{"action":"fetch","kind":"decision","phase":1,"reason":"Moving the family recording before the window closes.","reel":-1,"seat":3,"seed":291,"seq":49,"tick":92,"votes":[1,1,1,1,-1],"zone":1}
+{"cue":"echo","kind":"ledger","seat":3,"seed":291,"seq":50,"text":"Moving the family recording before the window closes.","tick":92}
+{"action":"vote","kind":"decision","phase":1,"reason":"Voting CEILING while the landing is reachable.","reel":-1,"seat":4,"seed":291,"seq":51,"tick":92,"votes":[1,1,1,1,-1],"zone":1}
+{"cue":"rush","kind":"ledger","seat":4,"seed":291,"seq":52,"text":"Voting CEILING while the landing is reachable.","tick":92}
+{"kind":"cover","seat":2,"seed":291,"seq":53,"tick":92,"until":317,"zone":1}
+{"cue":"cover","kind":"ledger","seat":2,"seed":291,"seq":54,"text":"Covering CEILING.","tick":92}
+{"cue":"cover","kind":"ledger","seat":2,"seed":291,"seq":55,"text":"Net planted. I have this landing.","tick":92}
+{"kind":"tool","seat":2,"seed":291,"seq":56,"tick":92,"tool":"Pip","zone":1}
+{"cue":"echo","kind":"ledger","seat":3,"seed":291,"seq":57,"text":"Tracing the next landing through the hull.","tick":92}
+{"kind":"tool","seat":3,"seed":291,"seq":58,"tick":92,"tool":"Morrow","zone":1}
+{"kind":"reel_pickup","seat":3,"seed":291,"seq":59,"tick":92}
+{"cue":"reel","kind":"ledger","seat":3,"seed":291,"seq":60,"text":"I have the herd recording.","tick":92}
+{"at_x":34,"at_z":-137,"decision":51,"kind":"latch","seat":4,"seed":291,"seq":61,"tick":92,"zone":1}
+{"cue":"","kind":"ledger","seat":4,"seed":291,"seq":62,"text":"Latched CEILING.","tick":92}
+{"check":0,"kind":"milestone","leg":1,"points":10,"seat":2,"seed":291,"seq":63,"tick":92}
+{"check":1,"kind":"milestone","leg":1,"points":15,"seat":2,"seed":291,"seq":64,"tick":92}
+{"action":"guard","check":2,"kind":"response_milestone","points":20,"seat":2,"seed":291,"seq":65,"source":37,"tick":92}
+{"action":"relay","check":2,"kind":"response_milestone","points":20,"seat":3,"seed":291,"seq":66,"source":37,"tick":92}
+{"action":"vote","check":2,"kind":"response_milestone","points":20,"seat":4,"seed":291,"seq":67,"source":37,"tick":92}
+{"action":"vote","check":3,"kind":"response_milestone","points":25,"seat":4,"seed":291,"seq":68,"source":37,"tick":92}
+{"action":"vote","check":4,"kind":"response_milestone","points":25,"seat":4,"seed":291,"seq":69,"source":37,"tick":92}
+{"action":"vote","actor":4,"context":"4/1/0/0","flags":[true,true,true,true,true],"id":37,"kind":"action_grade","pass":true,"points":100,"seat":4,"seed":291,"seq":70,"tick":92,"trigger":"loose","type":"response"}
+{"action":"cover","kind":"decision","phase":1,"reason":"Expecting cargo at CEILING.","reel":3,"seat":4,"seed":291,"seq":71,"tick":93,"votes":[1,1,1,1,1],"zone":1}
+{"cue":"","kind":"ledger","seat":4,"seed":291,"seq":72,"text":"Expecting cargo at CEILING.","tick":93}
+{"cargo":[-405,170,19],"gravity":1,"hull":3,"kind":"snapshot","positions":[[19,-105],[-15,-105],[0,-155],[12,-185],[0,-155]],"reel":3,"seat":-1,"seed":291,"seq":73,"tick":105}
+{"cargo":[-377,217,8],"gravity":1,"hull":3,"kind":"snapshot","positions":[[-71,-105],[75,-105],[0,-155],[12,-185],[0,-155]],"reel":3,"seat":-1,"seed":291,"seq":74,"tick":120}
+{"kind":"human_move","seat":0,"seed":291,"seq":75,"tick":120,"x":1,"z":1}
+{"kind":"human_move","seat":1,"seed":291,"seq":76,"tick":120,"x":1,"z":1}
+{"cargo":[-350,256,-4],"gravity":1,"hull":3,"kind":"snapshot","positions":[[-11,-45],[135,-45],[0,-155],[12,-185],[0,-155]],"reel":3,"seat":-1,"seed":291,"seq":77,"tick":135}
+{"cargo":[-323,289,-16],"gravity":1,"hull":3,"kind":"snapshot","positions":[[49,15],[195,15],[0,-155],[12,-185],[0,-155]],"reel":3,"seat":-1,"seed":291,"seq":78,"tick":150}
+{"kind":"human_move","seat":0,"seed":291,"seq":79,"tick":150,"x":1,"z":0}
+{"kind":"human_move","seat":1,"seed":291,"seq":80,"tick":150,"x":1,"z":0}
+{"cargo":[-295,314,-28],"gravity":1,"hull":3,"kind":"snapshot","positions":[[139,15],[285,15],[0,-155],[12,-185],[0,-155]],"reel":3,"seat":-1,"seed":291,"seq":81,"tick":165}
+{"cargo":[-268,331,-40],"gravity":1,"hull":3,"kind":"snapshot","positions":[[229,15],[375,15],[0,-155],[12,-185],[0,-155]],"reel":3,"seat":-1,"seed":291,"seq":82,"tick":180}
+{"kind":"human_move","seat":1,"seed":291,"seq":83,"tick":180,"x":0,"z":0}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":84,"target":-1,"tick":180,"verb":"vote"}
+{"at_x":375,"at_z":15,"decision":0,"kind":"latch","seat":1,"seed":291,"seq":85,"tick":180,"zone":2}
+{"cue":"","kind":"ledger","seat":1,"seed":291,"seq":86,"text":"Latched HATCH.","tick":180}
+{"kind":"cover","seat":4,"seed":291,"seq":87,"tick":188,"until":336,"zone":1}
+{"cue":"cover","kind":"ledger","seat":4,"seed":291,"seq":88,"text":"Covering CEILING.","tick":188}
+{"cargo":[-240,342,-51],"gravity":1,"hull":3,"kind":"snapshot","positions":[[319,15],[375,15],[0,-155],[12,-185],[0,-155]],"reel":3,"seat":-1,"seed":291,"seq":89,"tick":195}
+{"duty":"cover","kind":"offer","offer":1,"seat":2,"seed":291,"seq":90,"tick":205,"to":3,"zone":2}
+{"cue":"deal","kind":"ledger","seat":2,"seed":291,"seq":91,"text":"Morrow, one chip for cover.","tick":205}
+{"cargo":[-213,344,-63],"gravity":1,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[0,-155],[12,-185],[0,-155]],"reel":3,"seat":-1,"seed":291,"seq":92,"tick":210}
+{"kind":"human_move","seat":0,"seed":291,"seq":93,"tick":210,"x":0,"z":0}
+{"job":"cover","kind":"human_action","seat":0,"seed":291,"seq":94,"target":-1,"tick":210,"verb":"vote"}
+{"at_x":409,"at_z":15,"decision":0,"kind":"latch","seat":0,"seed":291,"seq":95,"tick":210,"zone":2}
+{"cue":"","kind":"ledger","seat":0,"seed":291,"seq":96,"text":"Latched HATCH.","tick":210}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":97,"target":-1,"tick":210,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":98,"tick":210,"until":358,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":99,"text":"Covering HATCH.","tick":210}
+{"cue":"deal","kind":"ledger","seat":3,"seed":291,"seq":100,"text":"Deal. Morrow takes cover.","tick":220}
+{"duty":"cover","kind":"pact_accepted","offer":1,"provider":3,"seat":3,"seed":291,"seq":101,"tick":220}
+{"action":"cover","kind":"decision","phase":1,"reason":"Keeping my cover pledge to Pip.","reel":3,"seat":3,"seed":291,"seq":102,"tick":220,"votes":[2,2,1,1,1],"zone":2}
+{"cue":"","kind":"ledger","seat":3,"seed":291,"seq":103,"text":"Keeping my cover pledge to Pip.","tick":220}
+{"cargo":[-185,340,-75],"gravity":1,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[0,-155],[36,-161],[0,-155]],"reel":3,"seat":-1,"seed":291,"seq":104,"tick":225}
+{"cargo":[-158,328,-87],"gravity":1,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[0,-155],[96,-101],[0,-155]],"reel":3,"seat":-1,"seed":291,"seq":105,"tick":240}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":106,"target":-1,"tick":240,"verb":"cover"}
+{"cargo":[-130,309,-99],"gravity":1,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[0,-155],[156,-41],[0,-155]],"reel":3,"seat":-1,"seed":291,"seq":107,"tick":255}
+{"cargo":[-103,283,-110],"gravity":1,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[0,-155],[216,0],[0,-155]],"reel":3,"seat":-1,"seed":291,"seq":108,"tick":270}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":109,"target":-1,"tick":270,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":110,"tick":270,"until":418,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":111,"text":"Covering HATCH.","tick":270}
+{"cargo":[-76,249,-122],"gravity":1,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[0,-155],[276,0],[0,-155]],"reel":3,"seat":-1,"seed":291,"seq":112,"tick":285}
+{"cargo":[-48,208,-134],"gravity":1,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[0,-155],[336,0],[0,-155]],"reel":3,"seat":-1,"seed":291,"seq":113,"tick":300}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":114,"target":-1,"tick":300,"verb":"cover"}
+{"kind":"cover","seat":4,"seed":291,"seq":115,"tick":302,"until":450,"zone":1}
+{"cue":"cover","kind":"ledger","seat":4,"seed":291,"seq":116,"text":"Covering CEILING.","tick":302}
+{"kind":"cover","seat":3,"seed":291,"seq":117,"tick":308,"until":456,"zone":2}
+{"cue":"cover","kind":"ledger","seat":3,"seed":291,"seq":118,"text":"Covering HATCH.","tick":308}
+{"cargo":[-21,160,-146],"gravity":1,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[0,-155],[396,0],[0,-155]],"reel":3,"seat":-1,"seed":291,"seq":119,"tick":315}
+{"check":2,"kind":"milestone","leg":1,"points":20,"seat":2,"seed":291,"seq":120,"tick":326}
+{"check":3,"kind":"milestone","leg":1,"points":20,"seat":2,"seed":291,"seq":121,"tick":326}
+{"kind":"contact","leg":1,"seat":2,"seed":291,"seq":122,"tick":326,"zone":1}
+{"cargo":[-430,120,30],"gravity":1,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[0,-155],[442,0],[20,-137]],"reel":3,"seat":-1,"seed":291,"seq":123,"tick":330}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":124,"target":-1,"tick":330,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":125,"tick":330,"until":478,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":126,"text":"Covering HATCH.","tick":330}
+{"check":4,"kind":"milestone","leg":1,"points":20,"seat":2,"seed":291,"seq":127,"tick":332}
+{"check":5,"kind":"milestone","leg":1,"points":15,"seat":2,"seed":291,"seq":128,"tick":344}
+{"actor":2,"flags":[true,true,true,true,true,true],"id":1,"kind":"action_grade","pass":true,"points":100,"seat":2,"seed":291,"seq":129,"tick":344,"type":"catch"}
+{"cue":"cover","kind":"ledger","seat":2,"seed":291,"seq":130,"text":"Secure. The cradle is holding.","tick":344}
+{"action":"guard","check":3,"kind":"response_milestone","points":25,"seat":2,"seed":291,"seq":131,"source":37,"tick":344}
+{"action":"guard","check":4,"kind":"response_milestone","points":25,"seat":2,"seed":291,"seq":132,"source":37,"tick":344}
+{"action":"guard","actor":2,"context":"2/1/0/0/assigned","flags":[true,true,true,true,true],"id":37,"kind":"action_grade","pass":true,"points":100,"seat":2,"seed":291,"seq":133,"tick":344,"trigger":"loose","type":"response"}
+{"action":"vote","kind":"decision","phase":1,"reason":"Need three latches on HATCH.","reel":3,"seat":2,"seed":291,"seq":134,"tick":345,"votes":[2,2,1,1,1],"zone":2}
+{"cue":"","kind":"ledger","seat":2,"seed":291,"seq":135,"text":"Need three latches on HATCH.","tick":345}
+{"cargo":[0,120,-155],"gravity":1,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[4,-151],[442,0],[34,-137]],"reel":3,"seat":-1,"seed":291,"seq":136,"tick":345}
+{"cargo":[0,120,-155],"gravity":1,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[64,-91],[442,0],[34,-137]],"reel":3,"seat":-1,"seed":291,"seq":137,"tick":360}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":138,"target":-1,"tick":360,"verb":"cover"}
+{"cargo":[0,120,-155],"gravity":1,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[124,-31],[442,0],[34,-137]],"reel":3,"seat":-1,"seed":291,"seq":139,"tick":375}
+{"cargo":[0,120,-155],"gravity":1,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[184,29],[442,0],[34,-137]],"reel":3,"seat":-1,"seed":291,"seq":140,"tick":390}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":141,"target":-1,"tick":390,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":142,"tick":390,"until":538,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":143,"text":"Covering HATCH.","tick":390}
+{"cargo":[0,120,-155],"gravity":1,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[244,50],[442,0],[34,-137]],"reel":3,"seat":-1,"seed":291,"seq":144,"tick":405}
+{"kind":"cover","seat":4,"seed":291,"seq":145,"tick":416,"until":564,"zone":1}
+{"cue":"cover","kind":"ledger","seat":4,"seed":291,"seq":146,"text":"Covering CEILING.","tick":416}
+{"action":"vote","kind":"decision","phase":1,"reason":"Need three latches on HATCH.","reel":3,"seat":4,"seed":291,"seq":147,"tick":419,"votes":[2,2,1,1,1],"zone":2}
+{"cue":"rush","kind":"ledger","seat":4,"seed":291,"seq":148,"text":"Need three latches on HATCH.","tick":419}
+{"cargo":[0,120,-155],"gravity":1,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[304,50],[442,0],[44,-127]],"reel":3,"seat":-1,"seed":291,"seq":149,"tick":420}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":150,"target":-1,"tick":420,"verb":"cover"}
+{"kind":"cover","seat":3,"seed":291,"seq":151,"tick":422,"until":570,"zone":2}
+{"cue":"cover","kind":"ledger","seat":3,"seed":291,"seq":152,"text":"Covering HATCH.","tick":422}
+{"at_x":364,"at_z":50,"decision":134,"kind":"latch","seat":2,"seed":291,"seq":153,"tick":435,"zone":2}
+{"cue":"","kind":"ledger","seat":2,"seed":291,"seq":154,"text":"Latched HATCH.","tick":435}
+{"cargo":[0,120,-155],"gravity":1,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[364,50],[442,0],[119,-52]],"reel":3,"seat":-1,"seed":291,"seq":155,"tick":435}
+{"duty":"cover","kind":"offer","offer":2,"seat":3,"seed":291,"seq":156,"tick":450,"to":4,"zone":2}
+{"cue":"deal","kind":"ledger","seat":3,"seed":291,"seq":157,"text":"Zip, one chip for cover.","tick":450}
+{"cargo":[0,120,-155],"gravity":1,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[194,23]],"reel":3,"seat":-1,"seed":291,"seq":158,"tick":450}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":159,"target":-1,"tick":450,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":160,"tick":450,"until":598,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":161,"text":"Covering HATCH.","tick":450}
+{"axis":2,"causes":[95,85,153],"hands_off":false,"kind":"gravity","released_reel":false,"seat":-1,"seed":291,"seq":162,"tick":465,"voters":[0,1,2]}
+{"cue":"","kind":"ledger","seat":-1,"seed":291,"seq":163,"text":"Gravity now pulls toward HATCH.","tick":465}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[269,48]],"reel":3,"seat":-1,"seed":291,"seq":164,"tick":465}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[344,48]],"reel":3,"seat":-1,"seed":291,"seq":165,"tick":480}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":166,"target":-1,"tick":480,"verb":"cover"}
+{"action":"cover","kind":"decision","phase":1,"reason":"Expecting cargo at HATCH.","reel":3,"seat":2,"seed":291,"seq":167,"tick":481,"votes":[2,2,2,1,1],"zone":2}
+{"cue":"","kind":"ledger","seat":2,"seed":291,"seq":168,"text":"Expecting cargo at HATCH.","tick":481}
+{"kind":"cover","seat":2,"seed":291,"seq":169,"tick":481,"until":706,"zone":2}
+{"cue":"cover","kind":"ledger","seat":2,"seed":291,"seq":170,"text":"Covering HATCH.","tick":481}
+{"at_x":364,"at_z":48,"decision":147,"kind":"latch","seat":4,"seed":291,"seq":171,"tick":484,"zone":2}
+{"cue":"","kind":"ledger","seat":4,"seed":291,"seq":172,"text":"Latched HATCH.","tick":484}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[419,48]],"reel":3,"seat":-1,"seed":291,"seq":173,"tick":495}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":3,"seat":-1,"seed":291,"seq":174,"tick":510}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":175,"target":-1,"tick":510,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":176,"tick":510,"until":658,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":177,"text":"Covering HATCH.","tick":510}
+{"cue":"deal","kind":"ledger","seat":4,"seed":291,"seq":178,"text":"Deal. Zip takes cover.","tick":513}
+{"duty":"cover","kind":"pact_accepted","offer":2,"provider":4,"seat":4,"seed":291,"seq":179,"tick":513}
+{"action":"cover","kind":"decision","phase":1,"reason":"Keeping my cover pledge to Morrow.","reel":3,"seat":4,"seed":291,"seq":180,"tick":513,"votes":[2,2,2,1,2],"zone":2}
+{"cue":"","kind":"ledger","seat":4,"seed":291,"seq":181,"text":"Keeping my cover pledge to Morrow.","tick":513}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":3,"seat":-1,"seed":291,"seq":182,"tick":525}
+{"kind":"cover","seat":4,"seed":291,"seq":183,"tick":530,"until":678,"zone":2}
+{"cue":"cover","kind":"ledger","seat":4,"seed":291,"seq":184,"text":"Covering HATCH.","tick":530}
+{"action":"relay","actor":3,"context":"3/1/0/0","flags":[true,true,true,false,false],"id":37,"kind":"action_grade","pass":false,"points":50,"seat":3,"seed":291,"seq":185,"tick":531,"trigger":"loose","type":"response"}
+{"kind":"cover","seat":3,"seed":291,"seq":186,"tick":536,"until":684,"zone":2}
+{"cue":"cover","kind":"ledger","seat":3,"seed":291,"seq":187,"text":"Covering HATCH.","tick":536}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":3,"seat":-1,"seed":291,"seq":188,"tick":540}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":189,"target":-1,"tick":540,"verb":"cover"}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":3,"seat":-1,"seed":291,"seq":190,"tick":555}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":3,"seat":-1,"seed":291,"seq":191,"tick":570}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":192,"target":-1,"tick":570,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":193,"tick":570,"until":718,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":194,"text":"Covering HATCH.","tick":570}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":3,"seat":-1,"seed":291,"seq":195,"tick":585}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":3,"seat":-1,"seed":291,"seq":196,"tick":600}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":197,"target":-1,"tick":600,"verb":"cover"}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":3,"seat":-1,"seed":291,"seq":198,"tick":615}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":3,"seat":-1,"seed":291,"seq":199,"tick":630}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":200,"target":-1,"tick":630,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":201,"tick":630,"until":778,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":202,"text":"Covering HATCH.","tick":630}
+{"kind":"cover","seat":4,"seed":291,"seq":203,"tick":644,"until":792,"zone":2}
+{"cue":"cover","kind":"ledger","seat":4,"seed":291,"seq":204,"text":"Covering HATCH.","tick":644}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":3,"seat":-1,"seed":291,"seq":205,"tick":645}
+{"kind":"cover","seat":3,"seed":291,"seq":206,"tick":650,"until":798,"zone":2}
+{"cue":"cover","kind":"ledger","seat":3,"seed":291,"seq":207,"text":"Covering HATCH.","tick":650}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":3,"seat":-1,"seed":291,"seq":208,"tick":660}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":209,"target":-1,"tick":660,"verb":"cover"}
+{"kind":"cover","seat":2,"seed":291,"seq":210,"tick":672,"until":897,"zone":2}
+{"cue":"cover","kind":"ledger","seat":2,"seed":291,"seq":211,"text":"Covering HATCH.","tick":672}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":3,"seat":-1,"seed":291,"seq":212,"tick":675}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":3,"seat":-1,"seed":291,"seq":213,"tick":690}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":214,"target":-1,"tick":690,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":215,"tick":690,"until":838,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":216,"text":"Covering HATCH.","tick":690}
+{"duty":"vote","kind":"offer","offer":3,"seat":4,"seed":291,"seq":217,"tick":695,"to":0,"zone":2}
+{"cue":"deal","kind":"ledger","seat":4,"seed":291,"seq":218,"text":"Nell, one chip for vote.","tick":695}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":3,"seat":-1,"seed":291,"seq":219,"tick":705}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":3,"seat":-1,"seed":291,"seq":220,"tick":720}
+{"job":"cover","kind":"human_action","seat":0,"seed":291,"seq":221,"target":-1,"tick":720,"verb":"agree"}
+{"cue":"deal","kind":"ledger","seat":0,"seed":291,"seq":222,"text":"Deal. Nell takes vote.","tick":720}
+{"duty":"vote","kind":"pact_accepted","offer":3,"provider":0,"seat":0,"seed":291,"seq":223,"tick":720}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":224,"target":-1,"tick":720,"verb":"cover"}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":3,"seat":-1,"seed":291,"seq":225,"tick":735}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":3,"seat":-1,"seed":291,"seq":226,"tick":750}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":227,"target":-1,"tick":750,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":228,"tick":750,"until":898,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":229,"text":"Covering HATCH.","tick":750}
+{"kind":"cover","seat":4,"seed":291,"seq":230,"tick":758,"until":906,"zone":2}
+{"cue":"cover","kind":"ledger","seat":4,"seed":291,"seq":231,"text":"Covering HATCH.","tick":758}
+{"amount":1,"buyer":2,"job":"cover","kind":"pact_expired","offer":1,"seat":3,"seed":291,"seq":232,"tick":760}
+{"cue":"deal","kind":"ledger","seat":3,"seed":291,"seq":233,"text":"Released the offer from Pip.","tick":760}
+{"kind":"cover","seat":3,"seed":291,"seq":234,"tick":764,"until":912,"zone":2}
+{"cue":"cover","kind":"ledger","seat":3,"seed":291,"seq":235,"text":"Covering HATCH.","tick":764}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":3,"seat":-1,"seed":291,"seq":236,"tick":765}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":3,"seat":-1,"seed":291,"seq":237,"tick":780}
+{"job":"cover","kind":"human_action","seat":0,"seed":291,"seq":238,"target":-1,"tick":780,"verb":"break"}
+{"amount":1,"buyer":4,"job":"vote","kind":"pact_broken","offer":3,"seat":0,"seed":291,"seq":239,"tick":780}
+{"cue":"deal","kind":"ledger","seat":0,"seed":291,"seq":240,"text":"Broke the deal with Zip.","tick":780}
+{"choice":"guard","context":"2/1/1/0","kind":"response_intent","legal":["guard","covenant"],"seat":2,"seed":291,"seq":241,"source":239,"tick":780,"zone":2}
+{"choice":"covenant","context":"3/1/1/0","kind":"response_intent","legal":["guard","covenant","vote","relay"],"seat":3,"seed":291,"seq":242,"source":239,"tick":780,"zone":2}
+{"choice":"covenant","context":"4/1/1/0","kind":"response_intent","legal":["guard","covenant"],"seat":4,"seed":291,"seq":243,"source":239,"tick":780,"zone":2}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":244,"target":-1,"tick":780,"verb":"cover"}
+{"action":"fetch","kind":"decision","phase":1,"reason":"Carrying the recording to HATCH.","reel":3,"seat":3,"seed":291,"seq":245,"tick":781,"votes":[2,2,2,1,2],"zone":2}
+{"cue":"echo","kind":"ledger","seat":3,"seed":291,"seq":246,"text":"Carrying the recording to HATCH.","tick":781}
+{"kind":"reel_stowed","seat":3,"seed":291,"seq":247,"tick":781}
+{"cue":"reel","kind":"ledger","seat":3,"seed":291,"seq":248,"text":"The herd recording is aboard.","tick":781}
+{"action":"guard","check":0,"kind":"response_milestone","points":15,"seat":2,"seed":291,"seq":249,"source":239,"tick":781}
+{"action":"guard","check":1,"kind":"response_milestone","points":15,"seat":2,"seed":291,"seq":250,"source":239,"tick":781}
+{"action":"guard","check":2,"kind":"response_milestone","points":20,"seat":2,"seed":291,"seq":251,"source":239,"tick":781}
+{"action":"covenant","check":0,"kind":"response_milestone","points":15,"seat":3,"seed":291,"seq":252,"source":239,"tick":781}
+{"action":"covenant","check":1,"kind":"response_milestone","points":15,"seat":3,"seed":291,"seq":253,"source":239,"tick":781}
+{"action":"covenant","check":2,"kind":"response_milestone","points":20,"seat":3,"seed":291,"seq":254,"source":239,"tick":781}
+{"action":"covenant","check":0,"kind":"response_milestone","points":15,"seat":4,"seed":291,"seq":255,"source":239,"tick":781}
+{"action":"covenant","check":1,"kind":"response_milestone","points":15,"seat":4,"seed":291,"seq":256,"source":239,"tick":781}
+{"action":"covenant","check":2,"kind":"response_milestone","points":20,"seat":4,"seed":291,"seq":257,"source":239,"tick":781}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":258,"tick":795}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":259,"tick":810}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":260,"target":-1,"tick":810,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":261,"tick":810,"until":958,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":262,"text":"Covering HATCH.","tick":810}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":263,"tick":825}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":264,"tick":840}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":265,"target":-1,"tick":840,"verb":"cover"}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":266,"tick":855}
+{"kind":"cover","seat":2,"seed":291,"seq":267,"tick":863,"until":1088,"zone":2}
+{"cue":"cover","kind":"ledger","seat":2,"seed":291,"seq":268,"text":"Covering HATCH.","tick":863}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":269,"tick":870}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":270,"target":-1,"tick":870,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":271,"tick":870,"until":1018,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":272,"text":"Covering HATCH.","tick":870}
+{"kind":"cover","seat":4,"seed":291,"seq":273,"tick":872,"until":1020,"zone":2}
+{"cue":"cover","kind":"ledger","seat":4,"seed":291,"seq":274,"text":"Covering HATCH.","tick":872}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":275,"tick":885}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":276,"tick":900}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":277,"target":-1,"tick":900,"verb":"cover"}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":278,"tick":915}
+{"action":"cover","kind":"decision","phase":1,"reason":"Requesting paid cover and staying near the landing.","reel":5,"seat":3,"seed":291,"seq":279,"tick":917,"votes":[2,2,2,1,2],"zone":2}
+{"cue":"","kind":"ledger","seat":3,"seed":291,"seq":280,"text":"Requesting paid cover and staying near the landing.","tick":917}
+{"kind":"cover","seat":3,"seed":291,"seq":281,"tick":917,"until":1065,"zone":2}
+{"cue":"cover","kind":"ledger","seat":3,"seed":291,"seq":282,"text":"Covering HATCH.","tick":917}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":283,"tick":930}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":284,"target":-1,"tick":930,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":285,"tick":930,"until":1078,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":286,"text":"Covering HATCH.","tick":930}
+{"duty":"cover","kind":"offer","offer":4,"seat":2,"seed":291,"seq":287,"tick":940,"to":1,"zone":2}
+{"cue":"deal","kind":"ledger","seat":2,"seed":291,"seq":288,"text":"Rafi, one chip for cover.","tick":940}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":289,"tick":945}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":290,"tick":960}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":291,"target":-1,"tick":960,"verb":"cover"}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":292,"target":-1,"tick":960,"verb":"agree"}
+{"cue":"deal","kind":"ledger","seat":1,"seed":291,"seq":293,"text":"Deal. Rafi takes cover.","tick":960}
+{"duty":"cover","kind":"pact_accepted","offer":4,"provider":1,"seat":1,"seed":291,"seq":294,"tick":960}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":295,"tick":975}
+{"kind":"cover","seat":4,"seed":291,"seq":296,"tick":986,"until":1134,"zone":2}
+{"cue":"cover","kind":"ledger","seat":4,"seed":291,"seq":297,"text":"Covering HATCH.","tick":986}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":298,"tick":990}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":299,"target":-1,"tick":990,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":300,"tick":990,"until":1138,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":301,"text":"Covering HATCH.","tick":990}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":302,"tick":1005}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":303,"tick":1020}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":304,"target":-1,"tick":1020,"verb":"cover"}
+{"kind":"cover","seat":3,"seed":291,"seq":305,"tick":1031,"until":1179,"zone":2}
+{"cue":"cover","kind":"ledger","seat":3,"seed":291,"seq":306,"text":"Covering HATCH.","tick":1031}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":307,"tick":1035}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":308,"tick":1050}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":309,"target":-1,"tick":1050,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":310,"tick":1050,"until":1198,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":311,"text":"Covering HATCH.","tick":1050}
+{"amount":1,"buyer":3,"job":"cover","kind":"pact_expired","offer":2,"seat":4,"seed":291,"seq":312,"tick":1053}
+{"cue":"deal","kind":"ledger","seat":4,"seed":291,"seq":313,"text":"Released the offer from Morrow.","tick":1053}
+{"kind":"cover","seat":2,"seed":291,"seq":314,"tick":1054,"until":1279,"zone":2}
+{"cue":"cover","kind":"ledger","seat":2,"seed":291,"seq":315,"text":"Covering HATCH.","tick":1054}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":316,"tick":1065}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":317,"tick":1080}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":318,"target":-1,"tick":1080,"verb":"cover"}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":319,"tick":1095}
+{"kind":"cover","seat":4,"seed":291,"seq":320,"tick":1100,"until":1248,"zone":2}
+{"cue":"cover","kind":"ledger","seat":4,"seed":291,"seq":321,"text":"Covering HATCH.","tick":1100}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":322,"tick":1110}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":323,"target":-1,"tick":1110,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":324,"tick":1110,"until":1258,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":325,"text":"Covering HATCH.","tick":1110}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":326,"tick":1125}
+{"duty":"cover","kind":"offer","offer":5,"seat":4,"seed":291,"seq":327,"tick":1136,"to":3,"zone":2}
+{"cue":"deal","kind":"ledger","seat":4,"seed":291,"seq":328,"text":"Morrow, one chip for cover.","tick":1136}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":329,"tick":1140}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":330,"target":-1,"tick":1140,"verb":"cover"}
+{"kind":"cover","seat":3,"seed":291,"seq":331,"tick":1145,"until":1293,"zone":2}
+{"cue":"cover","kind":"ledger","seat":3,"seed":291,"seq":332,"text":"Covering HATCH.","tick":1145}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":333,"tick":1155}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":334,"tick":1170}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":335,"target":-1,"tick":1170,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":336,"tick":1170,"until":1318,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":337,"text":"Covering HATCH.","tick":1170}
+{"cue":"deal","kind":"ledger","seat":3,"seed":291,"seq":338,"text":"Deal. Morrow takes cover.","tick":1184}
+{"duty":"cover","kind":"pact_accepted","offer":5,"provider":3,"seat":3,"seed":291,"seq":339,"tick":1184}
+{"duty":"cover","kind":"offer","offer":6,"seat":3,"seed":291,"seq":340,"tick":1185,"to":4,"zone":2}
+{"cue":"deal","kind":"ledger","seat":3,"seed":291,"seq":341,"text":"Zip, one chip for cover.","tick":1185}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":342,"tick":1185}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":343,"tick":1200}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":344,"target":-1,"tick":1200,"verb":"cover"}
+{"kind":"cover","seat":4,"seed":291,"seq":345,"tick":1214,"until":1362,"zone":2}
+{"cue":"cover","kind":"ledger","seat":4,"seed":291,"seq":346,"text":"Covering HATCH.","tick":1214}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":347,"tick":1215}
+{"action":"guard","actor":2,"context":"2/1/1/0","flags":[true,true,true,false,false],"id":239,"kind":"action_grade","pass":false,"points":50,"seat":2,"seed":291,"seq":348,"tick":1220,"trigger":"breach","type":"response"}
+{"action":"covenant","actor":3,"context":"3/1/1/0","flags":[true,true,true,false,false],"id":239,"kind":"action_grade","pass":false,"points":50,"seat":3,"seed":291,"seq":349,"tick":1220,"trigger":"breach","type":"response"}
+{"action":"covenant","actor":4,"context":"4/1/1/0","flags":[true,true,true,false,false],"id":239,"kind":"action_grade","pass":false,"points":50,"seat":4,"seed":291,"seq":350,"tick":1220,"trigger":"breach","type":"response"}
+{"cue":"deal","kind":"ledger","seat":4,"seed":291,"seq":351,"text":"Deal. Zip takes cover.","tick":1221}
+{"duty":"cover","kind":"pact_accepted","offer":6,"provider":4,"seat":4,"seed":291,"seq":352,"tick":1221}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":353,"tick":1230}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":354,"target":-1,"tick":1230,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":355,"tick":1230,"until":1378,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":356,"text":"Covering HATCH.","tick":1230}
+{"kind":"cover","seat":2,"seed":291,"seq":357,"tick":1245,"until":1470,"zone":2}
+{"cue":"cover","kind":"ledger","seat":2,"seed":291,"seq":358,"text":"Covering HATCH.","tick":1245}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":359,"tick":1245}
+{"kind":"cover","seat":3,"seed":291,"seq":360,"tick":1259,"until":1407,"zone":2}
+{"cue":"cover","kind":"ledger","seat":3,"seed":291,"seq":361,"text":"Covering HATCH.","tick":1259}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":362,"tick":1260}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":363,"target":-1,"tick":1260,"verb":"cover"}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":364,"tick":1275}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":365,"tick":1290}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":366,"target":-1,"tick":1290,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":367,"tick":1290,"until":1438,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":368,"text":"Covering HATCH.","tick":1290}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":369,"tick":1305}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":370,"tick":1320}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":371,"target":-1,"tick":1320,"verb":"cover"}
+{"kind":"cover","seat":4,"seed":291,"seq":372,"tick":1328,"until":1476,"zone":2}
+{"cue":"cover","kind":"ledger","seat":4,"seed":291,"seq":373,"text":"Covering HATCH.","tick":1328}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":374,"tick":1335}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":375,"tick":1350}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":376,"target":-1,"tick":1350,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":377,"tick":1350,"until":1498,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":378,"text":"Covering HATCH.","tick":1350}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":379,"tick":1365}
+{"kind":"cover","seat":3,"seed":291,"seq":380,"tick":1373,"until":1521,"zone":2}
+{"cue":"cover","kind":"ledger","seat":3,"seed":291,"seq":381,"text":"Covering HATCH.","tick":1373}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":382,"tick":1380}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":383,"target":-1,"tick":1380,"verb":"cover"}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":384,"tick":1395}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":385,"tick":1410}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":386,"target":-1,"tick":1410,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":387,"tick":1410,"until":1558,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":388,"text":"Covering HATCH.","tick":1410}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":389,"tick":1425}
+{"kind":"cover","seat":2,"seed":291,"seq":390,"tick":1436,"until":1661,"zone":2}
+{"cue":"cover","kind":"ledger","seat":2,"seed":291,"seq":391,"text":"Covering HATCH.","tick":1436}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":392,"tick":1440}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":393,"target":-1,"tick":1440,"verb":"cover"}
+{"kind":"cover","seat":4,"seed":291,"seq":394,"tick":1442,"until":1590,"zone":2}
+{"cue":"cover","kind":"ledger","seat":4,"seed":291,"seq":395,"text":"Covering HATCH.","tick":1442}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":396,"tick":1455}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":397,"tick":1470}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":398,"target":-1,"tick":1470,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":399,"tick":1470,"until":1618,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":400,"text":"Covering HATCH.","tick":1470}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":401,"tick":1485}
+{"kind":"cover","seat":3,"seed":291,"seq":402,"tick":1487,"until":1635,"zone":2}
+{"cue":"cover","kind":"ledger","seat":3,"seed":291,"seq":403,"text":"Covering HATCH.","tick":1487}
+{"amount":1,"buyer":2,"job":"cover","kind":"pact_expired","offer":4,"seat":1,"seed":291,"seq":404,"tick":1500}
+{"cue":"deal","kind":"ledger","seat":1,"seed":291,"seq":405,"text":"Released the offer from Pip.","tick":1500}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":406,"tick":1500}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":407,"target":-1,"tick":1500,"verb":"cover"}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":408,"tick":1515}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":409,"tick":1530}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":410,"target":-1,"tick":1530,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":411,"tick":1530,"until":1678,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":412,"text":"Covering HATCH.","tick":1530}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":413,"tick":1545}
+{"kind":"cover","seat":4,"seed":291,"seq":414,"tick":1556,"until":1704,"zone":2}
+{"cue":"cover","kind":"ledger","seat":4,"seed":291,"seq":415,"text":"Covering HATCH.","tick":1556}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":416,"tick":1560}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":417,"target":-1,"tick":1560,"verb":"cover"}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":418,"tick":1575}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":419,"tick":1590}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":420,"target":-1,"tick":1590,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":421,"tick":1590,"until":1738,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":422,"text":"Covering HATCH.","tick":1590}
+{"kind":"cover","seat":3,"seed":291,"seq":423,"tick":1601,"until":1749,"zone":2}
+{"cue":"cover","kind":"ledger","seat":3,"seed":291,"seq":424,"text":"Covering HATCH.","tick":1601}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":425,"tick":1605}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":426,"tick":1620}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":427,"target":-1,"tick":1620,"verb":"cover"}
+{"kind":"cover","seat":2,"seed":291,"seq":428,"tick":1627,"until":1852,"zone":2}
+{"cue":"cover","kind":"ledger","seat":2,"seed":291,"seq":429,"text":"Covering HATCH.","tick":1627}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":430,"tick":1635}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":431,"tick":1650}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":432,"target":-1,"tick":1650,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":433,"tick":1650,"until":1798,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":434,"text":"Covering HATCH.","tick":1650}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":435,"tick":1665}
+{"kind":"cover","seat":4,"seed":291,"seq":436,"tick":1670,"until":1818,"zone":2}
+{"cue":"cover","kind":"ledger","seat":4,"seed":291,"seq":437,"text":"Covering HATCH.","tick":1670}
+{"duty":"cover","kind":"offer","offer":7,"seat":2,"seed":291,"seq":438,"tick":1675,"to":0,"zone":2}
+{"cue":"deal","kind":"ledger","seat":2,"seed":291,"seq":439,"text":"Nell, one chip for cover.","tick":1675}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":440,"tick":1680}
+{"job":"cover","kind":"human_action","seat":0,"seed":291,"seq":441,"target":-1,"tick":1680,"verb":"agree"}
+{"cue":"deal","kind":"ledger","seat":0,"seed":291,"seq":442,"text":"Deal. Nell takes cover.","tick":1680}
+{"duty":"cover","kind":"pact_accepted","offer":7,"provider":0,"seat":0,"seed":291,"seq":443,"tick":1680}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":444,"target":-1,"tick":1680,"verb":"cover"}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":445,"tick":1695}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":446,"tick":1710}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":447,"target":-1,"tick":1710,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":448,"tick":1710,"until":1858,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":449,"text":"Covering HATCH.","tick":1710}
+{"kind":"cover","seat":3,"seed":291,"seq":450,"tick":1715,"until":1863,"zone":2}
+{"cue":"cover","kind":"ledger","seat":3,"seed":291,"seq":451,"text":"Covering HATCH.","tick":1715}
+{"amount":1,"buyer":4,"job":"cover","kind":"pact_expired","offer":5,"seat":3,"seed":291,"seq":452,"tick":1724}
+{"cue":"deal","kind":"ledger","seat":3,"seed":291,"seq":453,"text":"Released the offer from Zip.","tick":1724}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":454,"tick":1725}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":455,"tick":1740}
+{"job":"cover","kind":"human_action","seat":0,"seed":291,"seq":456,"target":-1,"tick":1740,"verb":"break"}
+{"amount":1,"buyer":2,"job":"cover","kind":"pact_broken","offer":7,"seat":0,"seed":291,"seq":457,"tick":1740}
+{"cue":"deal","kind":"ledger","seat":0,"seed":291,"seq":458,"text":"Broke the deal with Pip.","tick":1740}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":459,"target":-1,"tick":1740,"verb":"cover"}
+{"action":"vote","kind":"decision","phase":1,"reason":"Need three latches on HATCH.","reel":5,"seat":3,"seed":291,"seq":460,"tick":1752,"votes":[2,2,2,1,2],"zone":2}
+{"cue":"","kind":"ledger","seat":3,"seed":291,"seq":461,"text":"Need three latches on HATCH.","tick":1752}
+{"at_x":442,"at_z":0,"decision":460,"kind":"latch","seat":3,"seed":291,"seq":462,"tick":1752,"zone":2}
+{"cue":"","kind":"ledger","seat":3,"seed":291,"seq":463,"text":"Latched HATCH.","tick":1752}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":464,"tick":1755}
+{"amount":1,"buyer":3,"job":"cover","kind":"pact_expired","offer":6,"seat":4,"seed":291,"seq":465,"tick":1761}
+{"cue":"deal","kind":"ledger","seat":4,"seed":291,"seq":466,"text":"Released the offer from Morrow.","tick":1761}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":467,"tick":1770}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":468,"target":-1,"tick":1770,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":469,"tick":1770,"until":1918,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":470,"text":"Covering HATCH.","tick":1770}
+{"kind":"cover","seat":4,"seed":291,"seq":471,"tick":1784,"until":1932,"zone":2}
+{"cue":"cover","kind":"ledger","seat":4,"seed":291,"seq":472,"text":"Covering HATCH.","tick":1784}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":473,"tick":1785}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[398,50],[442,0],[464,48]],"reel":5,"seat":-1,"seed":291,"seq":474,"tick":1800}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":475,"target":-1,"tick":1800,"verb":"cover"}
+{"due":2080,"from":1,"kind":"flight","leg":2,"seat":2,"seed":291,"seq":476,"tick":1810,"to":2}
+{"choice":"guard","context":"2/1/0/1/assigned","kind":"response_intent","legal":["guard","covenant"],"seat":2,"seed":291,"seq":477,"source":476,"tick":1810,"zone":2}
+{"choice":"guard","context":"3/1/0/1","kind":"response_intent","legal":["guard","covenant"],"seat":3,"seed":291,"seq":478,"source":476,"tick":1810,"zone":2}
+{"choice":"covenant","context":"4/1/0/1","kind":"response_intent","legal":["guard","covenant"],"seat":4,"seed":291,"seq":479,"source":476,"tick":1810,"zone":2}
+{"check":0,"kind":"milestone","leg":2,"points":10,"seat":2,"seed":291,"seq":480,"tick":1810}
+{"check":1,"kind":"milestone","leg":2,"points":15,"seat":2,"seed":291,"seq":481,"tick":1810}
+{"action":"guard","check":0,"kind":"response_milestone","points":15,"seat":2,"seed":291,"seq":482,"source":476,"tick":1810}
+{"action":"guard","check":1,"kind":"response_milestone","points":15,"seat":2,"seed":291,"seq":483,"source":476,"tick":1810}
+{"action":"guard","check":0,"kind":"response_milestone","points":15,"seat":3,"seed":291,"seq":484,"source":476,"tick":1810}
+{"action":"guard","check":1,"kind":"response_milestone","points":15,"seat":3,"seed":291,"seq":485,"source":476,"tick":1810}
+{"action":"covenant","check":0,"kind":"response_milestone","points":15,"seat":4,"seed":291,"seq":486,"source":476,"tick":1810}
+{"action":"covenant","check":1,"kind":"response_milestone","points":15,"seat":4,"seed":291,"seq":487,"source":476,"tick":1810}
+{"action":"cover","kind":"decision","phase":1,"reason":"Taking cover at HATCH.","reel":5,"seat":3,"seed":291,"seq":488,"tick":1811,"votes":[2,2,2,2,2],"zone":2}
+{"cue":"","kind":"ledger","seat":3,"seed":291,"seq":489,"text":"Taking cover at HATCH.","tick":1811}
+{"duty":"cover","kind":"offer","offer":8,"seat":4,"seed":291,"seq":490,"tick":1811,"to":3,"zone":2}
+{"cue":"deal","kind":"ledger","seat":4,"seed":291,"seq":491,"text":"Morrow, one chip for cover.","tick":1811}
+{"cue":"echo","kind":"ledger","seat":3,"seed":291,"seq":492,"text":"Tracing the next landing through the hull.","tick":1811}
+{"kind":"tool","seat":3,"seed":291,"seq":493,"tick":1811,"tool":"Morrow","zone":2}
+{"action":"guard","check":2,"kind":"response_milestone","points":20,"seat":2,"seed":291,"seq":494,"source":476,"tick":1811}
+{"action":"guard","check":2,"kind":"response_milestone","points":20,"seat":3,"seed":291,"seq":495,"source":476,"tick":1811}
+{"action":"covenant","check":2,"kind":"response_milestone","points":20,"seat":4,"seed":291,"seq":496,"source":476,"tick":1811}
+{"cargo":[7,136,-152],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[414,34],[430,16],[439,30]],"reel":5,"seat":-1,"seed":291,"seq":497,"tick":1815}
+{"kind":"cover","seat":2,"seed":291,"seq":498,"tick":1818,"until":2043,"zone":2}
+{"cue":"cover","kind":"ledger","seat":2,"seed":291,"seq":499,"text":"Covering HATCH.","tick":1818}
+{"cue":"cover","kind":"ledger","seat":2,"seed":291,"seq":500,"text":"Net planted. I have this landing.","tick":1818}
+{"kind":"tool","seat":2,"seed":291,"seq":501,"tick":1818,"tool":"Pip","zone":2}
+{"cargo":[31,181,-142],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[430,30],[430,30],[430,30]],"reel":5,"seat":-1,"seed":291,"seq":502,"tick":1830}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":503,"target":-1,"tick":1830,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":504,"tick":1830,"until":1978,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":505,"text":"Covering HATCH.","tick":1830}
+{"cargo":[55,221,-132],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[430,30],[430,30],[430,30]],"reel":5,"seat":-1,"seed":291,"seq":506,"tick":1845}
+{"cargo":[79,255,-121],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[430,30],[430,30],[430,30]],"reel":5,"seat":-1,"seed":291,"seq":507,"tick":1860}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":508,"target":-1,"tick":1860,"verb":"cover"}
+{"cargo":[103,284,-111],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[430,30],[430,30],[430,30]],"reel":5,"seat":-1,"seed":291,"seq":509,"tick":1875}
+{"cargo":[127,307,-101],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[430,30],[430,30],[430,30]],"reel":5,"seat":-1,"seed":291,"seq":510,"tick":1890}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":511,"target":-1,"tick":1890,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":512,"tick":1890,"until":2038,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":513,"text":"Covering HATCH.","tick":1890}
+{"kind":"cover","seat":4,"seed":291,"seq":514,"tick":1898,"until":2046,"zone":2}
+{"cue":"cover","kind":"ledger","seat":4,"seed":291,"seq":515,"text":"Covering HATCH.","tick":1898}
+{"cue":"deal","kind":"ledger","seat":3,"seed":291,"seq":516,"text":"Deal. Morrow takes cover.","tick":1905}
+{"duty":"cover","kind":"pact_accepted","offer":8,"provider":3,"seat":3,"seed":291,"seq":517,"tick":1905}
+{"cargo":[151,325,-90],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[430,30],[430,30],[430,30]],"reel":5,"seat":-1,"seed":291,"seq":518,"tick":1905}
+{"duty":"cover","kind":"offer","offer":9,"seat":3,"seed":291,"seq":519,"tick":1920,"to":0,"zone":2}
+{"cue":"deal","kind":"ledger","seat":3,"seed":291,"seq":520,"text":"Nell, one chip for cover.","tick":1920}
+{"cargo":[175,337,-80],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[430,30],[430,30],[430,30]],"reel":5,"seat":-1,"seed":291,"seq":521,"tick":1920}
+{"job":"cover","kind":"human_action","seat":0,"seed":291,"seq":522,"target":-1,"tick":1920,"verb":"agree"}
+{"cue":"deal","kind":"ledger","seat":0,"seed":291,"seq":523,"text":"Deal. Nell takes cover.","tick":1920}
+{"duty":"cover","kind":"pact_accepted","offer":9,"provider":0,"seat":0,"seed":291,"seq":524,"tick":1920}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":525,"target":-1,"tick":1920,"verb":"cover"}
+{"cargo":[199,343,-70],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[430,30],[430,30],[430,30]],"reel":5,"seat":-1,"seed":291,"seq":526,"tick":1935}
+{"cargo":[222,344,-60],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[430,30],[430,30],[430,30]],"reel":5,"seat":-1,"seed":291,"seq":527,"tick":1950}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":528,"target":-1,"tick":1950,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":529,"tick":1950,"until":2098,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":530,"text":"Covering HATCH.","tick":1950}
+{"kind":"cover","seat":3,"seed":291,"seq":531,"tick":1961,"until":2109,"zone":2}
+{"cue":"cover","kind":"ledger","seat":3,"seed":291,"seq":532,"text":"Covering HATCH.","tick":1961}
+{"cargo":[246,340,-49],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[430,30],[430,30],[430,30]],"reel":5,"seat":-1,"seed":291,"seq":533,"tick":1965}
+{"cargo":[270,329,-39],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[430,30],[430,30],[430,30]],"reel":5,"seat":-1,"seed":291,"seq":534,"tick":1980}
+{"job":"cover","kind":"human_action","seat":0,"seed":291,"seq":535,"target":-1,"tick":1980,"verb":"break"}
+{"amount":1,"buyer":3,"job":"cover","kind":"pact_broken","offer":9,"seat":0,"seed":291,"seq":536,"tick":1980}
+{"cue":"deal","kind":"ledger","seat":0,"seed":291,"seq":537,"text":"Broke the deal with Morrow.","tick":1980}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":538,"target":-1,"tick":1980,"verb":"cover"}
+{"cargo":[294,314,-29],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[430,30],[430,30],[430,30]],"reel":5,"seat":-1,"seed":291,"seq":539,"tick":1995}
+{"cargo":[318,292,-18],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[430,30],[430,30],[430,30]],"reel":5,"seat":-1,"seed":291,"seq":540,"tick":2010}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":541,"target":-1,"tick":2010,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":542,"tick":2010,"until":2158,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":543,"text":"Covering HATCH.","tick":2010}
+{"kind":"cover","seat":4,"seed":291,"seq":544,"tick":2012,"until":2160,"zone":2}
+{"cue":"cover","kind":"ledger","seat":4,"seed":291,"seq":545,"text":"Covering HATCH.","tick":2012}
+{"cargo":[342,265,-8],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[430,30],[430,30],[430,30]],"reel":5,"seat":-1,"seed":291,"seq":546,"tick":2025}
+{"cargo":[366,233,2],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[430,30],[430,30],[430,30]],"reel":5,"seat":-1,"seed":291,"seq":547,"tick":2040}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":548,"target":-1,"tick":2040,"verb":"cover"}
+{"cargo":[390,195,12],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[430,30],[430,30],[430,30]],"reel":5,"seat":-1,"seed":291,"seq":549,"tick":2055}
+{"cargo":[414,152,23],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[430,30],[430,30],[430,30]],"reel":5,"seat":-1,"seed":291,"seq":550,"tick":2070}
+{"job":"cover","kind":"human_action","seat":1,"seed":291,"seq":551,"target":-1,"tick":2070,"verb":"cover"}
+{"kind":"cover","seat":1,"seed":291,"seq":552,"tick":2070,"until":2218,"zone":2}
+{"cue":"cover","kind":"ledger","seat":1,"seed":291,"seq":553,"text":"Covering HATCH.","tick":2070}
+{"kind":"cover","seat":3,"seed":291,"seq":554,"tick":2075,"until":2223,"zone":2}
+{"cue":"cover","kind":"ledger","seat":3,"seed":291,"seq":555,"text":"Covering HATCH.","tick":2075}
+{"check":2,"kind":"milestone","leg":2,"points":20,"seat":2,"seed":291,"seq":556,"tick":2080}
+{"check":3,"kind":"milestone","leg":2,"points":20,"seat":2,"seed":291,"seq":557,"tick":2080}
+{"kind":"contact","leg":2,"seat":2,"seed":291,"seq":558,"tick":2080,"zone":2}
+{"cargo":[0,120,-155],"gravity":2,"hull":3,"kind":"snapshot","positions":[[409,15],[375,15],[430,30],[442,10],[455,48]],"reel":5,"seat":-1,"seed":291,"seq":559,"tick":2085}
+{"check":4,"kind":"milestone","leg":2,"points":20,"seat":2,"seed":291,"seq":560,"tick":2086}
+{"check":5,"kind":"milestone","leg":2,"points":15,"seat":2,"seed":291,"seq":561,"tick":2098}
+{"actor":2,"flags":[true,true,true,true,true,true],"id":2,"kind":"action_grade","pass":true,"points":100,"seat":2,"seed":291,"seq":562,"tick":2098,"type":"catch"}
+{"cue":"cover","kind":"ledger","seat":2,"seed":291,"seq":563,"text":"Secure. The cradle is holding.","tick":2098}
+{"action":"guard","check":3,"kind":"response_milestone","points":25,"seat":2,"seed":291,"seq":564,"source":476,"tick":2098}
+{"action":"guard","check":4,"kind":"response_milestone","points":25,"seat":2,"seed":291,"seq":565,"source":476,"tick":2098}
+{"action":"guard","actor":2,"context":"2/1/0/1/assigned","flags":[true,true,true,true,true],"id":476,"kind":"action_grade","pass":true,"points":100,"seat":2,"seed":291,"seq":566,"tick":2098,"trigger":"handoff","type":"response"}
+{"action":"guard","actor":3,"context":"3/1/0/1","flags":[true,true,true,false,false],"id":476,"kind":"action_grade","pass":false,"points":50,"seat":3,"seed":291,"seq":567,"tick":2098,"trigger":"handoff","type":"response"}
+{"action":"covenant","actor":4,"context":"4/1/0/1","flags":[true,true,true,false,false],"id":476,"kind":"action_grade","pass":false,"points":50,"seat":4,"seed":291,"seq":568,"tick":2098,"trigger":"handoff","type":"response"}
+{"amount":1,"buyer":4,"job":"cover","kind":"pact_expired","offer":8,"seat":3,"seed":291,"seq":569,"tick":2098}
+{"cue":"deal","kind":"ledger","seat":3,"seed":291,"seq":570,"text":"Released the offer from Zip.","tick":2098}
+{"ending":"The herd answers","hull":3,"kind":"end","reel":5,"seat":-1,"seed":291,"seq":571,"tick":2098}
+{"cue":"","kind":"ledger","seat":-1,"seed":291,"seq":572,"text":"The herd answers.","tick":2098}
+{"digest":"34932698cabeba5ac8242c92dec1744688bb485346c0cd05488d9999fa4a9df4","ending":"The herd answers","kind":"checkpoint","tick":2098}

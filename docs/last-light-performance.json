@@ -1,0 +1,14 @@
+{
+  "device": "Apple M5",
+  "frames": 972,
+  "frames_above_25_ms": [],
+  "max_ms": 17.733,
+  "measurement": "live frame intervals without screenshot capture",
+  "median_ms": 8.493,
+  "p95_ms": 11.663,
+  "p99_ms": 13.246,
+  "pixels": [
+    1280,
+    752
+  ]
+}

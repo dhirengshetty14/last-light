@@ -1,0 +1,12 @@
+# Build context for the root Dockerfile. tasks/Dockerfile has its own list next to it.
+.git
+.godot
+exports
+logs
+telemetry/local
+docs/*.mp4
+**/__pycache__
+*.pyc
+.DS_Store
+.env
+.env.*

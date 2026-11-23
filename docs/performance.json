@@ -1,0 +1,60 @@
+{
+  "device": "Apple M5",
+  "renderer": "Godot 4.7.2 GL Compatibility over Metal",
+  "warmup_frames": 120,
+  "cap_fps": 120,
+  "physics_hz": 60,
+  "human_seats": "two scripted input proxies",
+  "on_device_voices": true,
+  "file_recorder": true,
+  "runs": {
+    "first_rescue": {
+      "adapter": "Apple M5",
+      "frames": 1380,
+      "median_draw_calls": 492,
+      "mode": "first_rescue",
+      "p50_ms": 8.677,
+      "p95_ms": 12.093,
+      "p95_physics_ms": 0.3,
+      "p99_ms": 14.393,
+      "resolution": [
+        1280,
+        752
+      ],
+      "seed": 17,
+      "tick": 886
+    },
+    "ring_storm": {
+      "adapter": "Apple M5",
+      "frames": 1380,
+      "median_draw_calls": 493,
+      "mode": "ring_storm",
+      "p50_ms": 8.486,
+      "p95_ms": 11.228,
+      "p95_physics_ms": 0.266,
+      "p99_ms": 12.258,
+      "resolution": [
+        1280,
+        752
+      ],
+      "seed": 17,
+      "tick": 832
+    },
+    "first_rescue_with_bruin": {
+      "adapter": "Apple M5",
+      "frames": 1380,
+      "median_draw_calls": 492,
+      "mode": "first_rescue",
+      "p50_ms": 8.502,
+      "p95_ms": 12.624,
+      "p95_physics_ms": 0.274,
+      "p99_ms": 14.702,
+      "resolution": [
+        1280,
+        752
+      ],
+      "seed": 17,
+      "tick": 851
+    }
+  }
+}

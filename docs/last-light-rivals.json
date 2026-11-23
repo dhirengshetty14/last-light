@@ -1,0 +1,74 @@
+{
+  "mode": "Rivals",
+  "game": "Last Light 0.5",
+  "run": "1795298333773100-87",
+  "controls": "Automated two-seat keyboard inputs against three independent robots on the Mac export",
+  "score": [
+    3,
+    0
+  ],
+  "goals": [
+    {
+      "character": "Rafi",
+      "tick": 250
+    },
+    {
+      "character": "Rafi",
+      "tick": 544
+    },
+    {
+      "character": "Rafi",
+      "tick": 837
+    }
+  ],
+  "completed_passes": {
+    "humans": 4,
+    "robots": 2
+  },
+  "shots": {
+    "humans": 4,
+    "robots": 0
+  },
+  "active_match_seconds": 13.95,
+  "recording_seconds": 52.66,
+  "kickoff_in_video_seconds": 34.49,
+  "render_frame_interval_ms": {
+    "median": 11.53,
+    "p95": 14.63,
+    "max": 23.21
+  },
+  "recording_queue_drops": 0,
+  "robots": {
+    "Pip": {
+      "model": "gemini-3.1-flash-lite",
+      "round_trip_ms": [
+        1220,
+        1261
+      ],
+      "tactics_using_a_reply": 21
+    },
+    "Morrow": {
+      "model": "gemini-3.1-flash-lite",
+      "round_trip_ms": [
+        1082,
+        1561
+      ],
+      "tactics_using_a_reply": 20
+    },
+    "Zip": {
+      "model": "gemini-3.1-flash-lite",
+      "round_trip_ms": [
+        1231,
+        1261
+      ],
+      "tactics_using_a_reply": 22
+    }
+  },
+  "verified_voiced_intros": [
+    "nell_intro.wav",
+    "rafi_intro.wav",
+    "pip_intro.wav",
+    "morrow_intro.wav",
+    "zip_intro.wav"
+  ]
+}
