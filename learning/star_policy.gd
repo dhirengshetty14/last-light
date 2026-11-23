@@ -50,9 +50,15 @@ var last_values: Dictionary = {}
 ## Court version 12. Weighs every legal move exactly as `choose` does, then samples one in
 ## proportion to how well it has done instead of always taking the top one (the Gumbel-max trick,
 ## drawn from this robot's own seeded generator, so a replay makes the same draws). `nudge` is a
-## move someone else proposed; it gets a small lift, never a guarantee.
+## move someone else proposed; it gets a small lift, never a guarantee. `lifts` adds or takes a
+## little from named moves, for what crewmates have said.
 func choose_sampled(
-	context: String, legal: Array, preferred: String, rng: RandomNumberGenerator, nudge := ""
+	context: String,
+	legal: Array,
+	preferred: String,
+	rng: RandomNumberGenerator,
+	nudge := "",
+	lifts: Dictionary = {}
 ) -> String:
 	last_values = {}
 	explored = rng.randf() < exploration
@@ -81,6 +87,8 @@ func choose_sampled(
 			value += .075
 		if move == nudge:
 			value += NUDGE
+		# What a crewmate said about this situation: a small lift or a small weight, never an order.
+		value += float(lifts.get(move, 0.))
 		last_values[str(move)] = value
 		var noisy: float = value - WARMTH * log(-log(clampf(rng.randf(), 1e-6, 1. - 1e-6)))
 		if noisy > best:

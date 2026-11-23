@@ -160,6 +160,45 @@ const NEW_HABIT := {
 	"evade": "I keep my distance now.",
 	"pass": "I pass early now."
 }
+## Court version 13: the "it worked" check of the three tasks every robot was failing now asks a
+## question a 0.6-second decision can answer. Before, defending only worked if the star was won in
+## that window, chasing a loose star only if this robot ended with it, and supporting only if it
+## reached a spot that moves with the carrier. Those checks failed about 96% of the time whatever
+## the robot chose, so they taught it nothing. Now defending works if the crew wins the star or the
+## carrier is held up (under 70% of the ground a free run would make); chasing works if the crew
+## gets the star or this robot is the nearest player to it; supporting works if this robot gets the
+## star or ends open, a pass away with a clear lane. In those three tasks the approach and
+## execution checks also follow the play: the robot is graded against where its target is now, not
+## the spot it set off for. Those situations carry a "/t" at the end of their name, so grades
+## given under the old checks never mix with the new ones.
+var team_outcomes := true
+## Court version 14: fair play for people. A robot needs a moment to wind up before it dashes at a
+## person carrying the star (0.33 to 0.6 s inside its reach), a person who gets the star cannot be
+## robbed for 1.4 s (1.7 s after catching a pass), and robots look up a little longer before they
+## pass. Before, a robot dashed on the first tick a person came within reach, 0.65 s after they got
+## the star, and three of them did so at once.
+var fair_play := true
+## The live game also lets the robots ease off while they lead the people: for each goal of lead,
+## up to four, they run 5.5% slower and wind up 8 ticks longer. Training and evaluations leave
+## this off, so robots are always measured at full strength. A recording's header says which.
+var mercy := false
+## Since when each robot has had a person with the star inside its reach, who that was, and how
+## long it has to wind up this time.
+var in_reach_since := [-1, -1, -1, -1, -1]
+var in_reach_of := [-1, -1, -1, -1, -1]
+var wind_up := [0, 0, 0, 0, 0]
+## Court version 14: robots on the same crew talk to each other, and what they say changes what
+## the listener does. A robot robbed twice by the same player warns its crewmates, who then give
+## that player more room. A robot that changes a habit after being robbed tells them the tip, and
+## they weigh the tipped move a little higher (and the dropped one a little lower) in the same
+## situation. A robot that acts on a tip says whose it was. Every message is a "talk" event.
+var team_talk := true
+const TIP_WORDS := {
+	"drive": "go straight at the ring.",
+	"flank": "take the wide lane.",
+	"evade": "keep your distance.",
+	"pass": "pass early."
+}
 ## Court version 8. Each robot weighs how its own social choices turned out before: which captain
 ## to sign with, what to do about a broken promise, an offer or new terms, and how to vote. With
 ## this off every one of those follows its written rule, as in court 7.
@@ -212,6 +251,38 @@ func old_court() -> void:
 	fair_deck = false
 	steady_pace = false
 	wary_robots = false
+	team_outcomes = false
+	fair_play = false
+	team_talk = false
+
+
+## The other robots on robot i's crew who are playing.
+func crewmates(i: int) -> Array:
+	var out := []
+	for k in range(2, 5):
+		if k != i and team[k] == team[i] and not on_strike(k):
+			out.append(k)
+	return out
+
+
+## Court version 14. Robot i says something to other robots. The event names who it was for.
+func tell(i: int, topic: String, listeners: Array, line: String, fields: Dictionary = {}) -> void:
+	if listeners.is_empty():
+		return
+	var said := {"topic": topic, "to": listeners, "line": line}
+	said.merge(fields)
+	emit("talk", i, said)
+
+
+## How far the robots are easing off, from 0 (not at all) to 1: a quarter for each goal they lead
+## the people by, while all three robots face both people. Always 0 unless `mercy` is on.
+func easing() -> float:
+	if not mercy or team[0] != team[1]:
+		return 0.
+	for j in range(2, 5):
+		if team[j] == team[0]:
+			return 0.
+	return clampf(float(int(goals[team[2]]) - int(goals[team[0]])) / 4., 0., 1.)
 
 
 ## How close player j must be to take the star from robot i this moment: their steal reach, the
@@ -996,14 +1067,18 @@ func possession(i: int, method: String) -> void:
 	if before >= 2 and not pending[before].is_empty():
 		pending[before]["lost"] = true
 	safe_until = tick + (58 if clean_pass else 39)
+	if fair_play and i < 2:
+		safe_until = tick + (102 if clean_pass else 84)
 	if steady_pace and i >= 2:
-		# Inside the window in which nobody can take the star from it.
+		# Inside the window in which nobody can take the star from it. Since version 14 the longest
+		# looks run a little past it.
+		var longer := 8 if fair_play else 0
 		look_up[i] = (
 			tick
 			+ (
-				agents[i - 2].draw.randi_range(26, 50)
+				agents[i - 2].draw.randi_range(26 + longer, 50 + longer)
 				if clean_pass
-				else agents[i - 2].draw.randi_range(14, 30)
+				else agents[i - 2].draw.randi_range(14 + longer, 30 + longer)
 			)
 		)
 	flight = ""
@@ -1028,6 +1103,20 @@ func possession(i: int, method: String) -> void:
 			i, str(pending[before].get("context", "")), str(tactics[before])
 		)
 		emit("robbed", before, {"by": i, "times": times, "move": tactics[before]})
+		if team_talk and times in [2, 4]:
+			var crew := crewmates(before)
+			for k in crew:
+				agents[k - 2].heard_warnings[i] += 1
+			tell(
+				before,
+				"warn",
+				crew,
+				(
+					"%s has robbed me %s. Give that dash more room."
+					% [NAMES[i], "twice" if times == 2 else "four times"]
+				),
+				{"about": i}
+			)
 
 	if relay_rules and (open_crews or free_agents):
 		if not clean_pass:
@@ -1369,6 +1458,19 @@ func plan(i: int) -> void:
 	)
 	if heat != "free":
 		context = "star2/%s/carry/%s/%s" % [i, heat, NAMES[foe].to_lower()]
+	if team_outcomes and phase != "carry":
+		context += "/t"
+	# Version 14: a crewmate's tip for this situation lifts the move it recommends a little and
+	# weighs down the one it dropped.
+	var tip: Dictionary = {}
+	var lifts := {}
+	var talk_key := ""
+	if team_talk and heat != "free":
+		talk_key = "%s/%s" % [heat, NAMES[foe].to_lower()]
+		tip = actor.tips.get(talk_key, {})
+		if not tip.is_empty():
+			lifts[tip.use] = .06
+			lifts[tip.avoid] = -.06
 	var us := Time.get_ticks_usec() if sample_time else 0
 	var proposal := ""
 	var choice: String
@@ -1377,7 +1479,7 @@ func plan(i: int) -> void:
 	elif wary_robots:
 		proposal = actor.proposal(phase, tick)
 		choice = actor.choose_sampled(
-			context, legal, preferred, actor.draw, proposal if proposal in legal else ""
+			context, legal, preferred, actor.draw, proposal if proposal in legal else "", lifts
 		)
 	else:
 		choice = actor.choose(context, legal, preferred, actor.draw)
@@ -1476,6 +1578,31 @@ func plan(i: int) -> void:
 					"line": line
 				}
 			)
+			if team_talk:
+				var crew := crewmates(i)
+				for k in crew:
+					agents[k - 2].tips[talk_key] = {"avoid": burnt, "use": choice, "from": i}
+				var habit: String = HABIT_WORDS[burnt]
+				tell(
+					i,
+					"tip",
+					crew,
+					(
+						"Crew: near %s, %s %s got me robbed."
+						% [NAMES[foe], TIP_WORDS[choice], habit.left(1).to_upper() + habit.substr(1)]
+					),
+					{"situation": talk_key, "avoid": burnt, "use": choice}
+				)
+		elif not tip.is_empty() and choice == tip.use and not actor.tips_used.has(talk_key):
+			# This robot is doing what a crewmate told it works here, and says whose tip it was.
+			actor.tips_used[talk_key] = true
+			var teller: int = tip["from"]
+			var heeded := (
+				"%s said: near %s, %s Doing that." % [NAMES[teller], NAMES[foe], TIP_WORDS[choice]]
+			)
+			explanation = heeded
+			basis = "a crewmate's tip"
+			tell(i, "heed", [teller], heeded, {"situation": talk_key, "use": choice})
 	actor.last_plan = explanation
 	actor.plan_basis = basis
 	actor.prior_attempts = samples
@@ -1484,6 +1611,8 @@ func plan(i: int) -> void:
 		"span": span,
 		"rival": foe,
 		"gap": pos[i].distance_to(pos[foe]) if foe >= 0 else 0.,
+		# How far the player with the star is from the ring they attack, for the defenders' check.
+		"carrier_gap": pos[owner].distance_to(goal(owner)) if owner >= 0 else 0.,
 		"source": source,
 		"context": context,
 		"choice": choice,
@@ -1660,8 +1789,14 @@ func settle(i: int) -> void:
 	var p: Dictionary = pending[i]
 	if p.is_empty():
 		return
-	var dist: float = pos[i].distance_to(p.anchor)
-	var got_closer: bool = dist <= .9 or dist + .08 < Vector2(p.start).distance_to(p.anchor)
+	# Version 13: a robot going after something that moves is graded against where that thing is
+	# now, while the same player still has the star (or it is still loose). Before, it was graded
+	# against the spot it set off for, which the play had usually left behind.
+	var spot: Vector2 = p.anchor
+	if team_outcomes and p.phase != "carry" and owner == int(p.owner):
+		spot = heading_for(i)
+	var dist: float = pos[i].distance_to(spot)
+	var got_closer: bool = dist <= .9 or dist + .08 < Vector2(p.start).distance_to(spot)
 	var physical := got_closer
 	var result := false
 	match str(p.choice):
@@ -1706,6 +1841,51 @@ func settle(i: int) -> void:
 					and pos[i].distance_to(pos[owner]) >= 1.1
 				)
 			)
+	if team_outcomes:
+		match str(p.phase):
+			"defend":
+				# The crew won the star, or whoever had it was held up: over at least a fifth of a
+				# second they made under 70% of the ground a free run at our ring would make.
+				var carrier := int(p.owner)
+				var seconds: float = float(tick - int(p.tick)) / 60.
+				var made: float = float(p.carrier_gap) - pos[carrier].distance_to(goal(carrier))
+				result = (
+					bool(p.won)
+					or (owner >= 0 and team[owner] == p.team)
+					or (
+						owner == carrier
+						and seconds >= .2
+						and made <= float(speed[carrier]) * .91 * seconds * .7
+					)
+				)
+			"loose":
+				# The crew has the star, or it is still loose and this robot is the nearest to it.
+				if owner >= 0:
+					result = team[owner] == p.team
+				else:
+					result = true
+					var reach: float = pos[i].distance_to(floor_ball())
+					for j in 5:
+						if j != i and pos[j].distance_to(floor_ball()) < reach:
+							result = false
+			"support":
+				# This robot has the star, or the crew kept it and this robot ended open: a pass
+				# away, with no rival in the lane from the carrier and none marking it.
+				result = owner == i
+				if owner >= 0 and owner != i and team[owner] == p.team:
+					var away: float = pos[i].distance_to(pos[owner])
+					result = away >= 1.5 and away <= 8.
+					for k in 5:
+						if team[k] == p.team:
+							continue
+						var on_lane: Vector2 = Geometry2D.get_closest_point_to_segment(
+							pos[k], pos[owner], pos[i]
+						)
+						if (
+							Vector2(pos[k]).distance_to(on_lane) < 1.
+							or Vector2(pos[k]).distance_to(pos[i]) < 1.2
+						):
+							result = false
 	var witnessed: bool = (
 		(p.phase == "loose" and p.owner < 0)
 		or (p.phase == "carry" and p.owner == i)
@@ -1818,7 +1998,24 @@ func brain(i: int) -> Vector2:
 		and pos[i].distance_to(pos[owner]) < (.99 if i == 2 else .84)
 		and tick >= safe_until
 	):
-		burst(i, Vector2(pos[owner]) - Vector2(pos[i]))
+		if not fair_play or owner >= 2:
+			burst(i, Vector2(pos[owner]) - Vector2(pos[i]))
+		else:
+			# A person has the star: wind up before dashing, so they can see it coming.
+			if in_reach_since[i] < 0 or in_reach_of[i] != owner:
+				in_reach_since[i] = tick
+				in_reach_of[i] = owner
+				wind_up[i] = agents[i - 2].draw.randi_range(20, 36) + roundi(32. * easing())
+			if tick - int(in_reach_since[i]) >= int(wind_up[i]):
+				in_reach_since[i] = -1
+				burst(i, Vector2(pos[owner]) - Vector2(pos[i]))
+	if fair_play and (
+		owner < 0
+		or team[owner] == team[i]
+		or pos[i].distance_to(pos[owner]) >= (.99 if i == 2 else .84)
+		or tick < safe_until
+	):
+		in_reach_since[i] = -1
 	return delta.limit_length(.45) / .45
 
 
@@ -1899,6 +2096,8 @@ func step(commands: Array = [{}, {}], packets: Array = []) -> void:
 	var held := false
 	for i in 5:
 		var pace: float = float(speed[i]) * (.91 if owner == i else 1.)
+		if i >= 2:
+			pace *= 1. - .22 * easing()
 		if powers and tick < boost_until[i]:
 			pace *= 1.32
 		if (

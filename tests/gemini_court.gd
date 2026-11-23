@@ -90,8 +90,8 @@ func run() -> void:
 				"kind": "header",
 				"origin": "fixture",
 				"input_schema": 1,
-				"game": "last-light-v12",
-				"court_version": 12,
+				"game": "last-light-v14",
+				"court_version": 14,
 				"moving_passes": true,
 				"run": "gemini-test-87",
 				"seed": 87,
@@ -104,6 +104,10 @@ func run() -> void:
 	)
 	var applied := {}
 	var outcomes := {}
+	var weighed := {}
+	var graded := {}
+	# Decisions made early enough to be graded before this 500-tick fixture ends.
+	var due := {}
 	for t in 500:
 		if t == 2:
 			for i in [2, 0, 1]:
@@ -132,8 +136,13 @@ func run() -> void:
 					"reply goes to its own robot and executes"
 				)
 				applied[e.source] = e.seat
+				if e.tick <= 430:
+					due[e.source] = true
+			if e.kind == "response_intent" and e.has("gemini"):
+				weighed[e.seat] = true
 			if e.kind == "action_grade" and e.type == "response" and applied.has(e.source):
 				outcomes[e.seat] = true
+				graded[e.source] = true
 			f.store_line(JSON.stringify(e, "", true, true))
 		world.events.clear()
 		if world.finished:
@@ -142,7 +151,15 @@ func run() -> void:
 		JSON.stringify({"kind": "footer", "tick": world.tick, "completed": world.finished})
 	)
 	f.close()
-	check(outcomes.size() == 3, "Gemini decisions for every robot reach deterministic verifier")
+	# Since court 12 a playbook is advice: a robot weighs the proposal and may pick another move. So
+	# every robot must have weighed its own playbook, most must have used it at least once, and
+	# every decision that used it must have reached the verifier.
+	check(weighed.size() == 3, "every robot weighs the playbook sent to it")
+	check(outcomes.size() >= 2, "robots that follow a playbook reach the deterministic verifier")
+	check(
+		not due.is_empty() and due.keys().all(func(source): return graded.has(source)),
+		"every decision made on a playbook is graded"
+	)
 	var replay = Replay.new()
 	check(replay.verify(path), "replay cloud-conditioned match without network")
 	replay.free()
@@ -184,6 +201,27 @@ func run() -> void:
 		"illegal actions masked"
 	)
 	check(actor.advice("defend", "trial", ["press"], world.tick + 721).is_empty(), "plan expires")
+	# A robot only spends a model call when it is struggling: after its kickoff playbook it asks
+	# again once it has been robbed twice, or after ten decisions in a row that failed a check.
+	var calm = world.agents[1]
+	calm.asked_for_advice()
+	radio.next_ms = [0, 0, 0]
+	var asked_before: int = radio.serial[1]
+	radio.poll(world)
+	check(radio.serial[1] == asked_before, "a robot that is doing fine makes no model call")
+	calm.note_robbed(0, "", "drive")
+	radio.poll(world)
+	check(radio.serial[1] == asked_before, "one steal is not yet a reason to ask")
+	calm.note_robbed(0, "", "drive")
+	radio.poll(world)
+	check(radio.serial[1] == asked_before + 1, "robbed twice, it asks for a new playbook")
+	check(not calm.wants_advice(), "and does not ask again until it struggles again")
+	for n in 10:
+		calm.record_grade("trial", "screen", 65)
+	check(calm.wants_advice(), "ten failed decisions in a row are also a reason to ask")
+	radio.close()
+	# The checks below are about the channels themselves, so every robot asks.
+	radio.thrifty = false
 	radio.next_ms = [0, 0, 0]
 	radio.poll(world)
 	radio._reply(HTTPRequest.RESULT_SUCCESS, 403, [], PackedByteArray(), 0)

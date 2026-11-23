@@ -6,10 +6,12 @@ extends SceneTree
 ## robot closes in) and shoot. Every series is three Rivals matches in a row, and the robots carry
 ## what they learned from one match into the next, as they do on a player's Mac.
 ##
-## Three kinds of robot face the same seeds and the same pilots:
-##   learning  court 12 as shipped: every decision is graded and the grade changes the next choice
-##   frozen    court 12 with learning switched off, so only chance changes what the robots do
-##   court 11  the robots before version 12
+## Four kinds of robot face the same seeds and the same pilots:
+##   learning  the court as shipped: every decision is graded and the grade changes the next choice
+##   frozen    the same court and checkpoint with learning switched off
+##   court 12  the robots before version 13: the old outcome checks and the checkpoint trained on
+##             court 9
+##   court 11  the robots before version 12, on that same old checkpoint
 ##
 ## The verifier reads only the court's own event log. For each series it checks:
 ##   0.40  steals in match 3 are at most 80% of match 1 (learning across matches)
@@ -21,7 +23,7 @@ extends SceneTree
 const Game = preload("res://game/star_match.gd")
 const Policy = preload("res://learning/star_policy.gd")
 const MATCHES := 3
-const KINDS := ["learning", "frozen", "court 11"]
+const KINDS := ["learning", "frozen", "court 12", "court 11"]
 
 
 static func thieves(s) -> Array:
@@ -61,11 +63,18 @@ static func play(kind: String, seed_value: int, weights: Dictionary, memory: Dic
 	if kind == "court 11":
 		s.steady_pace = false
 		s.wary_robots = false
+	if kind in ["court 11", "court 12"]:
+		s.team_outcomes = false
+		s.fair_play = false
+		s.team_talk = false
 	s.setup(seed_value, false)
 	s.configure_agents(weights, memory, kind != "frozen", .04)
 	var steals_by_minute := [0, 0, 0, 0]
 	var burned_picks := [[0, 0], [0, 0]]
-	var counts := {"lessons": 0, "jukes": 0, "graded": 0, "points": 0, "passes": 0, "instant": 0}
+	var counts := {
+		"lessons": 0, "jukes": 0, "graded": 0, "points": 0, "passes": 0, "instant": 0,
+		"won_back": 0, "completed": 0
+	}
 	var gained := {}
 	while not s.finished:
 		var burned := {}
@@ -78,6 +87,9 @@ static func play(kind: String, seed_value: int, weights: Dictionary, memory: Dic
 					gained[e.seat] = e.tick
 					if e.method == "steal" and e.seat < 2 and int(e["from"]) >= 2:
 						steals_by_minute[mini(3, int(e.tick / 3600))] += 1
+					# The robots took the star off the pilots: a steal or an interception.
+					if e.seat >= 2 and int(e["from"]) >= 0 and int(e["from"]) < 2:
+						counts.won_back += int(e.method == "steal" or e.intercepted)
 				"throw":
 					if e.seat >= 2 and e.action == "pass" and gained.has(e.seat):
 						counts.passes += 1
@@ -95,6 +107,8 @@ static func play(kind: String, seed_value: int, weights: Dictionary, memory: Dic
 					if e.type == "response":
 						counts.graded += 1
 						counts.points += int(e.points)
+					elif e.type == "court_throw" and e.seat >= 2 and e.action == "pass":
+						counts.completed += int(e.pass)
 		s.events.clear()
 	return {
 		"steals": steals_by_minute,
@@ -137,6 +151,9 @@ func _initialize() -> void:
 			out_path = arg.trim_prefix("--out=")
 	var start = Policy.new()
 	start.load_checkpoint("res://learning/star_checkpoint.json")
+	# What the robots shipped with before version 13, for the two older kinds.
+	var earlier = Policy.new()
+	earlier.load_checkpoint("res://learning/star_checkpoint_court9.json")
 	var report := {"series": series_count, "matches_per_series": MATCHES, "first_seed": 91000}
 	var steals := {}
 	for kind in KINDS:
@@ -145,9 +162,13 @@ func _initialize() -> void:
 		var goals := [0, 0, 0]
 		var robot_goals := [0, 0, 0]
 		var halves := [0, 0]
-		var counts := {"lessons": 0, "jukes": 0, "graded": 0, "points": 0, "passes": 0, "instant": 0}
+		var counts := {
+			"lessons": 0, "jukes": 0, "graded": 0, "points": 0, "passes": 0, "instant": 0,
+			"won_back": 0, "completed": 0
+		}
+		var shipped = earlier if kind in ["court 11", "court 12"] else start
 		for n in series_count:
-			var weights: Dictionary = start.estimates.duplicate(true)
+			var weights: Dictionary = shipped.estimates.duplicate(true)
 			var memory := {}
 			var matches := []
 			for m in MATCHES:
@@ -198,6 +219,10 @@ func _initialize() -> void:
 				snappedf(robot_goals[1] / float(series_count), .01),
 				snappedf(robot_goals[2] / float(series_count), .01)
 			],
+			"won_back_per_match": snappedf(counts.won_back / float(series_count * MATCHES), .01),
+			"robot_passes_completed_per_match": snappedf(
+				counts.completed / float(series_count * MATCHES), .01
+			),
 			"lessons_said": counts.lessons,
 			"jukes": counts.jukes,
 			"mean_decision_grade": snappedf(float(counts.points) / maxf(1., counts.graded) / 100., .001),

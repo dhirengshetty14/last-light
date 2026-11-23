@@ -21,6 +21,7 @@
       17.19,
       18.0
     ],
+    "robot_passes_completed_per_match": 2.94,
     "robot_passes_within_quarter_second_of_getting_the_star": 0.127,
     "steals_per_match": [
       [
@@ -39,52 +40,10 @@
     "verifier_score": [
       0.28,
       0.07
-    ]
+    ],
+    "won_back_per_match": 14.15
   },
-  "first_seed": 91000,
-  "frozen": {
-    "jukes": 49,
-    "lessons_said": 0,
-    "match_1_steals_first_vs_last_two_minutes": [
-      130,
-      145
-    ],
-    "match_3_minus_match_1": [
-      0.0,
-      1.38
-    ],
-    "mean_decision_grade": 0.566,
-    "pilot_goals_per_match": [
-      20.63,
-      20.69,
-      20.75
-    ],
-    "robot_goals_per_match": [
-      14.25,
-      14.56,
-      14.0
-    ],
-    "robot_passes_within_quarter_second_of_getting_the_star": 0.018,
-    "steals_per_match": [
-      [
-        17.19,
-        0.94
-      ],
-      [
-        18.0,
-        1.53
-      ],
-      [
-        17.19,
-        1.05
-      ]
-    ],
-    "verifier_score": [
-      0.32,
-      0.06
-    ]
-  },
-  "learning": {
+  "court 12": {
     "jukes": 32,
     "lessons_said": 106,
     "match_1_steals_first_vs_last_two_minutes": [
@@ -106,6 +65,7 @@
       17.06,
       17.13
     ],
+    "robot_passes_completed_per_match": 9.85,
     "robot_passes_within_quarter_second_of_getting_the_star": 0.024,
     "steals_per_match": [
       [
@@ -124,15 +84,105 @@
     "verifier_score": [
       0.44,
       0.07
-    ]
+    ],
+    "won_back_per_match": 13.85
+  },
+  "first_seed": 91000,
+  "frozen": {
+    "jukes": 10,
+    "lessons_said": 0,
+    "match_1_steals_first_vs_last_two_minutes": [
+      64,
+      57
+    ],
+    "match_3_minus_match_1": [
+      1.19,
+      0.93
+    ],
+    "mean_decision_grade": 0.657,
+    "pilot_goals_per_match": [
+      19.0,
+      19.75,
+      19.19
+    ],
+    "robot_goals_per_match": [
+      17.75,
+      16.88,
+      16.94
+    ],
+    "robot_passes_completed_per_match": 4.23,
+    "robot_passes_within_quarter_second_of_getting_the_star": 0.0,
+    "steals_per_match": [
+      [
+        7.56,
+        0.96
+      ],
+      [
+        7.81,
+        0.63
+      ],
+      [
+        8.75,
+        0.86
+      ]
+    ],
+    "verifier_score": [
+      0.25,
+      0.06
+    ],
+    "won_back_per_match": 8.35
+  },
+  "learning": {
+    "jukes": 5,
+    "lessons_said": 57,
+    "match_1_steals_first_vs_last_two_minutes": [
+      70,
+      86
+    ],
+    "match_3_minus_match_1": [
+      0.25,
+      1.05
+    ],
+    "mean_decision_grade": 0.654,
+    "pilot_goals_per_match": [
+      19.19,
+      19.25,
+      19.19
+    ],
+    "robot_goals_per_match": [
+      17.0,
+      17.56,
+      16.69
+    ],
+    "robot_passes_completed_per_match": 3.75,
+    "robot_passes_within_quarter_second_of_getting_the_star": 0.0,
+    "steals_per_match": [
+      [
+        9.75,
+        0.91
+      ],
+      [
+        8.69,
+        0.44
+      ],
+      [
+        10.0,
+        0.75
+      ]
+    ],
+    "verifier_score": [
+      0.26,
+      0.07
+    ],
+    "won_back_per_match": 9.44
   },
   "learning_minus_frozen_match_1": [
-    -3.44,
-    1.14
+    2.19,
+    1.08
   ],
   "learning_minus_frozen_match_3": [
-    -6.56,
-    1.41
+    1.25,
+    1.22
   ],
   "matches_per_series": 3,
   "series": 16

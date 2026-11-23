@@ -154,11 +154,29 @@ every 8 seconds, as advice.
 - A shared hosted service is prepared (`host/Dockerfile`, the `last_light/radio/url` project setting)
   but deliberately **not deployed**. Ask Dhiren before deploying any shared service.
 
-### Bruin (telemetry)
+### Bruin (telemetry) and the live robot report
 
-Install the Bruin CLI. While playing, run `python3 telemetry/watch.py --watch` (the Mac launcher
-does this). It loads sealed match logs into `telemetry/local/` (gitignored) and runs the checks in
-`telemetry/assets/flight/*.sql`. Example queries are in the README.
+Install the Bruin CLI. Then run this beside the game (the Mac launcher starts it too):
+
+```sh
+python3 telemetry/dashboard.py --open     # http://127.0.0.1:8960/
+```
+
+It starts the watcher (`telemetry/watch.py --watch`), which stages the match logs into
+`telemetry/local/` (gitignored) and runs the Bruin pipeline in `telemetry/assets/flight/*.sql`: 16
+tables and 19 quality checks in about 0.7 s. The page shows, within a couple of seconds of play:
+
+- which of the seven tasks each robot is failing;
+- the moves that cost the most verifier score and the check each one misses;
+- fully verified decisions match by match;
+- model calls, and what the robots did with the advice;
+- what the robots told each other, and the lessons they said out loud.
+
+The last Bruin asset, `flight.dashboard_feed`, writes the whole report as one JSON file. The page
+only reads that file, so a refresh costs no query.
+
+If a Bruin quality check fails (for example a log that does not start at sequence 1), the pipeline
+stops and the report stops updating until that log is removed. Check `telemetry/local/live.log`.
 
 ### Where a running game saves things
 
@@ -203,10 +221,10 @@ does this). It loads sealed match logs into `telemetry/local/` (gitignored) and 
 | --- | --- |
 | `response_policy.gd` | Base learner: an estimates table `context/move -> [tries, full passes, points]`, exploration and checkpoint loading |
 | `star_policy.gd` | Ball-play policy: `choose` (top move), `choose_sampled` (version 12, samples moves), `choose_v2` (old recordings), and `observe`, which updates the long-term estimates and fast recent evidence |
-| `star_train.gd` | Trains `star_checkpoint.json` from 120 simulated matches against four scripted human styles and writes `star_eval.json` |
+| `star_train.gd` | Trains `star_checkpoint.json` from 120 simulated matches against four scripted human styles and writes `star_eval.json`. `star_checkpoint_court9.json` is the earlier checkpoint, kept for comparisons. |
 | `captains.gd` | Scripted Free Agents captains: honest, liar, first half only, favourite robot, coin flip |
 | `social_train.gd`, `social_eval.gd` | Practice and held-out test for the robots' social choices; `social_checkpoint.json` and `social_eval.json` hold the results |
-| `steal_eval.gd` | Version 12: do robots stop handing the star to pilots who keep robbing them? Results are in `steal_eval.json`. |
+| `steal_eval.gd` | Do robots stop handing the star to pilots who keep robbing them? Four kinds of robot on the same seeds. Results are in `steal_eval.json`. |
 | `train.gd`, `checkpoint.json`, `evaluation.json` | The original nursery game's learner |
 
 ### Other folders
@@ -221,7 +239,8 @@ does this). It loads sealed match logs into `telemetry/local/` (gitignored) and 
 | `tests/court_playtest.gd` | Plays both keyboard seats through the real scene: menus, pause, goals |
 | `tasks/` | Harbor-format tasks (`ring-window`, `catch-window`, `broken-promise`), each with `instruction.md`, `task.toml`, `solution/solve.sh` and `tests/test.sh`. Graders are in `tasks/*.gd`, and `tasks/check-local.sh` runs them in Docker with no network. |
 | `host/radio.py` | The Gemini playbook service. Standard library only; it alone holds the key. |
-| `telemetry/` | Bruin pipeline: `watch.py`, `pipeline.yml`, and the tables and checks in `assets/flight/*.sql` |
+| `telemetry/` | Bruin pipeline: `watch.py`, `pipeline.yml`, and the tables and checks in `assets/flight/*.sql`. The report's tables are `robot_decisions`, `task_scores`, `robot_failure_modes`, `robot_talk` and `dashboard_feed`. |
+| `telemetry/dashboard.py`, `dashboard.html` | The live robot report: a local server and one self-contained page |
 | `art/source/` | Offline scripts that built models, textures, music, sound effects and voices |
 | `assets/` | Models (glb), audio, fonts, textures |
 | `docs/` | Screenshots, videos, and recorded matches (`match-87.jsonl` is the replay fixture) |
@@ -266,6 +285,8 @@ exactly.
 | 10 | Every mode is a 4-minute match; most goals wins | `long_match = false` |
 | 11 | A star stuck behind a ring rolls back into play | `fair_deck = false` |
 | 12 | Robots look up before passing and passes fly slower; robots are pressure-aware, can evade, sample their moves, treat Gemini as advice, and remember who robbed them | `steady_pace = false`, `wary_robots = false` |
+| 13 | New outcome checks for defending, chasing a loose star and supporting, graded against where the target is now; those situations end in `/t` | `team_outcomes = false` |
+| 14 | Fair play for people: robots wind up before dashing at a person, and people keep the star longer. Robots on a crew talk to each other. In live play robots ease off while they lead (`mercy`, read from the header). | `fair_play = false`, `team_talk = false` |
 
 **To add a version:**
 
@@ -296,6 +317,9 @@ Every robot (seats 2 to 4) runs the same loop, each with its **own separate memo
    `star2/<seat>/carry/<hot|warm>/<rival>`. **Hot** means inside the rival's steal reach plus the
    distance their ready dash covers. **Warm** means within 1.3 m of that. The reach grows by 0.3 m for
    every time that rival has robbed this robot.
+
+   Since version 13, defend, support and loose contexts end in `/t`, because their outcome checks
+   changed and old grades must not mix with new ones.
 3. **Legal moves.**
 
    | Phase | Moves |
@@ -328,6 +352,28 @@ Every robot (seats 2 to 4) runs the same loop, each with its **own separate memo
    weighs less than the one it picks instead, the robot says so once in a balloon, for example *"Rafi
    robbed me going wide. I pass early now."*
 
+### Robots talking to each other (version 14)
+
+All of it happens inside the simulation, so it replays exactly. Every message is a `talk` event with
+a `topic`, the seats it was `to`, and the `line` shown on screen.
+
+| Topic | When | What the listeners do with it |
+| --- | --- | --- |
+| `warn` | A robot has been robbed twice (and again at four times) by the same player | Each crewmate gives that player 0.15 m more room (`heard_warnings` in `star_agent.gd`) |
+| `tip` | A robot has just said a lesson | Each crewmate keeps the tip for that situation (`tips`): the tipped move gets +0.06 in its weighing and the dropped move −0.06 |
+| `heed` | A crewmate picks the tipped move in that situation for the first time | Nothing; it tells the robot that gave the tip that it was used |
+
+The three memories stay separate: a robot never reads a crewmate's record, it only keeps what it was
+told. Warnings and tips last for the match.
+
+### Fair play for people (version 14)
+
+- A robot winds up for 20 to 36 ticks inside its reach before it dashes at a person with the star.
+- A person who gets the star is safe for 84 ticks (102 after catching a pass).
+- `mercy` (live play only): `easing()` is a quarter for each goal the robots lead the people by, up to
+  1. It slows the robots by up to 22% and adds up to 32 ticks to the wind-up. `-- --full-strength`
+  turns it off. Training and evaluations always run without it.
+
 ### Gemini's part (`gemini_coach.gd`, `host/radio.py`)
 
 - Every 8 s each robot can send its observation to the host:
@@ -337,6 +383,10 @@ Every robot (seats 2 to 4) runs the same loop, each with its **own separate memo
 - The host asks `gemini-3.1-flash-lite` for one move per phase with a public reason and validates the
   reply. The game drops replies that are illegal, stale (over 12 s old) or meant for an old team.
 - Movement and sound never wait for Gemini. A timeout or error leaves the robots playing.
+- **A robot only calls when it is struggling.** It gets one playbook at kickoff, then asks again
+  once it has been robbed twice or after ten decisions in a row that failed a check
+  (`wants_advice` in `star_agent.gd`), and never more than once in 8 s. That is about 30 calls a
+  match against dash-steal pilots, where asking every 8 s made 90.
 - **Before version 12** a playbook move was applied unless the robot's recent record was strongly
   against it. In live play about 62% of robot decisions came from Gemini, and it kept sending Zip wide
   past the pilots, where 37 of 42 steals happened. That is why version 12 made it advice.
@@ -383,26 +433,51 @@ next choice in the same situation. Across matches, the saved memory carries the 
 
 | Verifier | What it checks (weights sum to 1) | Status |
 | --- | --- | --- |
-| **Robot decision** (`settle`, event `action_grade` with type `response`) | Saw the situation 0.10; the move was legal 0.10; approached correctly 0.20; carried the move out 0.25; it worked 0.35. A full pass needs all five. | Live; **this is what trains the robots** |
+| **Robot decision** (`settle`, event `action_grade` with type `response`) | Saw the situation 0.10; the move was legal 0.10; approached correctly 0.20; carried the move out 0.25; it worked 0.35. A full pass needs all five. What "it worked" means depends on the task (below). | Live; **this is what trains the robots** |
 | **Every pass and shot** (`grade_throw`, type `court_throw`) | Released 0.10; eligible 0.10; flew 0.20; a teammate touched it 0.25; delivered 0.35 | Live; logged only |
 | **Social choice** (`grade_social`) | Kept 100, broken 0, none 50, graded when the next promise settles | Live in Free Agents |
 | **Harbor tasks** (`tasks/`) | `reward.json` from separate no-network verifier containers | Built earlier; not re-run since version 12 |
 | **Bruin checks** (`telemetry/assets/flight/*.sql`) | Unique sequence ids; scores bounded 0 to 100; exactly one learning example per decision; an applied Gemini move equals its proposal; robot attribution for beacon events | Not re-run on version 12 |
 
+### What "it worked" means, by task
+
+The dashboard groups every decision into one of seven tasks.
+
+| Task | It worked if |
+| --- | --- |
+| Win the star back (defend) | The crew wins the star, or the carrier is held up: under 70% of the ground a free run at our ring would make (version 13) |
+| Reach a loose star first | The crew gets the star, or this robot is the nearest player to it (version 13) |
+| Get open for a teammate (support) | This robot gets the star, or ends a pass away with nobody in the lane or marking it (version 13) |
+| Keep the star under pressure | Still holding the star, and not robbed on the way |
+| Carry the star forward | Closer to the ring, still holding the star |
+| Complete a pass | The pass reached a teammate |
+| Finish at the ring | The shot scored |
+
+Before version 13 the first three asked for the star to be won within the decision's 0.6 seconds, or
+for the robot to reach a spot that had since moved. They failed about 96% of the time whatever the
+robot chose, so they taught it nothing. Bruin's failure tables are what showed this.
+
 ### Evaluations: does learning help?
 
 | Evaluation | Result | Reading |
 | --- | --- | --- |
-| `learning/star_eval.json` (ball play; 120 training and 32 held-out matches) | Fully verified tactics 21.4% before training, 21.3% after | Ball-play training did not help |
+| `learning/star_eval.json` (ball play; 120 training and 32 held-out matches, retrained on court 13) | Trained robots scored 946 goals against 810 untrained; fully verified 29.2% against 28.3%. On court 9 the same test showed no gain (79 against 84 goals). | Training now helps against the scripted styles it trained on. One run; spread not measured. |
 | `learning/social_eval.json` (60 held-out series, hidden-truth verifier) | Random 0.557, written rules 0.649, trained 0.655 | Training matched the written rules but did not beat them |
-| `learning/steal_eval.json` (version 12; 16 series of 3 matches against pilots who repeat the dash-steal) | Steals: learning robots 13.8 in match 1, 10.6 in match 3; frozen robots 17.2 and 17.2. Paired difference −6.6 ± 1.4 by match 3. Verifier score 0.44, frozen 0.32, version 11 robots 0.28. | Learning works across matches. Within one match it only holds steady. Goals stay close, so it does not yet win more. |
+| `learning/steal_eval.json` (16 series of 3 matches against pilots who repeat the dash-steal) | Steals in match 3: court 14 learning 10.0, court 14 frozen 8.8, court 12 10.6, court 11 13.0. Goals level for all four (robots about 17, pilots 18 to 19). | The retrained robots are harder to rob from the first match. Learning during the three matches adds nothing measurable on top, and they still do not win more against this style. |
 
 ### Honest limits
 
 - The decision verifier looks only about 0.6 s ahead. A steal that costs a goal is graded like one that
   does not.
-- The steal test has no oracle or do-nothing calibration (a frozen robot scores 0.32, not 0).
-- The checkpoints were trained on older courts and have not been retrained for version 12.
+- Defending is still the weakest task: against dash-steal pilots the outcome check passes 7% to 19%
+  of the time.
+- The defenders' outcome is shared by the crew, so one robot's good choice and another's bad one get
+  the same result.
+- The steal test has no oracle or do-nothing calibration (a frozen robot scores 0.25, not 0).
+- The social checkpoint was trained on an older court and has not been retrained. The ball-play
+  checkpoint was trained on court 13, not 14.
+- No evaluation yet compares trained robots with random ones, so "the robots learn" rests on the
+  results above and no more.
 
 ---
 
@@ -424,6 +499,10 @@ next choice in the same situation. Across matches, the saved memory carries the 
    flow.
 7. **Keep the Bruin invariants.**
    - Robot decision contexts start with `star2/` (`flight.agent_decisions` filters on it).
+   - `flight.robot_decisions` reads the phase from the third part of the context and pressure from
+     the fourth. If you rename contexts, update it.
+   - When a verifier check changes meaning, give the affected contexts a new suffix and raise the
+     `verifier` generation in `robot_decisions.sql`, so old and new grades are never compared.
    - A decision marked `applied` must use exactly the Gemini proposal.
    - Every `response_intent` gets exactly one `action_grade`.
 8. **Test and capture scripts must not touch the player's data.**
@@ -451,6 +530,12 @@ next choice in the same situation. Across matches, the saved memory carries the 
 ### Built
 
 - Three modes.
+- Robots that warn and tip each other, and act on what they hear.
+- Fair play for people, with robots easing off while they lead.
+- A four-minute demo script: [docs/DEMO.md](docs/DEMO.md).
+- A live Bruin report of where each robot is failing, task by task and check by check.
+- Outcome checks that separate good decisions from bad ones in all seven tasks.
+- Robots that only call Gemini when they are struggling.
 - Robots that learn live from verified grades and remember across matches.
 - Gemini playbooks as advice.
 - Promises, walkouts and the union.
@@ -463,15 +548,18 @@ next choice in the same situation. Across matches, the saved memory carries the 
 
 ### Asked for or discussed, not built
 
-- **Robots talking to each other.** Dhiren wants them to "keep discussing with each other". Today each
-  robot only speaks to the players and the radio.
+- **Richer robot talk.** Robots now warn and tip each other. They do not yet plan a play together,
+  negotiate, or call for the star. Dhiren wants them to "keep discussing with each other".
 - **Agents that use their powers deliberately** and plan to win the match, not just the next 0.6 s:
   credit for the decision that led to a goal, or to losing one.
 - **Light VLM checks** alongside the code checks (for example on spoken lines). These are not used yet.
 - **BAND or other outside services for match data.** This needs Dhiren's go-ahead and his own
   account.
-- **Retraining** the ball-play and social checkpoints on court 12, and re-running the Harbor tasks and
-  Bruin checks on it.
+- **Hindsight drills.** Replay a recorded match to a failed decision, try every other legal move
+  from that exact moment, and feed the verifier's scores back. Deterministic replay makes this
+  possible; it is not built.
+- **Credit for one defender.** The defenders' outcome is shared by the crew today.
+- **Retraining** the social checkpoint on court 13, and re-running the Harbor tasks on it.
 - A fresh packaged app (`exports/` is stale) and a frame-time benchmark on version 12.
 
 ### Open questions for the team

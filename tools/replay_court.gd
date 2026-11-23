@@ -49,6 +49,17 @@ func verify(path: String) -> bool:
 		# robots ignored who could reach them, always took their top move and obeyed Gemini.
 		s.set("steady_pace", false)
 		s.set("wary_robots", false)
+	if head.get("court_version", 5) >= 6 and head.get("court_version", 5) < 13:
+		# Before version 13 defending, chasing a loose star and supporting were graded by outcomes
+		# a 0.6-second decision almost never reaches.
+		s.set("team_outcomes", false)
+	if head.get("court_version", 5) >= 6 and head.get("court_version", 5) < 14:
+		# Before version 14 a robot dashed at a person the moment they came within reach.
+		s.set("fair_play", false)
+		s.set("team_talk", false)
+	if head.get("court_version", 5) >= 14:
+		# Whether the robots eased off while leading: on in live play, off in evaluations.
+		s.set("mercy", head.get("mercy", false))
 	if head.get("free_agents", false):
 		# Dynamic calls: the frozen version 5 court has neither the third argument nor a draft.
 		s.call("setup", int(head.seed), false, true)

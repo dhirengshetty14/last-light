@@ -129,12 +129,24 @@ var burned_by: Dictionary = {}
 var lessons_told: Dictionary = {}
 
 
-## Extra room this robot gives a player who has robbed it: 0.3 m a steal, at most 1.2 m. A robot
-## that is not learning (a frozen comparison) gives none.
+## Court version 14: what crewmates have told this robot this match. Warnings about a player who
+## keeps robbing them (a count per player), tips for a situation (the move a crewmate dropped there
+## and the one it uses now, and who said so), and the tips this robot has already said it used.
+var heard_warnings := [0, 0, 0, 0, 0]
+var tips: Dictionary = {}
+var tips_used: Dictionary = {}
+
+
+## Extra room this robot gives a player who has robbed it: 0.3 m a steal, plus 0.15 m for each
+## warning a crewmate has given about that player, at most 1.2 m. A robot that is not learning (a
+## frozen comparison) gives none.
 func wariness(j: int) -> float:
 	if not adaptive:
 		return 0.
-	return minf(1.2, .3 * (float(robbed[j]) + float(robbed_before[j])))
+	return minf(
+		1.2,
+		.3 * (float(robbed[j]) + float(robbed_before[j])) + .15 * float(heard_warnings[j])
+	)
 
 
 func times_robbed(j: int) -> int:
@@ -146,6 +158,7 @@ func note_robbed(j: int, context: String, move: String) -> int:
 	if context != "":
 		burned[context] = move
 		burned_by[context] = j
+	robbed_since_ask += 1
 	return int(robbed[j])
 
 
@@ -176,7 +189,31 @@ func remember(pilot: int, change: int, note: String) -> void:
 func record_grade(context: String, choice: String, points: int) -> void:
 	if adaptive:
 		decisions_graded += 1
+	recent_grades.push_back(points)
+	if recent_grades.size() > 10:
+		recent_grades.pop_front()
 	observe(context, choice, points)
+
+
+## The grades of this robot's last ten decisions, and how often it has been robbed since it last
+## asked for a playbook. The Gemini coach reads these so a robot only spends a model call when it
+## is struggling. Nothing in the simulation reads them.
+var recent_grades: Array = []
+var robbed_since_ask := 0
+
+
+## True when this robot should ask for a new playbook: it has been robbed twice since it last
+## asked, or none of its last ten decisions passed every check. A robot that is doing fine makes
+## no call.
+func wants_advice() -> bool:
+	if robbed_since_ask >= 2:
+		return true
+	return recent_grades.size() >= 10 and 100 not in recent_grades
+
+
+func asked_for_advice() -> void:
+	robbed_since_ask = 0
+	recent_grades.clear()
 
 
 func social_snapshot() -> Dictionary:

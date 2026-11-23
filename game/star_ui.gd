@@ -445,6 +445,13 @@ func show_plans(sim) -> void:
 					]
 				)
 			)
+			var warned := 0
+			for count in actor.heard_warnings:
+				warned += int(count)
+			if warned > 0 or not actor.tips.is_empty():
+				lines.append(
+					"From the crew   %d warnings   ·   %d tips" % [warned, actor.tips.size()]
+				)
 		for note in actor.last_deal:
 			if note != "":
 				lines.append(note)

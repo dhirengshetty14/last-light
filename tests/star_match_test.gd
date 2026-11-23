@@ -306,6 +306,234 @@ func check_memory_replay() -> void:
 	)
 
 
+## The verifier's five checks on robot i's last graded decision.
+func last_flags(s, i: int) -> Array:
+	var grades: Array = s.events.filter(
+		func(e): return e.kind == "action_grade" and e.type == "response" and e.seat == i
+	)
+	return grades[-1].flags if not grades.is_empty() else []
+
+
+## Court version 13: the "it worked" check of the three tasks every robot was failing.
+func check_team_outcomes() -> void:
+	# Getting open: Zip passes when it ends a pass away from Pip with a clear lane, and fails
+	# when a rival is marking it.
+	for marked in [false, true]:
+		var s = court()
+		s.tick = 300
+		s.owner = 2
+		s.pos[2] = Vector2(0., 0.)
+		s.pos[4] = Vector2(-3., 2.)
+		s.pos[3] = Vector2(-6., -3.)
+		s.pos[0] = Vector2(-2.6, 1.9) if marked else Vector2(6., -4.)
+		s.pos[1] = Vector2(7., 4.)
+		s.pending[4] = {}
+		s.plan(4)
+		check(
+			s.pending[4].phase == "support" and str(s.pending[4].context).ends_with("/t"),
+			"a supporting robot decides in a situation graded by the new checks"
+		)
+		s.tick += 30
+		s.settle(4)
+		check(
+			last_flags(s, 4)[4] == (not marked),
+			"getting open works when the lane is clear and nobody marks the robot"
+		)
+	# A loose star: Morrow passes when it is the nearest player to it, and fails when Nell is.
+	for beaten in [false, true]:
+		var s = court()
+		s.tick = 300
+		s.owner = -1
+		s.ball = Vector3(0., .2, 0.)
+		s.motion = Vector3.ZERO
+		s.pos[3] = Vector2(1.5, 0.)
+		s.pos[0] = Vector2(.5, 0.) if beaten else Vector2(6., 0.)
+		s.pos[1] = Vector2(7., 4.)
+		s.pos[2] = Vector2(-5., 3.)
+		s.pos[4] = Vector2(-5., -3.)
+		s.pending[3] = {}
+		s.plan(3)
+		s.tick += 20
+		s.settle(3)
+		check(
+			last_flags(s, 3)[4] == (not beaten),
+			"chasing a loose star works when the robot is the nearest player to it"
+		)
+	# Defending: it works when Nell is held up, and fails when she runs free at the ring.
+	for held in [true, false]:
+		var s = court()
+		s.tick = 300
+		s.pos[0] = Vector2(2., 0.)
+		s.possession(0, "fixture")
+		s.pos[3] = Vector2(4., 0.)
+		s.pending[3] = {}
+		s.plan(3)
+		s.tick += 30
+		s.pos[0] = Vector2(2.2, 0.) if held else Vector2(3.6, 0.)
+		s.settle(3)
+		check(
+			last_flags(s, 3)[4] == held,
+			"defending works when the carrier makes under 70% of a free run's ground"
+		)
+	var old = court()
+	old.team_outcomes = false
+	old.tick = 300
+	old.pos[0] = Vector2(2., 0.)
+	old.possession(0, "fixture")
+	old.pending[3] = {}
+	old.plan(3)
+	check(
+		not str(old.pending[3].context).ends_with("/t"),
+		"the earlier court keeps its situations, so its recordings replay"
+	)
+	old.tick += 30
+	old.settle(3)
+	check(not last_flags(old, 3)[4], "and still asks a defender to win the star")
+
+
+## Court version 14: robots on a crew talk to each other, and what they hear changes what they do.
+func check_team_talk() -> void:
+	var s = court()
+	s.tick = 300
+	s.pos[4] = Vector2(-1., 0.)
+	s.pos[1] = Vector2(1.6, 0.)
+	s.pos[0] = Vector2(8., 4.)
+	s.cooldown[1] = 0
+	# Rafi robs Zip twice: Zip warns Pip and Morrow, and they give Rafi more room.
+	for n in 2:
+		s.owner = 4
+		s.pending[4] = {}
+		s.plan(4)
+		s.possession(1, "steal")
+	var warnings: Array = s.events.filter(func(e): return e.kind == "talk" and e.topic == "warn")
+	check(
+		(
+			warnings.size() == 1
+			and warnings[0].seat == 4
+			and warnings[0].to == [2, 3]
+			and warnings[0].about == 1
+		),
+		"a robot robbed twice by the same player warns its crewmates once"
+	)
+	check(
+		is_equal_approx(s.agents[0].wariness(1), .15) and is_equal_approx(s.agents[1].wariness(1), .15),
+		"and they give that player more room without having been robbed themselves"
+	)
+	check(s.agents[0].wariness(0) == 0., "but no more room to the other player")
+	# Zip changes its habit near Rafi and tells the crew the tip.
+	var zip = s.agents[2]
+	var spot := "star2/4/carry/hot/rafi"
+	zip.exploration = 0.
+	zip.burned[spot] = "flank"
+	zip.burned_by[spot] = 1
+	for n in 8:
+		zip.observe(spot, "flank", 65)
+		zip.observe(spot, "pass", 100)
+	s.events.clear()
+	s.possession(4, "fixture")
+	s.pending[4] = {}
+	s.plan(4)
+	var tips: Array = s.events.filter(func(e): return e.kind == "talk" and e.topic == "tip")
+	check(
+		tips.size() == 1 and tips[0].to == [2, 3] and tips[0].avoid == "flank",
+		"a robot that drops a move after being robbed tells its crewmates the tip"
+	)
+	var told: Dictionary = s.agents[0].tips.get("hot/rafi", {})
+	check(
+		told.get("avoid") == "flank" and told.get("use") == tips[0].use and told.get("from") == 4,
+		"and each crewmate keeps it for that situation"
+	)
+	# Pip, in the same spot near Rafi, weighs the tipped move higher and says whose tip it was.
+	var pip = s.agents[0]
+	pip.exploration = 0.
+	s.pos[2] = Vector2(-1., 0.)
+	# Pip has not been robbed, so Rafi has to be a little nearer to be within reach of it.
+	s.pos[1] = Vector2(1.2, 0.)
+	s.pos[4] = Vector2(-6., 3.)
+	s.pos[3] = Vector2(-6., -3.)
+	var heeded: Array = []
+	for n in 40:
+		s.events.clear()
+		s.possession(2, "fixture")
+		s.pending[2] = {}
+		s.plan(2)
+		heeded = s.events.filter(func(e): return e.kind == "talk" and e.topic == "heed")
+		if not heeded.is_empty():
+			break
+	var plain: float = pip.last_values.get(told.get("use"), 0.)
+	check(
+		(
+			heeded.size() == 1
+			and heeded[0].seat == 2
+			and heeded[0].to == [4]
+			and str(heeded[0].line).begins_with("Zip said: near Rafi,")
+		),
+		"a crewmate that acts on the tip says whose it was"
+	)
+	pip.tips.clear()
+	s.pending[2] = {}
+	s.plan(2)
+	check(
+		plain - float(pip.last_values.get(told.get("use"), 0.)) > .05,
+		"the tip lifts that move in the listener's own weighing"
+	)
+	var quiet = court()
+	quiet.team_talk = false
+	quiet.tick = 300
+	quiet.pos[4] = Vector2(-1., 0.)
+	quiet.pos[1] = Vector2(1.6, 0.)
+	for n in 2:
+		quiet.owner = 4
+		quiet.pending[4] = {}
+		quiet.plan(4)
+		quiet.possession(1, "steal")
+	check(
+		quiet.events.filter(func(e): return e.kind == "talk").is_empty(),
+		"the earlier court has no robot talk, so its recordings replay"
+	)
+
+
+## Court version 14: a robot winds up before it dashes at a person, and people keep the star longer.
+func check_fair_play() -> void:
+	for fair in [true, false]:
+		var s = court()
+		s.fair_play = fair
+		s.tick = 300
+		s.pos[0] = Vector2(0., 0.)
+		s.possession(0, "fixture")
+		check(
+			s.safe_until - s.tick == (84 if fair else 39),
+			"a person who gets the star is safe for 1.4 s" if fair else "the earlier court gave 0.65 s"
+		)
+		# Pip stands right beside Nell once her safe time is over.
+		s.pos[2] = Vector2(.6, 0.)
+		s.tick = s.safe_until
+		s.cooldown[2] = 0
+		var dashed_after := -1
+		for t in 60:
+			s.brain(2)
+			if s.tick < s.dash_until[2]:
+				dashed_after = t
+				break
+			s.tick += 1
+		if fair:
+			check(
+				dashed_after >= 20 and dashed_after <= 36,
+				"a robot winds up for 0.33 to 0.6 s before it dashes at a person"
+			)
+		else:
+			check(dashed_after == 0, "the earlier court let it dash at once")
+	var eased = court()
+	eased.mercy = true
+	eased.goals = [0, 3]
+	check(is_equal_approx(eased.easing(), .75), "robots three goals up ease off by three quarters")
+	eased.goals = [2, 1]
+	check(eased.easing() == 0., "and not at all when the people lead")
+	eased.mercy = false
+	eased.goals = [0, 4]
+	check(eased.easing() == 0., "evaluations and training never ease off")
+
+
 func _initialize() -> void:
 	check_court_geometry()
 	check_relay()
@@ -313,6 +541,9 @@ func _initialize() -> void:
 	check_pace()
 	check_wary()
 	check_memory_replay()
+	check_team_outcomes()
+	check_team_talk()
+	check_fair_play()
 	var moving = court()
 	moving.pos[0] = Vector2(-3.5, -1.)
 	moving.pos[1] = Vector2(.2, -1.)

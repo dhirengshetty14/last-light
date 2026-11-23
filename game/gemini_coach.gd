@@ -9,6 +9,10 @@ const OPTIONS := {
 	"loose": ["lead", "recover"]
 }
 const INTERVAL_MS := 8000
+## Each robot gets one playbook at kickoff. After that it only asks when it is struggling (see
+## `wants_advice` in star_agent.gd), and never more often than every eight seconds. Before, every
+## robot asked every eight seconds whatever was happening: about 22 calls a minute.
+var thrifty := true
 var endpoint := ""
 var channels: Array[HTTPRequest] = []
 var models: Array[String] = []
@@ -113,8 +117,11 @@ func poll(sim) -> Array:
 	for i in 3:
 		if disabled[i] or not active[i].is_empty() or now < int(next_ms[i]):
 			continue
-		serial[i] += 1
 		var actor = sim.agents[i]
+		if thrifty and serial[i] > 0 and not actor.wants_advice():
+			continue
+		actor.asked_for_advice()
+		serial[i] += 1
 		var seen := observation(sim, i)
 		var ticket := {
 			"actor": i + 2,

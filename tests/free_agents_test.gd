@@ -452,23 +452,37 @@ func check_learning() -> void:
 	)
 	# A whole match with one captain who pays and one who does not. Every choice is graded and
 	# goes into that robot's record.
+	# How such a match unfolds depends on the seed and on the court version: some seeds give only
+	# one or two choices, or settle every promise at the whistle. So take the first of a fixed list
+	# of seeds whose match has at least three choices and a grade during play, then play that seed
+	# again to check the replay. Every claim below is about that one match.
 	var runs := []
 	var last = null
-	for n in 2:
+	var seeds := [4100, 4101, 4102, 4103, 4104, 4105, 4106, 4107]
+	while runs.size() < 2 and not seeds.is_empty():
 		var g = Game.new()
 		g.social_learning = true
 		g.configure_agents({}, {})
-		# The seed only has to give a match with a few choices in it. On court 12 seed 4100 gives two
-		# (the paying captain never breaks a promise, so no vote), as some seeds did on court 11.
-		g.setup(4101, false, true)
+		g.setup(seeds[0], false, true)
 		g.draft()
 		var log: Array = []
 		while not g.finished:
 			g.step(Pilots.inputs(g, [true, false]))
 			log.append_array(g.events)
 			g.events.clear()
+		var whistle: int = closing_tick(log)
+		var rich: bool = (
+			log.filter(func(e): return e.kind == "decision").size() >= 3
+			and log.any(func(e): return e.kind == "decision_grade" and e.tick < whistle)
+		)
+		if runs.is_empty() and not rich:
+			seeds.pop_front()
+			continue
 		runs.append(log)
 		last = g
+	check(runs.size() == 2, "one of eight seeds gives a match with three choices and a grade in play")
+	if runs.size() < 2:
+		return
 	check(runs[0] == runs[1], "a match with learning on replays exactly")
 	var made: Array = runs[0].filter(func(e): return e.kind == "decision")
 	var graded: Array = runs[0].filter(func(e): return e.kind == "decision_grade")

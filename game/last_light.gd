@@ -194,6 +194,8 @@ var capture_step := 0
 var capture_timer := 0.
 var captured_once := false
 var forced_seed := -1
+## Launch with `-- --full-strength` to stop the robots easing off while they lead.
+var full_strength := false
 var capture_session := false
 var benchmark_only := false
 var test_session := false
@@ -207,6 +209,8 @@ func _ready() -> void:
 			test_session = true
 		if arg.begins_with("--seed="):
 			forced_seed = int(arg.trim_prefix("--seed="))
+		if arg == "--full-strength":
+			full_strength = true
 		if arg.begins_with("--mode="):
 			capture_mode = arg.trim_prefix("--mode=")
 		if arg == "--written-rules":
@@ -932,6 +936,7 @@ func start() -> void:
 	sim.configure_agents(training, social_memory)
 	var seed_value := forced_seed if forced_seed >= 0 else int(random.randi())
 	sim.setup(seed_value, crews, free)
+	sim.mercy = not full_strength
 	harbor.restart()
 	comics.quiet()
 	comics.close_page()
@@ -993,8 +998,9 @@ func start() -> void:
 			"kind": "header",
 			"run": run,
 			"seed": seed_value,
-			"game": "last-light-v12",
-			"court_version": 12,
+			"game": "last-light-v14",
+			"court_version": 14,
+			"mercy": sim.mercy,
 			"social_learning": sim.social_learning,
 			"dock_relay": sim.relay_rules,
 			"moving_passes": sim.moving_passes,
@@ -1408,6 +1414,19 @@ func present(e: Dictionary) -> void:
 			front.record(e.line, Game.NAMES[i], tint_of(i))
 			message = "%s learned: %s" % [Game.NAMES[i], e.line]
 			message_until = sim.tick + 150
+		"talk":
+			# One robot telling other robots something: its words in a balloon, and who they were for.
+			var heard_by := ""
+			for k in e.to:
+				heard_by += (" and " if heard_by != "" else "") + str(Game.NAMES[int(k)])
+			comics.say(cast[i], FACE[i], Game.NAMES[i].to_upper(), e.line, tint_of(i))
+			# A warning follows a steal, which already has its own sound word on that spot.
+			if e.topic != "warn":
+				comics.pop({"tip": "TIP!", "heed": "GOT IT!"}.get(e.topic, "CREW!"), over(i), tint_of(i))
+			front.record("To %s: %s" % [heard_by, e.line], Game.NAMES[i], tint_of(i))
+			message = "%s to %s: %s" % [Game.NAMES[i], heard_by, e.line]
+			message_until = sim.tick + 150
+			sound("radio")
 		"goal":
 			dock_lights.signal_crew(e.team, true)
 			harbor.cheer(e.team)
