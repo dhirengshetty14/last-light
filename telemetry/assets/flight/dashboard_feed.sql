@@ -12,8 +12,9 @@ depends:
 @bruin */
 -- The live dashboard's whole feed, written by this pipeline run as one JSON document. The page
 -- (telemetry/dashboard.html, served by telemetry/dashboard.py) only reads this file, so a refresh
--- costs the dashboard no query at all. "Now" is the match that started last.
-COPY (
+-- costs the dashboard no query at all. "Now" is the match that started last. In Bruin Cloud the same
+-- report is kept as the table flight.robot_report instead, for cloud dashboards and agents.
+{% if var.source == "local" %}COPY ({% else %}CREATE OR REPLACE TABLE flight.robot_report AS ({% endif %}
     WITH now_run AS (SELECT max(run) AS run FROM flight.events),
     now_verifier AS (
         SELECT coalesce(max(verifier), 13) AS verifier FROM flight.robot_decisions
@@ -132,4 +133,4 @@ COPY (
         (SELECT list(t ORDER BY t.run DESC, t.seq DESC) FROM (
                 SELECT run, seq, tick, speaker, topic, listeners, line
                 FROM flight.robot_talk ORDER BY run DESC, seq DESC LIMIT 8) t) AS talk
-) TO 'telemetry/local/dashboard.json' (FORMAT JSON);
+{% if var.source == "local" %}) TO 'telemetry/local/dashboard.json' (FORMAT JSON);{% else %});{% endif %}

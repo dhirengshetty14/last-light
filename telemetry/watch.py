@@ -77,16 +77,17 @@ def stage_one(path):
     return text, rows
 
 
-def stage(paths):
+def stage(paths, target=None):
+    target = target or LOCAL / "events.ndjson"
     rows = 0
-    temp = LOCAL / "events.ndjson.next"
+    temp = target.with_name(target.name + ".next")
     with temp.open("w") as out:
         for path in paths:
             text, count = stage_one(path)
             out.write(text)
             rows += count
     if rows:
-        temp.replace(LOCAL / "events.ndjson")
+        temp.replace(target)
     return rows
 
 
@@ -189,6 +190,8 @@ def main():
                             "run",
                             "--workers",
                             "1",
+                            "--var",
+                            'source="local"',
                             "--config-file",
                             str(config),
                             "telemetry",

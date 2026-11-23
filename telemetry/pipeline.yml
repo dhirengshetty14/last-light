@@ -1,3 +1,10 @@
 name: nursery-flight-recorder
 default_connections:
   duckdb: nursery
+variables:
+  # Where the match events come from. "local": the logs staged on the game's Mac by watch.py,
+  # which passes --var source="local". "cloud": the table telemetry/cloud.py uploads to MotherDuck,
+  # read by Bruin Cloud, where the `nursery` connection is a MotherDuck database.
+  source:
+    type: string
+    default: cloud
