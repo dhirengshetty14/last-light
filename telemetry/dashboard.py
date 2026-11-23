@@ -21,6 +21,22 @@ ROOT = Path(__file__).resolve().parents[1]
 LOCAL = ROOT / "telemetry" / "local"
 PAGE = ROOT / "telemetry" / "dashboard.html"
 FEED = LOCAL / "dashboard.json"
+PANELS = LOCAL / "panels"
+
+
+def sponsor_state():
+    """What Coach Bruin, BAND and Runware have produced, for the report's sponsor card."""
+    state = {"coach": None, "band_room": None, "panel": None}
+    for name, key in (("bruin-coach.json", "coach"), ("panels/latest.json", "panel")):
+        try:
+            state[key] = json.loads((LOCAL / name).read_text())
+        except (OSError, ValueError):
+            pass
+    try:
+        state["band_room"] = json.loads((LOCAL / "band.json").read_text()).get("room")
+    except (OSError, ValueError):
+        pass
+    return state
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -45,6 +61,13 @@ class Handler(BaseHTTPRequestHandler):
         path = self.path.split("?", 1)[0]
         if path in ("/", "/index.html"):
             return self.reply(200, PAGE.read_bytes(), "text/html; charset=utf-8")
+        if path == "/sponsors.json":
+            return self.reply(200, json.dumps(sponsor_state()).encode(), "application/json")
+        if path.startswith("/panels/") and path.endswith(".png"):
+            picture = PANELS / Path(path).name
+            if picture.is_file():
+                return self.reply(200, picture.read_bytes(), "image/png")
+            return self.reply(404, b"{}", "application/json")
         if path == "/data.json":
             try:
                 body = FEED.read_bytes()
@@ -82,6 +105,7 @@ def main():
             webbrowser.open(url)
         return
     watcher = None
+    helpers = []
     if not args.no_watch:
         command = [sys.executable, str(ROOT / "telemetry" / "watch.py"), "--watch"]
         if args.flights:
@@ -89,6 +113,15 @@ def main():
         # If a watcher is already running (the Mac launcher starts one), this one steps aside.
         log = (LOCAL / "live.log").open("a")
         watcher = subprocess.Popen(command, cwd=ROOT, stdout=log, stderr=log)
+        # The sponsor bridges, when they have been configured: robot talk into a BAND room, and a
+        # Runware comic panel of each finished match.
+        for script, needs in (("band.py", LOCAL / "band.json"), ("panels.py", LOCAL / "runware.key")):
+            if needs.exists():
+                side = [sys.executable, str(ROOT / "telemetry" / script), "run"]
+                if args.flights:
+                    side += ["--flights", str(args.flights)]
+                out = (LOCAL / script.replace(".py", ".log")).open("a")
+                helpers.append(subprocess.Popen(side, cwd=ROOT, stdout=out, stderr=out))
     # A plain kill (what the game launcher sends on exit) must also stop the watcher.
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
     print(f"Last Light dashboard: {url}", flush=True)
@@ -101,6 +134,8 @@ def main():
     finally:
         if watcher:
             watcher.terminate()
+        for helper in helpers:
+            helper.terminate()
 
 
 if __name__ == "__main__":

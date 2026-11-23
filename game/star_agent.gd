@@ -129,6 +129,12 @@ var burned_by: Dictionary = {}
 var lessons_told: Dictionary = {}
 
 
+## Notes from Coach Bruin: the Bruin Cloud agent that reads the robots' failure tables between
+## matches. For a phase (defend, loose, support, carry): the move to try, the move it fails with,
+## and the advice in words. Given at kickoff and recorded in the match header, so replays hold.
+var bruin_coach: Dictionary = {}
+
+
 ## Court version 14: what crewmates have told this robot this match. Warnings about a player who
 ## keeps robbing them (a count per player), tips for a situation (the move a crewmate dropped there
 ## and the one it uses now, and who said so), and the tips this robot has already said it used.

@@ -75,6 +75,8 @@ func verify(path: String) -> bool:
 	if head.get("free_agents", false):
 		# The draft reads each robot's restored memory, so it runs after the policy is loaded.
 		s.call("draft")
+	if head.get("bruin_coach") is Array:
+		s.call("set_bruin_coach", head.bruin_coach)
 	var inputs: Dictionary = {}
 	var expected: Array = []
 	var remote: Dictionary = {}

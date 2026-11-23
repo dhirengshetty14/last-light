@@ -445,6 +445,9 @@ func show_plans(sim) -> void:
 					]
 				)
 			)
+			for phase in actor.bruin_coach:
+				var note: Dictionary = actor.bruin_coach[phase]
+				lines.append("Coach Bruin   %s: try %s, not %s" % [phase, note["try"], note["avoid"]])
 			var warned := 0
 			for count in actor.heard_warnings:
 				warned += int(count)

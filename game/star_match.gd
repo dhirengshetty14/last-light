@@ -199,6 +199,45 @@ const TIP_WORDS := {
 	"evade": "keep your distance.",
 	"pass": "pass early."
 }
+## Coach Bruin's lift: how much a coached move gains in the robot's weighing, and the dropped move
+## loses. Small on purpose: the robot's own graded record still decides. A match without notes plays
+## exactly as before, so no court version changes.
+const COACH_LIFT := .04
+const PHASES := ["defend", "loose", "support", "carry"]
+const MOVES := {
+	"defend": ["press", "screen", "cut"],
+	"loose": ["recover", "lead"],
+	"support": ["outlet", "advance"],
+	"carry": ["drive", "flank", "pass", "finish", "evade"]
+}
+var bruin_notes: Array = []
+
+
+## Give each robot the notes Coach Bruin wrote for it, and say them on the radio. Call it after the
+## draft; the replay tool calls it at the same point with the notes from the match header.
+func set_bruin_coach(notes: Array) -> void:
+	bruin_notes = []
+	for note in notes:
+		if not note is Dictionary:
+			continue
+		var seat: int = NAMES.find(str(note.get("robot", "")))
+		var phase := str(note.get("phase", ""))
+		var use := str(note.get("try", ""))
+		var avoid := str(note.get("avoid", ""))
+		if seat < 2 or phase not in PHASES or use not in MOVES[phase] or avoid not in MOVES[phase]:
+			continue
+		var clean := {
+			"robot": NAMES[seat],
+			"phase": phase,
+			"try": use,
+			"avoid": avoid,
+			"advice": str(note.get("advice", "")).left(240)
+		}
+		agents[seat - 2].bruin_coach[phase] = clean
+		bruin_notes.append(clean)
+		emit("coach_note", seat, clean)
+
+
 ## Court version 8. Each robot weighs how its own social choices turned out before: which captain
 ## to sign with, what to do about a broken promise, an offer or new terms, and how to vote. With
 ## this off every one of those follows its written rule, as in court 7.
@@ -1464,13 +1503,18 @@ func plan(i: int) -> void:
 	# weighs down the one it dropped.
 	var tip: Dictionary = {}
 	var lifts := {}
+	# Coach Bruin's note for this phase, if it has one: try one move, drop another.
+	var note: Dictionary = actor.bruin_coach.get(phase, {})
+	if not note.is_empty():
+		lifts[note["try"]] = COACH_LIFT
+		lifts[note["avoid"]] = -COACH_LIFT
 	var talk_key := ""
 	if team_talk and heat != "free":
 		talk_key = "%s/%s" % [heat, NAMES[foe].to_lower()]
 		tip = actor.tips.get(talk_key, {})
 		if not tip.is_empty():
-			lifts[tip.use] = .06
-			lifts[tip.avoid] = -.06
+			lifts[tip.use] = float(lifts.get(tip.use, 0.)) + .06
+			lifts[tip.avoid] = float(lifts.get(tip.avoid, 0.)) - .06
 	var us := Time.get_ticks_usec() if sample_time else 0
 	var proposal := ""
 	var choice: String

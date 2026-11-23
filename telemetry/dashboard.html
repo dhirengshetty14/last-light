@@ -131,6 +131,21 @@ summary { cursor: pointer; }
     </div>
   </section>
 
+  <section class="pair">
+    <div class="card">
+      <h2>Coach Bruin</h2>
+      <p class="sub" id="coachSub">Bruin Cloud's agent reads the failure tables between matches and coaches the robots. Run <code>python3 telemetry/cloud.py coach</code>.</p>
+      <ul class="lessons" id="coach"></ul>
+    </div>
+    <div class="card">
+      <h2>The last match in one panel</h2>
+      <p class="sub" id="panelSub">Drawn by Runware from the match log when a match ends.</p>
+      <img id="panel" alt="" style="width:100%;border-radius:8px;display:none">
+      <p id="panelCaption" style="margin:8px 0 0"></p>
+      <p class="sub" id="bandNote" style="margin:12px 0 0"></p>
+    </div>
+  </section>
+
   <section class="stack">
     <div class="card">
       <h2>Where it breaks, this match</h2>
@@ -371,6 +386,28 @@ function render(d) {
   renderFailures($("failNow"), d.failures_now); renderFailures($("failAll"), d.failures_all);
   renderCalls(d); renderLessons(d);
 }
+
+async function sponsors() {
+  try {
+    const d = await (await fetch("/sponsors.json?" + Date.now(), { cache: "no-store" })).json();
+    const notes = (d.coach && d.coach.notes) || [];
+    $("coach").replaceChildren(...(notes.length ? notes.map((n) => el("li", {}, who(n.robot), el("span", { text: n.advice }))) : [el("li", { class: "empty", text: "No notes yet." })]));
+    if (d.coach && d.coach.summary) $("coachSub").textContent = d.coach.summary;
+    const p = d.panel;
+    if (p && p.file) {
+      const img = $("panel");
+      const src = "/panels/" + encodeURIComponent(p.file);
+      if (img.getAttribute("src") !== src) img.setAttribute("src", src);
+      img.alt = p.caption || "Comic panel of the last match";
+      img.style.display = "block";
+      $("panelCaption").textContent = p.caption || "";
+      $("panelSub").textContent = "Drawn by Runware (" + p.model + ") in " + p.seconds + " s from the match log.";
+    }
+    $("bandNote").textContent = d.band_room ? "Robot talk is mirrored live to the BAND room \u201c" + d.band_room + "\u201d. @mention a robot there to ask it what it is doing." : "BAND is not set up: run python3 telemetry/band.py configure.";
+  } catch (error) {}
+}
+sponsors();
+setInterval(sponsors, 5000);
 
 let last = "";
 async function refresh() {

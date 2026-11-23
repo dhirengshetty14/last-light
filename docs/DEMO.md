@@ -92,6 +92,18 @@ Point at the report.
   `python3 telemetry/cloud.py sync` after the demo matches so the latest ones are there. A cloud run
   takes a few minutes, so start it before you present.
 
+## Scene 6: the sponsors in the loop (45 seconds)
+
+- **Coach Bruin.** At kickoff the harbor radio reads each robot's note from Coach Bruin, for example
+  *"When a teammate has the star, I'll try advance instead of outlet..."*. Say: "Bruin's own agent
+  read the failure tables in Bruin Cloud and coached the robots. They give the coached move a small
+  lift; their graded record still decides." Run `python3 telemetry/cloud.py coach` before the demo.
+- **BAND.** Have the BAND room open on a second screen. Every warning and tip appears there as that
+  robot, @mentioning its crewmates. Type `@pip what are you doing?` and Pip answers from the live
+  match.
+- **Runware.** At the final whistle, "The match in one panel" appears on the final screen: a comic
+  panel of the match's big moment, drawn from the match log in a few seconds.
+
 ## What to claim, and what not to
 
 Say:

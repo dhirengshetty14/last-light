@@ -7,6 +7,8 @@ copy in the cloud that the team and the Bruin Cloud dashboards and agents can se
     python3 telemetry/cloud.py connect     once: link this GitHub repository as a Bruin Cloud project
     python3 telemetry/cloud.py sync        upload the recorded matches and run the pipeline in the cloud
     python3 telemetry/cloud.py status      the latest cloud runs
+    python3 telemetry/cloud.py coach       ask Coach Bruin (the team's Bruin agent) for notes the
+                                           robots use from their next match
 
 Sign in to Bruin Cloud first with `bruin cloud login --global`. The MotherDuck token is kept in
 telemetry/local/cloud.bruin.yml (gitignored, readable by you only) and stored in Bruin Cloud as the
@@ -23,6 +25,7 @@ import os
 import shutil
 import subprocess
 import sys
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -145,6 +148,125 @@ def sync(args):
         fail("The cloud run did not start.")
 
 
+TASK_PHASE = {
+    "Win the star back": "defend",
+    "Reach a loose star first": "loose",
+    "Get open for a teammate": "support",
+    "Keep the star under pressure": "carry",
+    "Carry the star forward": "carry",
+    "Complete a pass": "carry",
+    "Finish at the ring": "carry",
+}
+MOVES = {
+    "defend": ["press", "screen", "cut"],
+    "loose": ["recover", "lead"],
+    "support": ["outlet", "advance"],
+    "carry": ["drive", "flank", "pass", "finish", "evade"],
+}
+NOTE = {
+    "type": "object",
+    "additionalProperties": False,
+    "properties": {
+        "robot": {"type": "string", "enum": ["Pip", "Morrow", "Zip"]},
+        "task": {"type": "string", "enum": list(TASK_PHASE)},
+        "situation": {"type": "string"},
+        "move": {"type": "string", "description": "The move that keeps failing."},
+        "full_rate": {"type": "number"},
+        "breaks_at": {"type": "string"},
+        "try_move": {
+            "type": "string",
+            "enum": sorted({m for moves in MOVES.values() for m in moves}),
+            "description": "The move to try instead, legal in the same situation.",
+        },
+        "advice": {"type": "string", "description": "One sentence with the evidence, for the robot to say."},
+    },
+    "required": ["robot", "task", "situation", "move", "full_rate", "breaks_at", "try_move", "advice"],
+}
+SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "properties": {
+        "summary": {"type": "string", "description": "Two sentences on where the robots fail most."},
+        "notes": {"type": "array", "items": NOTE},
+    },
+    "required": ["summary", "notes"],
+}
+QUESTION = (
+    "You coach three robot agents, Pip, Morrow and Zip, in the game Last Light. In the MotherDuck "
+    "connection, the table flight.robot_failure_modes has one row for each verifier generation, robot, "
+    "task, situation and move: attempts (graded decisions), full_rate (share passing all five verifier "
+    "checks), miss rates for each check, breaks_at (the check it usually fails) and lost_score (verifier "
+    "score left on the table). Use only rows with the highest verifier value. Find the three rows with "
+    "the largest lost_score. For each, pick the move the robot should try instead: another move it has "
+    "used in the same task and situation that scored better, with at least 10 attempts. Write the advice "
+    "as one sentence the robot can say, with the numbers. Use the data only."
+)
+
+
+def coach(args):
+    team_agents = bruin("cloud", "agents", "list", "-o", "json")
+    if team_agents.returncode != 0:
+        fail("Could not list Bruin Cloud agents. Run: bruin cloud login --global", team_agents)
+    listed = json.loads(team_agents.stdout)
+    listed = listed.get("agents", listed) if isinstance(listed, dict) else listed
+    agent_id = str(args.agent or listed[0]["id"])
+    schema_file = LOCAL / "coach-schema.json"
+    schema_file.write_text(json.dumps(SCHEMA))
+    sent = bruin(
+        "cloud", "agents", "send", "--agent-id", agent_id, "-o", "json",
+        "--output-schema-file", str(schema_file), "--message", QUESTION,
+    )
+    if sent.returncode != 0:
+        fail("Coach Bruin did not take the question.", sent)
+    ticket = json.loads(sent.stdout)
+    print("Asked Coach Bruin; waiting for the answer (usually under a minute)...")
+    answer = {}
+    for _ in range(60):
+        time.sleep(5)
+        polled = bruin(
+            "cloud", "agents", "status", "--agent-id", agent_id,
+            "--thread-id", str(ticket["thread_id"]), "--message-id", str(ticket["message_pair_id"]),
+            "-o", "json",
+        )
+        try:
+            answer = json.loads(polled.stdout)
+        except ValueError:
+            continue
+        if answer.get("status") in ("completed", "failed"):
+            break
+    found = answer.get("structured_output")
+    if answer.get("status") != "completed" or not found:
+        fail("Coach Bruin did not answer in time; try again in a minute.")
+    notes = []
+    for note in found["notes"]:
+        phase = TASK_PHASE.get(note["task"])
+        if not phase or note["move"] not in MOVES[phase] or note["try_move"] not in MOVES[phase]:
+            continue
+        if note["move"] == note["try_move"]:
+            continue
+        notes.append({
+            "robot": note["robot"], "phase": phase, "try": note["try_move"],
+            "avoid": note["move"], "advice": note["advice"],
+            "task": note["task"], "situation": note["situation"],
+            "full_rate": note["full_rate"], "breaks_at": note["breaks_at"],
+        })
+    record = {
+        "schema": "bruin-coach-v1",
+        "asked_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "agent_id": agent_id,
+        "thread_id": ticket["thread_id"],
+        "summary": found["summary"],
+        "notes": notes,
+    }
+    for target in (watch.default_flights().parent / "bruin-coach.json", LOCAL / "bruin-coach.json"):
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(json.dumps(record, indent=1))
+    print(found["summary"])
+    for note in notes:
+        print(f"  {note['robot']} ({note['phase']}): try {note['try']}, not {note['avoid']}. {note['advice']}")
+    print(f"{len(notes)} notes saved. The robots use them from the next match the game starts.")
+
+
 def status(_args):
     project = project_id()
     if not project:
@@ -162,6 +284,9 @@ def main():
     up.add_argument("--no-run", action="store_true", help="Upload only; do not start a cloud run.")
     up.set_defaults(go=sync)
     steps.add_parser("status").set_defaults(go=status)
+    asked = steps.add_parser("coach")
+    asked.add_argument("--agent", help="Bruin Cloud agent id (default: the team's first agent).")
+    asked.set_defaults(go=coach)
     args = cli.parse_args()
     args.go(args)
 

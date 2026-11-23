@@ -194,6 +194,24 @@ gitignored and as the Bruin Cloud `nursery` connection), `connect` (link the rep
 Any asset you add must work in both modes: never read a local file outside the `source == "local"`
 branch.
 
+### Coach Bruin, BAND and Runware
+
+- **Coach Bruin** (`telemetry/cloud.py coach`): the team's Bruin Cloud agent (connection set
+  `last-light` gives it the MotherDuck tables) reads `flight.robot_failure_modes` and returns
+  structured notes: robot, phase, move to try, move to drop, advice. They are saved to
+  `user://bruin-coach.json`. The game loads them at launch (live sessions only), calls
+  `set_bruin_coach` after the draft (a `coach_note` event per robot), and `plan()` gives the tried
+  move +`COACH_LIFT` (0.04) and the dropped one -0.04. The notes go in the match header
+  (`bruin_coach`), and the replay tool applies them at the same point.
+- **BAND** (`telemetry/band.py`): a bridge that reads the live match log and posts robot `talk`,
+  `lesson`, `coach_note` and vote events into a BAND room as the speaking robot, @mentioning the
+  listeners, and answers people who @mention a robot. Keys in `telemetry/local/band.json`.
+- **Runware** (`telemetry/panels.py`): after each match's `final` event, one FLUX.1 [schnell]
+  picture of the match's big moment, saved to `user://panels/<run>.png` with a caption. The final
+  screen polls for it for 30 s. Key in `telemetry/local/runware.key`.
+- `telemetry/dashboard.py` starts the BAND bridge and the panel maker when their config files exist.
+  None of the three is ever called from inside the game loop.
+
 ### Where a running game saves things
 
 `user://` is `~/Library/Application Support/Godot/app_userdata/This Side Up/` on a Mac,

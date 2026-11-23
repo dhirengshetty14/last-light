@@ -534,7 +534,48 @@ func check_fair_play() -> void:
 	check(eased.easing() == 0., "evaluations and training never ease off")
 
 
+## Coach Bruin's notes: a small lift for the coached move, read out at kickoff, bad notes ignored.
+func check_bruin_coach() -> void:
+	var s = court()
+	s.set_bruin_coach([
+		{"robot": "Pip", "phase": "support", "try": "advance", "avoid": "outlet", "advice": "Try advance."},
+		{"robot": "Nell", "phase": "support", "try": "advance", "avoid": "outlet"},
+		{"robot": "Zip", "phase": "loose", "try": "shoot", "avoid": "lead"},
+		"not a note"
+	])
+	var said: Array = s.events.filter(func(e): return e.kind == "coach_note")
+	check(
+		said.size() == 1 and said[0].seat == 2 and s.bruin_notes.size() == 1,
+		"only a valid note for a robot is kept, and it is announced"
+	)
+	# Pip supports a crewmate: with the note, advance weighs more than without it.
+	var values := {}
+	for coached in [true, false]:
+		var t = court()
+		if coached:
+			t.set_bruin_coach(s.bruin_notes)
+		t.tick = 300
+		t.agents[0].exploration = 0.
+		# Morrow, Pip's crewmate, has the star, so Pip is supporting.
+		t.owner = 3
+		t.pos[3] = Vector2(-2., 0.)
+		t.pos[2] = Vector2(-4., 1.)
+		t.pending[2] = {}
+		t.plan(2)
+		values[coached] = t.agents[0].last_values
+	check(
+		is_equal_approx(
+			float(values[true].advance) - float(values[false].advance), Game.COACH_LIFT
+		)
+		and is_equal_approx(
+			float(values[false].outlet) - float(values[true].outlet), Game.COACH_LIFT
+		),
+		"the coached move gains a small lift and the dropped one loses it"
+	)
+
+
 func _initialize() -> void:
+	check_bruin_coach()
 	check_court_geometry()
 	check_relay()
 	check_dead_ball()

@@ -185,6 +185,15 @@ var random := RandomNumberGenerator.new()
 var recorder = Recorder.new()
 var training: Dictionary = {}
 var social_memory: Dictionary = {}
+## Coach Bruin's notes, written by `python3 telemetry/cloud.py coach` into user://bruin-coach.json.
+var bruin_notes: Array = []
+## The match drawn as one comic panel by telemetry/panels.py (Runware), shown on the final screen
+## once the picture arrives. The game never calls Runware itself; it only looks for the file.
+var match_run := ""
+var panel_box: PanelContainer
+var panel_image: TextureRect
+var panel_caption: Label
+var panel_age := 0.
 const SAVE_PATH := "user://last-light-policy.json"
 var capture_path := ""
 var frame_samples: Array[float] = []
@@ -343,6 +352,12 @@ func _ready() -> void:
 			var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(SAVE_PATH))
 			if data is Dictionary and data.get("relationships") is Dictionary:
 				social_memory = data.relationships
+		if FileAccess.file_exists("user://bruin-coach.json"):
+			var advice: Variant = JSON.parse_string(
+				FileAccess.get_file_as_string("user://bruin-coach.json")
+			)
+			if advice is Dictionary and advice.get("notes") is Array:
+				bruin_notes = advice.notes
 	for key in saved.estimates:
 		var current: Array = pretrained.estimates.get(key, [0, 0, 0])
 		if (
@@ -943,6 +958,7 @@ func start() -> void:
 	comics.ink(0.)
 	sim.social_learning = free and not written_rules
 	sim.draft()
+	sim.set_bruin_coach(bruin_notes)
 	set_dusk(0.)
 	connect_radio()
 	box_score = {"passes": [0, 0], "shots": [0, 0], "steals": [0, 0], "relays": 0, "beacons": 0}
@@ -987,6 +1003,10 @@ func start() -> void:
 		cast[i].rotation.y = PI * .48 if sim.team[i] == 0 else -PI * .48
 	render_game(0., 1.)
 	var run := "%d-%d" % [Time.get_unix_time_from_system() * 1000000, seed_value]
+	match_run = run
+	panel_age = 0.
+	if panel_box:
+		panel_box.hide()
 	var directory := "user://flights"
 	if test_session or capture_session:
 		directory = "user://court-captures"
@@ -1010,6 +1030,7 @@ func start() -> void:
 			"input_schema": 1,
 			"starting_policy": sim.learned_weights().duplicate(true),
 			"starting_relationships": sim.relationships(),
+			"bruin_coach": sim.bruin_notes.duplicate(true),
 			"seat_pilots": pilot_names(),
 			"gemini_models": coach.models.duplicate() if coach else []
 		}
@@ -1067,6 +1088,71 @@ func _exit_tree() -> void:
 	for player in [music, voice, effects]:
 		player.stop()
 		player.stream = null
+
+
+## Look twice a second, for up to 30 s after the whistle, for this match's comic panel.
+func show_match_panel(dt: float) -> void:
+	if (panel_box and panel_box.visible) or match_run == "":
+		return
+	panel_age += dt
+	if panel_age > 30. or fmod(panel_age, .5) > dt:
+		return
+	var path := ProjectSettings.globalize_path("user://panels/%s.png" % match_run)
+	if not FileAccess.file_exists(path):
+		return
+	var picture := Image.load_from_file(path)
+	if picture == null or picture.is_empty():
+		return
+	if panel_box == null:
+		build_match_panel()
+	panel_image.texture = ImageTexture.create_from_image(picture)
+	panel_caption.text = ""
+	var notes := ProjectSettings.globalize_path("user://panels/%s.json" % match_run)
+	if FileAccess.file_exists(notes):
+		var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(notes))
+		if data is Dictionary:
+			panel_caption.text = str(data.get("caption", ""))
+	panel_box.show()
+	comics.pop("THE PANEL!", get_viewport().get_visible_rect().size * Vector2(.8, .12), Color("#ffd27a"))
+
+
+func build_match_panel() -> void:
+	panel_box = PanelContainer.new()
+	var frame := StyleBoxFlat.new()
+	frame.bg_color = Color(.05, .06, .09, .94)
+	frame.border_color = Color("#ffd27a")
+	frame.set_border_width_all(3)
+	frame.set_corner_radius_all(6)
+	frame.set_content_margin_all(10)
+	panel_box.add_theme_stylebox_override("panel", frame)
+	panel_box.anchor_left = 1.
+	panel_box.anchor_right = 1.
+	panel_box.offset_left = -500.
+	panel_box.offset_right = -24.
+	panel_box.offset_top = 24.
+	panel_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var column := VBoxContainer.new()
+	panel_box.add_child(column)
+	var kicker := Label.new()
+	kicker.text = "THE MATCH IN ONE PANEL"
+	kicker.add_theme_color_override("font_color", Color("#ffd27a"))
+	column.add_child(kicker)
+	panel_image = TextureRect.new()
+	panel_image.custom_minimum_size = Vector2(456, 256)
+	panel_image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	panel_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	column.add_child(panel_image)
+	panel_caption = Label.new()
+	panel_caption.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	panel_caption.custom_minimum_size = Vector2(456, 0)
+	column.add_child(panel_caption)
+	var credit := Label.new()
+	credit.text = "Drawn by Runware from this match's log"
+	credit.add_theme_font_size_override("font_size", 13)
+	credit.modulate = Color(1, 1, 1, .7)
+	column.add_child(credit)
+	front.add_child(panel_box)
+	panel_box.hide()
 
 
 func say(key: String) -> void:
@@ -1407,6 +1493,9 @@ func present(e: Dictionary) -> void:
 			sound("dash")
 			message = "%s sidesteps %s's dash!" % [Game.NAMES[i], Game.NAMES[e["from"]]]
 			message_until = sim.tick + 80
+		"coach_note":
+			# Coach Bruin's advice for this robot, from the failure tables, read out at kickoff.
+			front.record("Coach Bruin: " + str(e.advice), Game.NAMES[i], tint_of(i))
 		"lesson":
 			# A robot changed what it does after being robbed: its words in a balloon by its face.
 			comics.say(cast[i], FACE[i], Game.NAMES[i].to_upper(), e.line, tint_of(i))
@@ -1714,6 +1803,10 @@ func _process(dt: float) -> void:
 				front.results(a, b, box_score, crews, side_names(), headline, footnote)
 			else:
 				front.results(sim.goals[0], sim.goals[1], box_score, crews)
+	if phase == "end":
+		show_match_panel(dt)
+	elif panel_box and panel_box.visible:
+		panel_box.hide()
 	if phase in ["walk_on", "play", "end", "pause", "whistle"]:
 		render_game(dt, Engine.get_physics_interpolation_fraction() if phase == "play" else 1.)
 	else:
