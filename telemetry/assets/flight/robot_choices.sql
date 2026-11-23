@@ -1,6 +1,35 @@
 /* @bruin
 name: flight.robot_choices
 type: duckdb.sql
+description: "Every social choice a robot made in Free Agents (which captain to sign with, what to do about a broken promise, an offer, new terms or a vote), the written rule it could have followed, and its grade from the next promise."
+owner: last-light-team
+columns:
+  - name: run
+    type: varchar
+    description: "Match id"
+    primary_key: true
+    checks:
+      - name: not_null
+  - name: seq
+    type: bigint
+    description: "Event number of the choice"
+    primary_key: true
+    checks:
+      - name: positive
+  - name: robot
+    type: varchar
+    description: "Robot name"
+    checks:
+      - name: accepted_values
+        value: ["Pip", "Morrow", "Zip"]
+  - name: points
+    type: integer
+    description: "Grade from the next promise: 100 kept, 0 broken, 50 none"
+    checks:
+      - name: min
+        value: 0
+      - name: max
+        value: 100
 depends:
   - flight.events
 materialization:

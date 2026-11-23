@@ -1,6 +1,28 @@
 /* @bruin
 name: flight.failure_modes
 type: duckdb.sql
+description: "For each seat, kind of grade and move over all recorded matches: attempts, full passes, near misses and the mean verified fraction."
+owner: last-light-team
+columns:
+  - name: seat
+    type: integer
+    description: "Seat graded"
+    primary_key: true
+  - name: category
+    type: varchar
+    description: "What was graded"
+    primary_key: true
+    checks:
+      - name: not_null
+  - name: choice
+    type: varchar
+    description: "Move or throw"
+    primary_key: true
+  - name: eligible
+    type: bigint
+    description: "Graded attempts"
+    checks:
+      - name: positive
 depends:
   - flight.outcomes
 materialization:

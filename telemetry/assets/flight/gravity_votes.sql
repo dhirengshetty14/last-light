@@ -1,6 +1,21 @@
 /* @bruin
 name: flight.gravity_votes
 type: duckdb.sql
+description: "From the original This Side Up nursery game: gravity-axis votes and the causes behind them. Kept so its recordings stay checkable."
+owner: last-light-team
+columns:
+  - name: run
+    type: varchar
+    description: "Match id"
+    primary_key: true
+    checks:
+      - name: not_null
+  - name: seq
+    type: bigint
+    description: "Event number of the vote"
+    primary_key: true
+    checks:
+      - name: positive
 depends:
   - flight.events
 materialization:

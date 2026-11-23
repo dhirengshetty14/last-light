@@ -1,6 +1,40 @@
 /* @bruin
 name: flight.model_calls
 type: duckdb.sql
+description: "Every Gemini playbook request: which robot asked, what it saw, the reply status, how long it took, the tokens used and the playbook returned."
+owner: last-light-team
+columns:
+  - name: run
+    type: varchar
+    description: "Match id"
+    primary_key: true
+    checks:
+      - name: not_null
+  - name: seat
+    type: integer
+    description: "Robot seat that asked"
+    primary_key: true
+    checks:
+      - name: min
+        value: 2
+      - name: max
+        value: 4
+  - name: request_id
+    type: bigint
+    description: "That robot's request number in the match"
+    primary_key: true
+    checks:
+      - name: not_null
+  - name: status
+    type: varchar
+    description: "available, stale, cancelled, timeout, an error, or pending"
+    checks:
+      - name: not_null
+  - name: latency_ms
+    type: bigint
+    description: "Time from request to reply in milliseconds"
+    checks:
+      - name: non_negative
 depends:
   - flight.events
 materialization:

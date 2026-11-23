@@ -1,6 +1,8 @@
 /* @bruin
 name: flight.dashboard_feed
 type: duckdb.sql
+description: "The live robot report as one document. On the game's Mac it is written to telemetry/local/dashboard.json, which the dashboard page reads; in Bruin Cloud it is kept as the table flight.robot_report for dashboards and agents."
+owner: last-light-team
 depends:
   - flight.events
   - flight.robot_decisions

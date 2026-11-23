@@ -1,6 +1,50 @@
 /* @bruin
 name: flight.agent_decisions
 type: duckdb.sql
+description: "Every robot decision with its situation, legal moves, public reason, the Gemini proposal it weighed and what became of it, the model call behind it, and the verifier's grade."
+owner: last-light-team
+columns:
+  - name: run
+    type: varchar
+    description: "Match id"
+    primary_key: true
+    checks:
+      - name: not_null
+  - name: seat
+    type: integer
+    description: "Robot seat: 2 Pip, 3 Morrow, 4 Zip"
+    primary_key: true
+    checks:
+      - name: min
+        value: 2
+      - name: max
+        value: 4
+  - name: decision_id
+    type: bigint
+    description: "Event number of the decision"
+    primary_key: true
+    checks:
+      - name: not_null
+  - name: robot
+    type: varchar
+    description: "Robot name"
+    checks:
+      - name: accepted_values
+        value: ["Pip", "Morrow", "Zip"]
+  - name: decision_source
+    type: varchar
+    description: "gemini when the robot used Gemini's proposal, otherwise local"
+    checks:
+      - name: accepted_values
+        value: ["gemini", "local"]
+  - name: score
+    type: double
+    description: "Verifier score from 0 to 1"
+    checks:
+      - name: min
+        value: 0
+      - name: max
+        value: 1
 depends:
   - flight.events
   - flight.outcomes

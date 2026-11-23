@@ -1,6 +1,38 @@
 /* @bruin
 name: flight.learning_examples
 type: duckdb.sql
+description: "One resolved learning example per robot decision: the situation, the move and its grade. This is what each robot's learner consumes, and what watch.py exports as verified examples that the game loads at its next launch."
+owner: last-light-team
+columns:
+  - name: run
+    type: varchar
+    description: "Match id"
+    primary_key: true
+    checks:
+      - name: not_null
+  - name: seat
+    type: integer
+    description: "Robot seat"
+    primary_key: true
+    checks:
+      - name: min
+        value: 2
+      - name: max
+        value: 4
+  - name: cause
+    type: bigint
+    description: "Event number of the decision this example grades"
+    primary_key: true
+    checks:
+      - name: not_null
+  - name: points
+    type: integer
+    description: "Verifier score out of 100"
+    checks:
+      - name: min
+        value: 0
+      - name: max
+        value: 100
 depends:
   - flight.events
   - flight.outcomes

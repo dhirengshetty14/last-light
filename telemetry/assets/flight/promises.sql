@@ -1,6 +1,33 @@
 /* @bruin
 name: flight.promises
 type: duckdb.sql
+description: "Every Free Agents promise: which captain promised which robot what, and whether it was kept, broken or still open at the whistle."
+owner: last-light-team
+columns:
+  - name: run
+    type: varchar
+    description: "Match id"
+    primary_key: true
+    checks:
+      - name: not_null
+  - name: deal
+    type: integer
+    description: "Promise number in the match"
+    primary_key: true
+    checks:
+      - name: not_null
+  - name: robot
+    type: varchar
+    description: "The robot the promise was made to"
+    checks:
+      - name: accepted_values
+        value: ["Pip", "Morrow", "Zip"]
+  - name: outcome
+    type: varchar
+    description: "kept, broken or open"
+    checks:
+      - name: accepted_values
+        value: ["kept", "broken", "open"]
 depends:
   - flight.events
 materialization:

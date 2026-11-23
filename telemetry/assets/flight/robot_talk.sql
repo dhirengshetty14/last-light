@@ -1,6 +1,33 @@
 /* @bruin
 name: flight.robot_talk
 type: duckdb.sql
+description: "Every message one robot sent its crewmates (court 14 on): a warning about a player who robbed it, a tip after it changed a habit, or saying it used a crewmate's tip."
+owner: last-light-team
+columns:
+  - name: run
+    type: varchar
+    description: "Match id"
+    primary_key: true
+    checks:
+      - name: not_null
+  - name: seq
+    type: bigint
+    description: "Event number of the message"
+    primary_key: true
+    checks:
+      - name: positive
+  - name: speaker
+    type: varchar
+    description: "Robot that spoke"
+    checks:
+      - name: accepted_values
+        value: ["Pip", "Morrow", "Zip"]
+  - name: topic
+    type: varchar
+    description: "warn, tip or heed"
+    checks:
+      - name: accepted_values
+        value: ["warn", "tip", "heed"]
 depends:
   - flight.events
 materialization:

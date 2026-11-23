@@ -1,8 +1,59 @@
 /* @bruin
 name: flight.robot_decisions
 type: duckdb.sql
+description: "Every graded robot decision in plain words: its task, situation, move, verifier score and the first of the five checks it failed. The base of the live robot report and of the RL scoreboard."
+owner: last-light-team
+columns:
+  - name: run
+    type: varchar
+    description: "Match id"
+    primary_key: true
+    checks:
+      - name: not_null
+  - name: seat
+    type: integer
+    description: "Robot seat"
+    primary_key: true
+    checks:
+      - name: min
+        value: 2
+      - name: max
+        value: 4
+  - name: decision_id
+    type: bigint
+    description: "Event number of the decision"
+    primary_key: true
+    checks:
+      - name: not_null
+  - name: robot
+    type: varchar
+    description: "Robot name"
+    checks:
+      - name: accepted_values
+        value: ["Pip", "Morrow", "Zip"]
+  - name: task
+    type: varchar
+    description: "Which of the seven tasks the decision belongs to"
+    checks:
+      - name: accepted_values
+        value: ["Win the star back", "Reach a loose star first", "Get open for a teammate", "Keep the star under pressure", "Carry the star forward", "Complete a pass", "Finish at the ring"]
+  - name: verifier
+    type: integer
+    description: "Generation of outcome checks: 12 before court 13, 13 since"
+    checks:
+      - name: accepted_values
+        value: [12, 13]
+  - name: score
+    type: double
+    description: "Verifier score from 0 to 1"
+    checks:
+      - name: min
+        value: 0
+      - name: max
+        value: 1
 depends:
   - flight.agent_decisions
+  - flight.events
 materialization:
   type: table
 custom_checks:

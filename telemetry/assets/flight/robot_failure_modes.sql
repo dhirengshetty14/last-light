@@ -1,6 +1,51 @@
 /* @bruin
 name: flight.robot_failure_modes
 type: duckdb.sql
+description: "Where each robot does badly, over all matches graded by the same checks: for each situation and move, how often each check is missed and how much verifier score is lost."
+owner: last-light-team
+columns:
+  - name: verifier
+    type: integer
+    description: "Generation of outcome checks"
+    primary_key: true
+    checks:
+      - name: not_null
+  - name: robot
+    type: varchar
+    description: "Robot name"
+    primary_key: true
+    checks:
+      - name: accepted_values
+        value: ["Pip", "Morrow", "Zip"]
+  - name: task
+    type: varchar
+    description: "Task"
+    primary_key: true
+    checks:
+      - name: accepted_values
+        value: ["Win the star back", "Reach a loose star first", "Get open for a teammate", "Keep the star under pressure", "Carry the star forward", "Complete a pass", "Finish at the ring"]
+  - name: situation
+    type: varchar
+    description: "The situation in words"
+    primary_key: true
+    checks:
+      - name: not_null
+  - name: move
+    type: varchar
+    description: "The move the robot chose"
+    primary_key: true
+    checks:
+      - name: not_null
+  - name: attempts
+    type: bigint
+    description: "Graded decisions"
+    checks:
+      - name: positive
+  - name: lost_score
+    type: double
+    description: "Verifier score left on the table: attempts times the shortfall from 1"
+    checks:
+      - name: non_negative
 depends:
   - flight.robot_decisions
 materialization:

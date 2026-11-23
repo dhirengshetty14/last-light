@@ -1,6 +1,25 @@
 /* @bruin
 name: flight.court_scoreboard
 type: duckdb.sql
+description: "One row per match: mode, length, goals for each crew, completed passes, steals, interceptions, relays and robot-lit beacons."
+owner: last-light-team
+columns:
+  - name: run
+    type: varchar
+    description: "Match id"
+    primary_key: true
+    checks:
+      - name: not_null
+  - name: gold_goals
+    type: bigint
+    description: "Goals by Gold (the people in Rivals)"
+    checks:
+      - name: non_negative
+  - name: blue_goals
+    type: bigint
+    description: "Goals by Blue (the robots in Rivals)"
+    checks:
+      - name: non_negative
 depends:
   - flight.events
 materialization:
