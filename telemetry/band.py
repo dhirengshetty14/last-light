@@ -1,6 +1,7 @@
 """Put Pip, Morrow and Zip in a BAND room: their warnings, tips, lessons and votes, live.
 
     python3 telemetry/band.py configure    once: each robot's BAND agent id and API key (hidden)
+    python3 telemetry/band.py room         find the room again (after creating it or adding a robot)
     python3 telemetry/band.py run          bridge the live match into the room (dashboard.py starts it)
 
 The game never talks to BAND. This bridge reads the match log the game is writing, and posts what a
@@ -47,6 +48,12 @@ def call(base, key, method, path, body=None):
     return json.loads(raw) if raw else {}
 
 
+def save(config):
+    descriptor = os.open(CONFIG, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(descriptor, "w") as out:
+        json.dump(config, out)
+
+
 def configure(_args):
     LOCAL.mkdir(exist_ok=True)
     agents = {}
@@ -56,34 +63,50 @@ def configure(_args):
         if not agent_id or not key:
             sys.exit("Both the agent ID and the key are needed.")
         agents[robot] = {"id": agent_id, "key": key}
-    pip = agents["Pip"]["key"]
-    base, rooms = None, []
+    base = None
     for candidate in BASES:
         try:
-            rooms = call(candidate, pip, "GET", "/chats?include=participants").get("data", [])
+            call(candidate, agents["Pip"]["key"], "GET", "/chats")
             base = candidate
             break
         except (urllib.error.URLError, ValueError) as error:
             print(f"{candidate}: {error}")
     if base is None:
         sys.exit("BAND did not accept Pip's key.")
+    # Keys are saved now, so finding the room can be tried again without typing them.
+    save({"base": base, "chat_id": None, "room": None, "agents": agents})
+    print("Keys saved.")
+    find_room(None)
+
+
+def find_room(_args):
+    """Find the room Pip, Morrow and Zip share, learn their handles, and say hello there."""
+    config = json.loads(CONFIG.read_text())
+    agents = config["agents"]
+    pip = agents["Pip"]["key"]
+    rooms = call(config["base"], pip, "GET", "/chats?include=participants&page_size=50").get("data", [])
+    print(f"Pip is in {len(rooms)} room(s): " + ", ".join(repr(r.get("title")) for r in rooms))
     ids = {a["id"] for a in agents.values()}
-    rooms = [r for r in rooms if ids <= {p.get("id") for p in r.get("participants", [])}] or rooms
-    named = [r for r in rooms if "last light" in (r.get("title") or "").lower()]
-    room = (named or rooms or [None])[0]
+    shared = [r for r in rooms if ids <= {p.get("id") for p in r.get("participants", [])}]
+    named = [r for r in shared or rooms if "last light" in (r.get("title") or "").lower()]
+    room = (named or shared or rooms or [None])[0]
     if room is None:
-        sys.exit("Pip is in no room yet. Create a room with Pip, Morrow and Zip, then run this again.")
-    people = call(base, pip, "GET", f"/chats/{room['id']}/participants").get("data", [])
+        sys.exit(
+            "Pip is in no room yet. In BAND: Rooms, then +, select Pip, Morrow and Zip, create the room, "
+            "then run: python3 telemetry/band.py room"
+        )
+    people = call(config["base"], pip, "GET", f"/chats/{room['id']}/participants").get("data", [])
     handles = {p["id"]: p.get("handle") for p in people}
-    for robot, agent in agents.items():
-        agent["handle"] = handles.get(agent["id"])
     missing = [robot for robot, agent in agents.items() if agent["id"] not in handles]
     if missing:
-        sys.exit(f"Add {', '.join(missing)} to the room '{room.get('title')}', then run this again.")
-    descriptor = os.open(CONFIG, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-    with os.fdopen(descriptor, "w") as out:
-        json.dump({"base": base, "chat_id": room["id"], "room": room.get("title"), "agents": agents}, out)
-    config = json.loads(CONFIG.read_text())
+        sys.exit(
+            f"Add {', '.join(missing)} to the room '{room.get('title')}' (Participants, then Add "
+            "participants), then run: python3 telemetry/band.py room"
+        )
+    for agent in agents.values():
+        agent["handle"] = handles.get(agent["id"])
+    config.update({"chat_id": room["id"], "room": room.get("title")})
+    save(config)
     post(config, "Pip", ["Morrow", "Zip"], "Harbor radio is on. I'll call out who robs us.")
     print(f"BAND is set up: room '{room.get('title')}'. Pip just said hello there.")
 
@@ -168,8 +191,9 @@ def said(config, match, event):
         post(config, robot, crew, event["reason"])
 
 
-def answer_people(config, match, answered):
-    """Reply to people who @mention a robot in the room, from what the robot is doing now."""
+def answer_people(config, match, answered, reply=True):
+    """Reply to people who @mention a robot in the room, from what the robot is doing now. With
+    reply=False the questions already there are only marked as seen."""
     for robot in ROBOTS:
         agent = config["agents"][robot]
         try:
@@ -183,7 +207,8 @@ def answer_people(config, match, answered):
             if message.get("sender_type") != "User" or message["id"] in answered:
                 continue
             answered.add(message["id"])
-            post(config, robot, [], match.answer(robot), people=[message["sender_id"]])
+            if reply:
+                post(config, robot, [], match.answer(robot), people=[message["sender_id"]])
     ANSWERED.write_text(json.dumps(sorted(answered)))
 
 
@@ -191,12 +216,13 @@ def run(args):
     if not CONFIG.exists():
         sys.exit("Run `python3 telemetry/band.py configure` first.")
     config = json.loads(CONFIG.read_text())
+    if not config.get("chat_id"):
+        sys.exit("No BAND room yet: run `python3 telemetry/band.py room`.")
     answered = set(json.loads(ANSWERED.read_text())) if ANSWERED.exists() else set()
     folder = args.flights or watch.default_flights()
     # Questions asked before the bridge started are not answered again.
     if not ANSWERED.exists():
-        match = Match()
-        answer_people(config, match, answered)
+        answer_people(config, Match(), answered, reply=False)
     current, offset, match = None, 0, Match()
     newest = max(folder.glob("*.jsonl"), key=lambda p: p.stat().st_mtime, default=None)
     if newest is not None:
@@ -234,6 +260,7 @@ def main():
     cli = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     steps = cli.add_subparsers(dest="step", required=True)
     steps.add_parser("configure").set_defaults(go=configure)
+    steps.add_parser("room").set_defaults(go=find_room)
     bridge = steps.add_parser("run")
     bridge.add_argument("--flights", type=Path, help="Watch this folder of match logs instead.")
     bridge.set_defaults(go=run)

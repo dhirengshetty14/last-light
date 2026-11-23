@@ -1113,7 +1113,7 @@ func show_match_panel(dt: float) -> void:
 		if data is Dictionary:
 			panel_caption.text = str(data.get("caption", ""))
 	panel_box.show()
-	comics.pop("THE PANEL!", get_viewport().get_visible_rect().size * Vector2(.8, .12), Color("#ffd27a"))
+	sound("page")
 
 
 func build_match_panel() -> void:
