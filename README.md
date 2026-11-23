@@ -6,6 +6,15 @@ Stills from Free Agents on the current court: [the opening comic page](docs/free
 
 [Watch the full Rivals match on the expanded court](docs/last-light-rivals.mp4). That recording predates court version 9, the harbor and the comic panels. Both pilot seats in this recording use automated keyboard input. Play starts at 0:35. [Recorded scores, frame times and Gemini responses](docs/last-light-rivals.json).
 
+**New to the project?** Read [CLAUDE.md](CLAUDE.md) first. It has the whole picture: what we are building and why, how the robots think, learn and are verified, a map of the code, the rules that keep replays and learning working, and where the project is heading. To get going:
+
+```sh
+godot --headless --path . --import   # once, with Godot 4.7.2
+godot --path .                       # play
+scripts/check.sh                     # every headless check, about 40 s
+docker compose run --rm checks       # the same checks in Docker, no Godot install needed
+```
+
 The earlier compact court appears in [Pip’s beacon play in Open Crews](docs/harbor-relay.jpg). [Watch a full Open Crews match with live Gemini and game audio](docs/last-light-live-gemini.mp4). The recording shows the three robots’ service response times and uses automated inputs for Rafi and Nell. [Match measurements](docs/last-light-live-gemini.json).
 
 ## Play on this Mac
