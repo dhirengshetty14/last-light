@@ -24,18 +24,23 @@ def default_flights():
     return base / "Godot" / "app_userdata" / "This Side Up" / "flights"
 
 
-def stage(paths):
+# Staged rows of each log, by path and size. A finished match never changes, so during play only
+# the live match is parsed again.
+STAGED = {}
+
+
+def stage_one(path):
+    size = path.stat().st_size
+    kept = STAGED.get(path)
+    if kept and kept[0] == size:
+        return kept[1], kept[2]
     rows = 0
-    temp = LOCAL / "events.ndjson.next"
-    with temp.open("w") as out:
-        for path in paths:
-            with path.open() as f:
-                line = f.readline()
-                if not line.endswith("\n"):
-                    continue
-                header = json.loads(line)
-                if header.get("kind") != "header":
-                    continue
+    parts = []
+    with path.open() as f:
+        line = f.readline()
+        if line.endswith("\n"):
+            header = json.loads(line)
+            if header.get("kind") == "header":
                 for line in f:
                     if not line.endswith("\n"):
                         break
@@ -52,6 +57,7 @@ def stage(paths):
                         if "open_crews" in header
                         else None,
                         "origin": header.get("origin", "fixture"),
+                        "court": header.get("court_version"),
                         "seq": e["seq"],
                         "kind": e["kind"],
                         "tick": e["tick"],
@@ -64,8 +70,21 @@ def stage(paths):
                         "flags": e.get("flags"),
                         "payload": json.dumps(e, separators=(",", ":")),
                     }
-                    out.write(json.dumps(row, separators=(",", ":")) + "\n")
+                    parts.append(json.dumps(row, separators=(",", ":")) + "\n")
                     rows += 1
+    text = "".join(parts)
+    STAGED[path] = (size, text, rows)
+    return text, rows
+
+
+def stage(paths):
+    rows = 0
+    temp = LOCAL / "events.ndjson.next"
+    with temp.open("w") as out:
+        for path in paths:
+            text, count = stage_one(path)
+            out.write(text)
+            rows += count
     if rows:
         temp.replace(LOCAL / "events.ndjson")
     return rows
@@ -137,6 +156,11 @@ def main():
         action="store_true",
         help="Leave a running watcher in charge of the final refresh.",
     )
+    cli.add_argument(
+        "--flights",
+        type=Path,
+        help="Watch this folder of match logs instead of the game's own. Robot memory is not exported.",
+    )
     args = cli.parse_args()
     LOCAL.mkdir(exist_ok=True)
     config = LOCAL / "bruin.yml"
@@ -154,7 +178,8 @@ def main():
         )
         previous = None
         while True:
-            paths = sorted(args.inputs or default_flights().glob("*.jsonl"))
+            folder = args.flights or default_flights()
+            paths = sorted(args.inputs or folder.glob("*.jsonl"))
             try:
                 stamp = tuple((str(p), p.stat().st_size) for p in paths)
                 if stamp != previous and paths and stage(paths):
@@ -171,7 +196,7 @@ def main():
                         cwd=ROOT,
                         check=True,
                     )
-                    if not args.inputs:
+                    if not args.inputs and not args.flights:
                         export_memory(
                             bruin,
                             config,

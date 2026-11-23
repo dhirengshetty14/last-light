@@ -5,8 +5,10 @@ cd -- "$project_dir"
 watcher=""
 if command -v python3 >/dev/null && { command -v bruin >/dev/null || [ -x "$HOME/.local/bin/bruin" ]; }; then
     mkdir -p telemetry/local
-    python3 telemetry/watch.py --watch >telemetry/local/live.log 2>&1 &
+    # The live dashboard, which also keeps Bruin refreshing: http://127.0.0.1:8960/
+    python3 telemetry/dashboard.py >telemetry/local/dashboard.log 2>&1 &
     watcher=$!
+    echo 'Live robot report: http://127.0.0.1:8960/'
 fi
 finish() {
     if [ -n "$watcher" ] && jobs -pr | grep -Fxq -- "$watcher"; then
