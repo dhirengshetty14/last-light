@@ -458,7 +458,9 @@ func check_learning() -> void:
 		var g = Game.new()
 		g.social_learning = true
 		g.configure_agents({}, {})
-		g.setup(4100, false, true)
+		# The seed only has to give a match with a few choices in it. On court 12 seed 4100 gives two
+		# (the paying captain never breaks a promise, so no vote), as some seeds did on court 11.
+		g.setup(4101, false, true)
 		g.draft()
 		var log: Array = []
 		while not g.finished:

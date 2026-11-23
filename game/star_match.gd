@@ -126,6 +126,40 @@ var enlarged := true
 ## played two or three minutes, and Rivals and Open Crews ended at three goals.
 const MATCH_SECONDS := 240
 var long_match := true
+## Court version 11: behind each ring the deck tips back towards the court. The star can bounce
+## off the end wall and settle behind a ring, farther out than anyone can stand or reach; before
+## version 11 it stayed there until the whistle.
+var fair_deck := true
+## Court version 12: passes fly about a fifth slower, and a robot that gets the star looks up before
+## it lets go, for a moment drawn at random each time. Before version 12 a robot usually passed on
+## the tick it caught the star (a median of 0.02 s in live play), so robot passing was a blur.
+var steady_pace := true
+## The tick from which each robot may pass (or, a little sooner, shoot) the star it holds.
+var look_up := [0, 0, 0, 0, 0]
+## Court version 12: a robot with the star knows how far each rival's dash can reach right now, and
+## gives extra room to anyone who has robbed it before. When a rival closes in it decides again, in
+## a situation of its own ("hot" or "warm", and who), where it can also evade, so what it learns
+## about being robbed does not get averaged with open play. It passes to the teammate with the
+## clearest lane, samples its moves rather than always taking its top one, and treats a Gemini
+## playbook as advice to weigh against its own record instead of an order.
+var wary_robots := true
+## Steal reach added by a ready dash, per player: Nell's Ferry Run is the long one.
+const DASH_REACH := [2.7, 1.7, .9, .9, .9]
+var dash_started := [-999, -999, -999, -999, -999]
+## A small random offset each robot adds to where it heads, drawn afresh at every decision.
+var wander := [Vector2.ZERO, Vector2.ZERO, Vector2.ZERO, Vector2.ZERO, Vector2.ZERO]
+const HABIT_WORDS := {
+	"drive": "carrying straight at the ring",
+	"flank": "going wide",
+	"evade": "dodging",
+	"pass": "looking for a pass"
+}
+const NEW_HABIT := {
+	"drive": "I go straight at the ring now.",
+	"flank": "I take the wide lane now.",
+	"evade": "I keep my distance now.",
+	"pass": "I pass early now."
+}
 ## Court version 8. Each robot weighs how its own social choices turned out before: which captain
 ## to sign with, what to do about a broken promise, an offer or new terms, and how to vote. With
 ## this off every one of those follows its written rule, as in court 7.
@@ -175,6 +209,71 @@ func old_court() -> void:
 	spread = Vector2.ONE
 	enlarged = false
 	long_match = false
+	fair_deck = false
+	steady_pace = false
+	wary_robots = false
+
+
+## How close player j must be to take the star from robot i this moment: their steal reach, the
+## ground a ready dash covers, and the extra room i has learned to give j by being robbed.
+func danger(i: int, j: int) -> float:
+	var reach: float = .77 if j == 2 else .68
+	if tick >= cooldown[j]:
+		reach += DASH_REACH[j]
+	return reach + agents[i - 2].wariness(j)
+
+
+## The rival nearest to taking the star from robot i, measured from the edge of their reach.
+func threat(i: int) -> int:
+	var worst := -1
+	var margin := INF
+	for j in 5:
+		if team[j] == team[i] or on_strike(j):
+			continue
+		var room: float = pos[i].distance_to(pos[j]) - danger(i, j)
+		if room < margin:
+			margin = room
+			worst = j
+	return worst
+
+
+## "hot" when a rival can reach robot i now, "warm" within 1.3 m of that, otherwise "free".
+func pressure(i: int) -> String:
+	var j := threat(i)
+	if j < 0:
+		return "free"
+	var room: float = pos[i].distance_to(pos[j]) - danger(i, j)
+	return "hot" if room < 0. else ("warm" if room < 1.3 else "free")
+
+
+## Court version 12. The teammate a robot passes to: up the court, at a comfortable distance, with no
+## rival in the lane or standing beside them. A little chance decides between two good options.
+func open_teammate(i: int) -> int:
+	var best := -1
+	var rank := -INF
+	for j in 5:
+		if j == i or team[j] != team[i] or on_strike(j):
+			continue
+		var gap: float = pos[i].distance_to(pos[j])
+		if gap < 1.1:
+			continue
+		var score: float = -pos[j].distance_to(goal(i)) * .48 - absf(gap - 3.) * .3
+		for k in 5:
+			if team[k] == team[i]:
+				continue
+			var on_lane: Vector2 = Geometry2D.get_closest_point_to_segment(pos[k], pos[i], pos[j])
+			score -= maxf(0., 1.4 - Vector2(pos[k]).distance_to(on_lane)) * 2.2
+			score -= maxf(0., 1.5 - Vector2(pos[k]).distance_to(pos[j])) * 1.4
+		score += agents[i - 2].draw.randf() * .45
+		if score > rank:
+			rank = score
+			best = j
+	return best
+
+
+## What a robot says when it changes a habit: who robbed it, what it was doing, what it does now.
+func lesson_line(thief: int, avoided: String, choice: String) -> String:
+	return "%s robbed me %s. %s" % [NAMES[thief], HABIT_WORDS[avoided], NEW_HABIT[choice]]
 
 
 func lineup() -> Array:
@@ -810,7 +909,8 @@ func learned_weights() -> Dictionary:
 func relationships() -> Dictionary:
 	var out := {}
 	for actor in agents:
-		out[str(actor.role)] = actor.memory()
+		# After the whistle this is what each robot takes to its next match; before it, a snapshot.
+		out[str(actor.role)] = actor.memory(finished)
 	return out
 
 
@@ -896,6 +996,16 @@ func possession(i: int, method: String) -> void:
 	if before >= 2 and not pending[before].is_empty():
 		pending[before]["lost"] = true
 	safe_until = tick + (58 if clean_pass else 39)
+	if steady_pace and i >= 2:
+		# Inside the window in which nobody can take the star from it.
+		look_up[i] = (
+			tick
+			+ (
+				agents[i - 2].draw.randi_range(26, 50)
+				if clean_pass
+				else agents[i - 2].draw.randi_range(14, 30)
+			)
+		)
 	flight = ""
 	thrower = -1
 	target = -1
@@ -912,6 +1022,12 @@ func possession(i: int, method: String) -> void:
 			"intercepted": method == "catch" and previous >= 0 and throw_side != team[i]
 		}
 	)
+	if wary_robots and method == "steal" and before >= 2:
+		var victim = agents[before - 2]
+		var times: int = victim.note_robbed(
+			i, str(pending[before].get("context", "")), str(tactics[before])
+		)
+		emit("robbed", before, {"by": i, "times": times, "move": tactics[before]})
 
 	if relay_rules and (open_crews or free_agents):
 		if not clean_pass:
@@ -972,10 +1088,13 @@ func launch(i: int, passing: bool, requested: int = -1) -> bool:
 		height = grip.y
 		dest = Vector2(grip.x, grip.z)
 		# Solve for a lead at release. A receiver can cut away and a defender can intercept.
+		var express: bool = powers and i == 4
+		# Since version 12 passes fly about a fifth slower: 7.0 m/s, and Zip's Express 9.3.
+		var pace: float = (9.3 if express else 7.) if steady_pace else (11.6 if express else 8.6)
+		var quickest: float = (.34 if express else .42) if steady_pace else (.26 if express else .34)
 		for iteration in 5:
-			var express: bool = powers and i == 4
 			seconds = clampf(
-				release.distance_to(dest) / (11.6 if express else 8.6), .26 if express else .34, 1.36
+				release.distance_to(dest) / pace, quickest, 1.5 if steady_pace else 1.36
 			)
 			dest = (Vector2(pos[recipient]) + runner * seconds).clamp(-bounds, bounds) + offset
 	elif distance > shot_range(i):
@@ -1086,6 +1205,7 @@ func burst(i: int, direction: Vector2) -> void:
 	if tick < cooldown[i] or tick < restart_until:
 		return
 	cooldown[i] = tick + (65 if i == 4 else 86)
+	dash_started[i] = tick
 	dash_until[i] = tick + ((20 if powers else 16) if i == 0 else (13 if i == 1 else 8))
 	if owner == i and (i == 0 or (i == 1 and not powers)):
 		safe_until = maxi(safe_until, dash_until[i] + 15)
@@ -1234,25 +1354,64 @@ func plan(i: int) -> void:
 		_:
 			legal = ["recover", "lead"]
 			preferred = "lead" if i == 4 else "recover"
+	# Version 12: a carrier that a rival can nearly reach decides in a situation of its own, named
+	# by how near the danger is and whose it is, and may also evade. The written preference stays
+	# the same, so any change in what it does there comes from what it has been through.
+	var heat := "free"
+	var foe := -1
+	if wary_robots and phase == "carry" and not close and not called:
+		heat = pressure(i)
+		foe = threat(i)
+		if heat != "free":
+			legal.append("evade")
 	var context := (
 		"star2/%s/%s/%s/%s/%s" % [i, phase, reads, int(close), signi(roundi(float(witness[2])))]
 	)
+	if heat != "free":
+		context = "star2/%s/carry/%s/%s" % [i, heat, NAMES[foe].to_lower()]
 	var us := Time.get_ticks_usec() if sample_time else 0
-	var choice: String = (
-		actor.choose_v2(context, legal, preferred, rng)
-		if legacy_replay
-		else actor.choose(context, legal, preferred, actor.draw)
-	)
+	var proposal := ""
+	var choice: String
+	if legacy_replay:
+		choice = actor.choose_v2(context, legal, preferred, rng)
+	elif wary_robots:
+		proposal = actor.proposal(phase, tick)
+		choice = actor.choose_sampled(
+			context, legal, preferred, actor.draw, proposal if proposal in legal else ""
+		)
+	else:
+		choice = actor.choose(context, legal, preferred, actor.draw)
 	if sample_time:
 		timings.append(Time.get_ticks_usec() - us)
 	actor.local_preference = choice
-	var advice: Dictionary = actor.advice(phase, context, legal, tick)
+	if wary_robots and not actor.last_values.is_empty():
+		# What the robot's own record favours, before Gemini's lift and before chance.
+		var top_value := -INF
+		for move in actor.last_values:
+			var own: float = float(actor.last_values[move]) - (Policy.NUDGE if move == proposal else 0.)
+			if own > top_value:
+				top_value = own
+				actor.local_preference = move
+	var advice: Dictionary = (
+		actor.weighed_advice(phase, legal, choice)
+		if wary_robots
+		else actor.advice(phase, context, legal, tick)
+	)
 	if advice.get("disposition") == "applied":
 		choice = advice.proposal
 	tactics[i] = choice
-	var anchor: Vector2 = aim(i)
+	var span := 35
+	if wary_robots:
+		wander[i] = Vector2(actor.draw.randf_range(-.5, .5), actor.draw.randf_range(-.45, .45))
+		span = actor.draw.randi_range(28, 46)
+	var anchor: Vector2 = heading_for(i)
 	var source := seq + 1
 	var explanation := reason(choice, reads)
+	var warning := ""
+	if heat != "free":
+		warning = (
+			("%s's dash can reach me. " if heat == "hot" else "%s is closing in. ") % NAMES[foe]
+		)
 	if phase == "defend" and h < 2 and reads != "fresh":
 		explanation = (
 			"%s has tried %d shots and %d passes. %s"
@@ -1277,11 +1436,54 @@ func plan(i: int) -> void:
 		explanation = advice.rationale
 		basis = "Gemini playbook"
 	elif advice.get("disposition") == "learner_override":
-		basis = "adjusted after failed plays"
+		basis = "own record outweighed Gemini" if wary_robots else "adjusted after failed plays"
+	explanation = warning + explanation
+	if wary_robots and heat != "free" and not actor.explored:
+		# A lesson is said once a situation: the move that got this robot robbed here now weighs
+		# less than the move it picked instead, and that move came from its record, not a coin.
+		var burnt: String = actor.burned.get(context, "")
+		var values: Dictionary = actor.last_values
+		# Graded evidence from this very situation, mostly failures, so a robot that is not
+		# learning (or one that changed its move by chance) never claims a lesson.
+		var record: Array = actor.recent.get(context + "/" + burnt, [0., 0.])
+		if (
+			burnt != ""
+			and burnt != choice
+			and float(record[0]) > 0.
+			and float(record[1]) / float(record[0]) < .6
+			and values.has(burnt)
+			and values.has(choice)
+			and float(values[choice]) > float(values[burnt])
+			and not actor.lessons_told.has(context)
+		):
+			actor.lessons_told[context] = true
+			# The player who took the star in this situation, who is not always the nearest rival.
+			var thief: int = actor.burned_by.get(context, foe)
+			var line := lesson_line(thief, burnt, choice)
+			explanation = line
+			basis = "learned from being robbed"
+			emit(
+				"lesson",
+				i,
+				{
+					"context": context,
+					"rival": foe,
+					"thief": thief,
+					"avoided": burnt,
+					"choice": choice,
+					"times": int(actor.robbed[thief]),
+					"values": values.duplicate(),
+					"line": line
+				}
+			)
 	actor.last_plan = explanation
 	actor.plan_basis = basis
 	actor.prior_attempts = samples
 	pending[i] = {
+		"heat": heat,
+		"span": span,
+		"rival": foe,
+		"gap": pos[i].distance_to(pos[foe]) if foe >= 0 else 0.,
 		"source": source,
 		"context": context,
 		"choice": choice,
@@ -1321,6 +1523,9 @@ func plan(i: int) -> void:
 				"observed_passes": witness[1]
 			}
 		)
+	if heat != "free":
+		intent["pressure"] = heat
+		intent["rival"] = foe
 	if not advice.is_empty():
 		intent["gemini"] = advice
 	emit("response_intent", i, intent)
@@ -1342,6 +1547,8 @@ func reason(choice: String, reads: String) -> String:
 			return "The ring is inside my shooting range."
 		"pass":
 			return "Look for an outlet pass."
+		"evade":
+			return "Keep the star out of reach."
 		"flank":
 			return "Take the outside lane."
 		"drive":
@@ -1396,7 +1603,57 @@ func aim(i: int) -> Vector2:
 			)
 		"lead":
 			return floor_ball() + Vector2(motion.x, motion.z) * .20
+		"evade":
+			var foe := threat(i)
+			if foe >= 0:
+				# Away from the rival, still edging towards the ring, and never into a wall.
+				var heading: Vector2 = (
+					(Vector2(pos[foe]).direction_to(p) + p.direction_to(towards) * .5).normalized()
+				)
+				var edge := bounds - Vector2(.5, .5)
+				return (p + heading * 2.4).clamp(-edge, edge)
+			return towards
 	return floor_ball()
+
+
+## Where robot i heads: its tactic's spot, plus since version 12 the small random offset it drew
+## for this decision, so the same tactic never runs the same line twice.
+func heading_for(i: int) -> Vector2:
+	var spot := aim(i)
+	if wary_robots and tactics[i] in ["drive", "flank", "outlet", "advance", "screen", "cut"]:
+		spot += Vector2(wander[i])
+	return spot
+
+
+## Whether robot i has looked up long enough to release the star: a pass needs the whole moment,
+## a shot a little less. Always true before version 12.
+func looked_up(i: int, choice: String) -> bool:
+	return not steady_pace or tick >= int(look_up[i]) - (14 if choice == "finish" else 0)
+
+
+## Court version 12. A robot evading a rival's dash sidesteps it, if it reads the dash in time. It
+## needs five ticks to see the dash coming, and reads about three in five.
+var juke_seen := [-1, -1, -1, -1, -1]
+var juke_read := [false, false, false, false, false]
+
+
+func juke(i: int) -> void:
+	if tick < cooldown[i] or tick < restart_until:
+		return
+	var j := threat(i)
+	if j < 0 or tick >= dash_until[j] or tick - int(dash_started[j]) < 5:
+		return
+	if juke_seen[i] != dash_started[j]:
+		juke_seen[i] = dash_started[j]
+		juke_read[i] = agents[i - 2].draw.randf() < .6
+	if not juke_read[i] or pos[i].distance_to(pos[j]) > 2.6:
+		return
+	var from: Vector2 = Vector2(pos[i]) - Vector2(pos[j])
+	var side := Vector2(-from.y, from.x).normalized()
+	if (Vector2(pos[i]) + side).length() > (Vector2(pos[i]) - side).length():
+		side = -side
+	burst(i, side)
+	emit("juke", i, {"from": j})
 
 
 func settle(i: int) -> void:
@@ -1423,6 +1680,20 @@ func settle(i: int) -> void:
 		"recover", "lead":
 			physical = owner == i or dist < 1.
 			result = owner == i
+		"evade":
+			# The spot an evading robot runs for moves with its rival, so the approach check is
+			# whether it opened the gap (or got out of reach), not whether it reached a spot.
+			var rival := int(p.rival)
+			got_closer = (
+				rival >= 0
+				and (
+					pos[i].distance_to(pos[rival]) > float(p.gap)
+					or pos[i].distance_to(pos[rival]) > danger(i, rival)
+				)
+			)
+			# Still holding the star at the end of the decision, and nobody took it on the way.
+			physical = owner == i
+			result = physical and not bool(p.lost)
 		"advance", "outlet":
 			physical = got_closer and owner >= 0 and team[owner] == p.team
 			result = (
@@ -1498,11 +1769,29 @@ func brain(i: int) -> Vector2:
 	var p: Dictionary = pending[i]
 	if not p.is_empty():
 		var in_flight: bool = p.used and thrower == i and owner < 0
+		# Since version 12 a robot that chose to pass or shoot waits out its look-up moment rather
+		# than dropping the choice, and a carrier decides again as soon as danger closes in.
+		var waiting: bool = (
+			steady_pace
+			and owner == i
+			and p.choice in ["pass", "finish"]
+			and not p.used
+			and not looked_up(i, p.choice)
+		)
+		var closing_in: bool = (
+			wary_robots
+			and owner == i
+			and p.choice in ["drive", "flank", "evade"]
+			and tick - int(p.tick) >= 10
+			and pos[i].distance_to(goal(i)) > SHOT_RANGE - .12
+			and ["free", "warm", "hot"].find(pressure(i)) > ["free", "warm", "hot"].find(p.heat)
+		)
 		if (
 			not in_flight
 			and (
-				tick - int(p.tick) >= 35
+				(tick - int(p.tick) >= int(p.span) and not waiting)
 				or generation != int(p.generation)
+				or closing_in
 				or (
 					owner == i
 					and pos[i].distance_to(goal(i)) <= SHOT_RANGE - .12
@@ -1512,12 +1801,17 @@ func brain(i: int) -> Vector2:
 		):
 			settle(i)
 	plan(i)
-	destinations[i] = aim(i)
+	destinations[i] = heading_for(i)
 	var delta: Vector2 = destinations[i] - pos[i]
 	if owner == i and not pending[i].used:
-		if tactics[i] == "finish" or tactics[i] == "pass":
-			launch(i, tactics[i] == "pass", called_by[i] if tick < call_expiry[i] else -1)
+		if (tactics[i] == "finish" or tactics[i] == "pass") and looked_up(i, tactics[i]):
+			var to: int = called_by[i] if tick < call_expiry[i] else -1
+			if to < 0 and wary_robots and tactics[i] == "pass":
+				to = open_teammate(i)
+			launch(i, tactics[i] == "pass", to)
 			call_expiry[i] = 0
+		elif wary_robots and tactics[i] == "evade":
+			juke(i)
 	elif (
 		owner >= 0
 		and team[owner] != team[i]
@@ -1727,6 +2021,8 @@ func advance_ball() -> void:
 		motion.y = absf(motion.y) * .39
 		motion.x *= .83
 		motion.z *= .83
+		if fair_deck:
+			roll_back()
 	var closest := INF
 	var pick := -1
 	for i in 5:
@@ -1757,6 +2053,16 @@ func advance_ball() -> void:
 			pick = i
 	if pick >= 0:
 		possession(pick, "catch")
+
+
+## On the deck past where players can stand, the star rolls back towards the court until it is
+## within reach of someone at the edge. The sides need nothing like this: the side walls stand
+## closer to the edge of play than anyone's reach.
+func roll_back() -> void:
+	var edge := bounds.x + .3
+	if absf(ball.x) > edge:
+		var inward := -signf(ball.x)
+		motion.x = inward * maxf(inward * motion.x, 1.4)
 
 
 func score_goal() -> void:

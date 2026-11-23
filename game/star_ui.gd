@@ -433,6 +433,18 @@ func show_plans(sim) -> void:
 				% [a[1], b[1], actor.decisions_graded]
 			)
 		)
+		if sim.wary_robots:
+			lines.append(
+				(
+					"Robbed by   Nell %d / Rafi %d     ·     %d %s learned"
+					% [
+						actor.times_robbed(0),
+						actor.times_robbed(1),
+						actor.lessons_told.size(),
+						"lesson" if actor.lessons_told.size() == 1 else "lessons"
+					]
+				)
+			)
 		for note in actor.last_deal:
 			if note != "":
 				lines.append(note)

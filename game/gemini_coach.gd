@@ -5,7 +5,7 @@ const ROLES := ["Pip", "Morrow", "Zip"]
 const OPTIONS := {
 	"defend": ["press", "screen", "cut"],
 	"support": ["advance", "outlet"],
-	"carry": ["drive", "flank", "pass", "finish"],
+	"carry": ["drive", "flank", "pass", "finish", "evade"],
 	"loose": ["lead", "recover"]
 }
 const INTERVAL_MS := 8000
@@ -64,7 +64,8 @@ static func observation(sim, i: int) -> Dictionary:
 		"last_move": sim.tactics[who],
 		"last_public_reason": actor.last_plan.left(120),
 		"learned_tactic": actor.local_preference,
-		"last_four_plays": actor.recent_plays.duplicate(true)
+		"last_four_plays": actor.recent_plays.duplicate(true),
+		"robbed_by": [actor.times_robbed(0), actor.times_robbed(1)]
 	}
 
 

@@ -87,8 +87,66 @@ func advice(phase: String, context: String, legal: Array, tick: int) -> Dictiona
 	}
 
 
+## Court version 12. The proposal in the current Gemini playbook for this phase, or "" when there is
+## no fresh playbook. The robot weighs it with its own record instead of simply obeying it.
+func proposal(phase: String, tick: int) -> String:
+	if model_plan.is_empty():
+		return ""
+	if tick - int(model_plan.asked_tick) > MAX_PLAN_TICKS:
+		model_plan = {}
+		model_status = "Plan expired"
+		return ""
+	return str(model_plan.plan[phase].move)
+
+
+## Court version 12. What became of the playbook's proposal once the robot had weighed it: used,
+## outweighed by the robot's own record (and chance), or not a legal move here.
+func weighed_advice(phase: String, legal: Array, choice: String) -> Dictionary:
+	if model_plan.is_empty():
+		return {}
+	var entry: Dictionary = model_plan.plan[phase]
+	var move: String = entry.move
+	return {
+		"model": model_plan.model,
+		"request_id": model_plan.id,
+		"proposal": move,
+		"rationale": entry.reason,
+		"disposition":
+		"illegal_here" if move not in legal else ("applied" if move == choice else "learner_override")
+	}
+
+
 var plan_basis := ""
 var prior_attempts := 0
+## Court version 12. Steals each player has made from this robot this match, and the count it
+## carried in from earlier matches (halved at each final whistle, so old lessons fade).
+var robbed := [0, 0, 0, 0, 0]
+var robbed_before := [0., 0., 0., 0., 0.]
+## The move this robot was making when it was last robbed, by situation, and who robbed it.
+var burned: Dictionary = {}
+var burned_by: Dictionary = {}
+## Situations in which this robot has already said what it learned, this match.
+var lessons_told: Dictionary = {}
+
+
+## Extra room this robot gives a player who has robbed it: 0.3 m a steal, at most 1.2 m. A robot
+## that is not learning (a frozen comparison) gives none.
+func wariness(j: int) -> float:
+	if not adaptive:
+		return 0.
+	return minf(1.2, .3 * (float(robbed[j]) + float(robbed_before[j])))
+
+
+func times_robbed(j: int) -> int:
+	return int(robbed[j]) + roundi(float(robbed_before[j]))
+
+
+func note_robbed(j: int, context: String, move: String) -> int:
+	robbed[j] += 1
+	if context != "":
+		burned[context] = move
+		burned_by[context] = j
+	return int(robbed[j])
 
 
 func _init(actor: int) -> void:
@@ -125,10 +183,18 @@ func social_snapshot() -> Dictionary:
 	return {"reputation": reputation.duplicate(), "last_deal": last_deal.duplicate()}
 
 
-## Everything this robot carries into its next match.
-func memory() -> Dictionary:
+## Everything this robot carries into its next match. Taken at kickoff it is exactly what the robot
+## started with, so a recording's header restores the same robot. Taken after the final whistle
+## (`faded`), the steals of the match just played count in full and what it carried in from earlier
+## matches counts half: a pilot who stops robbing is forgiven in time.
+func memory(faded := false) -> Dictionary:
 	var out := social_snapshot()
 	out["ledger"] = ledger.duplicate(true)
+	var carried := []
+	for j in 5:
+		var count: float = float(robbed_before[j]) * (.5 if faded else 1.) + float(robbed[j])
+		carried.append(snappedf(minf(20., count), .01))
+	out["robbed"] = carried
 	return out
 
 
@@ -161,6 +227,14 @@ func choose_social(
 
 
 func restore_social(data: Dictionary) -> void:
+	var thefts: Variant = data.get("robbed")
+	if thefts is Array and thefts.size() == 5:
+		var clean := true
+		for n in thefts:
+			clean = clean and (n is int or n is float) and is_finite(n)
+		if clean:
+			for j in 5:
+				robbed_before[j] = clampf(float(thefts[j]), 0., 20.)
 	var scores: Variant = data.get("reputation")
 	var notes: Variant = data.get("last_deal")
 	if not scores is Array or scores.size() != 2 or not notes is Array or notes.size() != 2:

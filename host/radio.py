@@ -33,7 +33,7 @@ PERSONAS = (
 MOVES = {
     "defend": ["press", "screen", "cut"],
     "support": ["advance", "outlet"],
-    "carry": ["drive", "flank", "pass", "finish"],
+    "carry": ["drive", "flank", "pass", "finish", "evade"],
     "loose": ["lead", "recover"],
 }
 TACTICS = {move for options in MOVES.values() for move in options}
@@ -125,6 +125,10 @@ def scout(raw):
         ],
         "learned_tactic": member(raw["learned_tactic"], TACTICS | {""}),
         "recent": memory,
+        # Games before court version 12 do not send this.
+        "times_nell_rafi_robbed_you": [
+            number(x, 0, 99) for x in rows(raw.get("robbed_by", [0, 0]), 2, exact=True)
+        ],
     }
 
 
@@ -134,6 +138,8 @@ def payload(seen):
         + " Play orbital courtball. Gold (0) attacks right, Blue (1) left. "
         "Choose one move for each phase based on your scout report. Press challenges the carrier, screen guards "
         "the ring, cut covers a passing lane. Lead predicts a loose ball, recover chases it, outlet offers a pass. "
+        "Evade carries the star away from a rival whose dash can reach you; it only applies under pressure. "
+        "A pilot who has robbed you will try it again: against them, pass early or evade instead of carrying past them. "
         "Give one short public tactical reason for each move, at most 100 characters."
     )
     phases = {

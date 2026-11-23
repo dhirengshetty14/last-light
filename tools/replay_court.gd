@@ -41,6 +41,14 @@ func verify(path: String) -> bool:
 	if head.get("court_version", 5) == 9:
 		# Version 9 played two or three minutes, and Rivals and Open Crews ended at three goals.
 		s.set("long_match", false)
+	if head.get("court_version", 5) >= 6 and head.get("court_version", 5) < 11:
+		# Before version 11 a star that settled behind a ring stayed there.
+		s.set("fair_deck", false)
+	if head.get("court_version", 5) >= 6 and head.get("court_version", 5) < 12:
+		# Before version 12 robots passed on the tick they caught the star, passes flew faster, and
+		# robots ignored who could reach them, always took their top move and obeyed Gemini.
+		s.set("steady_pace", false)
+		s.set("wary_robots", false)
 	if head.get("free_agents", false):
 		# Dynamic calls: the frozen version 5 court has neither the third argument nor a draft.
 		s.call("setup", int(head.seed), false, true)

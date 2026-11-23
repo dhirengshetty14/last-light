@@ -38,6 +38,57 @@ func choose(context: String, legal: Array, preferred: String, rng: RandomNumberG
 	return pick
 
 
+## Court version 12. How much chance decides between moves, and how far a proposal from someone
+## else (a Gemini playbook) lifts its move. A move that has done 0.1 worse than the best is picked
+## about a tenth as often, so a habit that keeps failing fades fast but nothing is fully predictable.
+const WARMTH := .042
+const NUDGE := .06
+## Each move's value at the last sampled choice, before chance, so a caller can see why it was made.
+var last_values: Dictionary = {}
+
+
+## Court version 12. Weighs every legal move exactly as `choose` does, then samples one in
+## proportion to how well it has done instead of always taking the top one (the Gumbel-max trick,
+## drawn from this robot's own seeded generator, so a replay makes the same draws). `nudge` is a
+## move someone else proposed; it gets a small lift, never a guarantee.
+func choose_sampled(
+	context: String, legal: Array, preferred: String, rng: RandomNumberGenerator, nudge := ""
+) -> String:
+	last_values = {}
+	explored = rng.randf() < exploration
+	if explored:
+		return str(legal[rng.randi_range(0, legal.size() - 1)])
+	var total := 0.
+	var quality_sum := 0.
+	for move in legal:
+		var row: Array = estimates.get(context + "/" + str(move), [0, 0, 0])
+		total += float(row[0])
+		quality_sum += .75 * float(row[1]) + .0025 * float(row[2])
+	var common: float = (quality_sum + 1.) / (total + 2.)
+	var best := -INF
+	var pick := str(legal[0])
+	for move in legal:
+		var key := context + "/" + str(move)
+		var past: Array = estimates.get(key, [0, 0, 0])
+		var count := float(past[0])
+		var weight := minf(6., sqrt(count))
+		var quality: float = (.75 * float(past[1]) + .0025 * float(past[2])) / maxf(1., count)
+		var live: Array = recent.get(key, [0., 0.])
+		var value: float = (
+			(3. * common + weight * quality + float(live[1])) / (3. + weight + float(live[0]))
+		)
+		if move == preferred:
+			value += .075
+		if move == nudge:
+			value += NUDGE
+		last_values[str(move)] = value
+		var noisy: float = value - WARMTH * log(-log(clampf(rng.randf(), 1e-6, 1. - 1e-6)))
+		if noisy > best:
+			best = noisy
+			pick = str(move)
+	return pick
+
+
 ## Version-two recordings replay their original action ordering and priors.
 func choose_v2(
 	context: String, legal: Array, preferred: String, rng: RandomNumberGenerator

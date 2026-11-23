@@ -993,8 +993,8 @@ func start() -> void:
 			"kind": "header",
 			"run": run,
 			"seed": seed_value,
-			"game": "last-light-v10",
-			"court_version": 10,
+			"game": "last-light-v12",
+			"court_version": 12,
 			"social_learning": sim.social_learning,
 			"dock_relay": sim.relay_rules,
 			"moving_passes": sim.moving_passes,
@@ -1389,6 +1389,25 @@ func present(e: Dictionary) -> void:
 					)
 				)
 				message_until = sim.tick + 67
+		"robbed":
+			if int(e.times) >= 2:
+				front.record(
+					"%s has robbed me %d times." % [Game.NAMES[e.by], e.times],
+					Game.NAMES[i],
+					tint_of(i)
+				)
+		"juke":
+			comics.pop("JUKE!", over(i), tint_of(i))
+			sound("dash")
+			message = "%s sidesteps %s's dash!" % [Game.NAMES[i], Game.NAMES[e["from"]]]
+			message_until = sim.tick + 80
+		"lesson":
+			# A robot changed what it does after being robbed: its words in a balloon by its face.
+			comics.say(cast[i], FACE[i], Game.NAMES[i].to_upper(), e.line, tint_of(i))
+			comics.pop("LEARNED!", over(i), tint_of(i))
+			front.record(e.line, Game.NAMES[i], tint_of(i))
+			message = "%s learned: %s" % [Game.NAMES[i], e.line]
+			message_until = sim.tick + 150
 		"goal":
 			dock_lights.signal_crew(e.team, true)
 			harbor.cheer(e.team)

@@ -97,9 +97,222 @@ func check_court_geometry() -> void:
 			check(rim.motion.x < 0., "a clipped shot rebounds onto the deck")
 
 
+## A star that settles behind a ring, past where anyone can stand, must roll back within reach.
+## Before court version 11 it stayed there until the whistle.
+func check_dead_ball() -> void:
+	for side in [1., -1.]:
+		for fair in [false, true]:
+			var s = court()
+			s.fair_deck = fair
+			s.launch(s.owner, true, 1 - s.owner)
+			s.flight_tick = s.tick - 100
+			s.ball = Vector3(side * (s.ring + .25), .2, -(s.bounds.y + .1))
+			s.motion = Vector3.ZERO
+			# Everyone crowds the end of the court as close to the star as they are allowed.
+			for i in 5:
+				s.pos[i] = Vector2(side * s.bounds.x, -s.bounds.y + i * .47)
+			for t in 90:
+				s.tick += 1
+				s.advance_ball()
+				if s.owner >= 0:
+					break
+			if fair:
+				check(s.owner >= 0, "a star that settles behind a ring rolls back within reach")
+			else:
+				check(s.owner < 0, "the old court leaves a star behind the ring out of reach")
+
+
+## Court version 12: a robot looks up before it passes, and passes fly about a fifth slower.
+func check_pace() -> void:
+	var flights := {}
+	for steady in [true, false]:
+		var s = court()
+		s.steady_pace = steady
+		s.pos[3] = Vector2(-2., 1.)
+		s.pos[2] = Vector2(-5., 1.)
+		s.owner = 3
+		s.ball = s.hand(3)
+		s.tick = 200
+		s.launch(3, true, 2)
+		var released: int = s.tick
+		for t in 120:
+			s.tick += 1
+			s.advance_ball()
+			if s.owner >= 0:
+				break
+		flights[steady] = s.tick - released
+		check(s.owner == 2, "the pass arrives")
+		if steady:
+			var wait: int = s.look_up[2] - s.tick
+			check(wait >= 26 and wait <= 50, "a robot that catches a pass looks up first")
+			check(not s.looked_up(2, "pass"), "and cannot pass straight away")
+			s.tick = s.look_up[2]
+			check(s.looked_up(2, "pass"), "then it can")
+			check(s.safe_until >= s.look_up[2], "nobody can rob it while it looks up")
+		else:
+			check(s.looked_up(2, "pass"), "the old court lets a robot pass the moment it catches")
+	check(
+		float(flights[true]) >= float(flights[false]) * 1.15,
+		"the same pass flies at least 15% longer on court 12"
+	)
+
+
+## Court version 12: a carrier knows who can reach it, remembers who robbed it, and decides
+## again in a situation of its own when danger closes in.
+func check_wary() -> void:
+	var s = court()
+	s.pos[4] = Vector2(-1., 0.)
+	s.owner = 4
+	s.tick = 300
+	s.cooldown[0] = 0
+	s.pos[0] = Vector2(2., 0.)
+	s.pos[1] = Vector2(8., 4.)
+	check(is_equal_approx(s.danger(4, 0), .68 + 2.7), "Nell's ready dash reaches 3.38 m")
+	check(s.pressure(4) == "hot" and s.threat(4) == 0, "Nell three metres away with her dash ready is hot")
+	s.cooldown[0] = 400
+	check(s.pressure(4) != "hot", "the same Nell without her dash is not")
+	s.cooldown[0] = 0
+	s.pending[4] = {}
+	s.plan(4)
+	var p: Dictionary = s.pending[4]
+	check(p.context == "star2/4/carry/hot/nell", "a hot carrier decides in its own situation")
+	check("evade" in p.legal, "and may evade")
+	s.tactics[4] = "flank"
+	s.possession(0, "steal")
+	var robbed: Array = s.events.filter(func(e): return e.kind == "robbed")
+	check(
+		robbed.size() == 1 and robbed[0].by == 0 and s.agents[2].robbed[0] == 1,
+		"the robot remembers who robbed it"
+	)
+	check(is_equal_approx(s.agents[2].wariness(0), .3), "and gives that pilot more room")
+	check(s.agents[2].burned.get("star2/4/carry/hot/nell") == "flank", "and what it was doing")
+	# A lesson: the move that got Zip robbed here has since been graded a failure, so Zip picks
+	# another and says so once, naming the pilot who really took the star.
+	var zip = s.agents[2]
+	var spot := "star2/4/carry/hot/nell"
+	zip.exploration = 0.
+	zip.burned_by[spot] = 1
+	for n in 8:
+		zip.observe(spot, "flank", 65)
+		zip.observe(spot, "pass", 100)
+	s.events.clear()
+	s.possession(4, "fixture")
+	s.pos[0] = Vector2(2., 0.)
+	s.cooldown[0] = 0
+	s.pending[4] = {}
+	s.plan(4)
+	var lessons: Array = s.events.filter(func(e): return e.kind == "lesson")
+	check(
+		(
+			lessons.size() == 1
+			and lessons[0].thief == 1
+			and lessons[0].avoided == "flank"
+			and lessons[0].choice != "flank"
+			and str(lessons[0].line).begins_with("Rafi robbed me going wide.")
+		),
+		"a robot that changes a habit after being robbed says so, naming who robbed it"
+	)
+	s.events.clear()
+	s.pending[4] = {}
+	s.plan(4)
+	check(
+		s.events.filter(func(e): return e.kind == "lesson").is_empty(),
+		"and says it once a situation"
+	)
+	check(
+		s.lesson_line(1, "flank", "pass") == "Rafi robbed me going wide. I pass early now.",
+		"in plain words"
+	)
+	var next = court()
+	next.configure_agents({}, s.relationships())
+	check(next.agents[2].times_robbed(0) == 1, "the memory carries into the next match")
+	check(
+		next.relationships()["4"].robbed == s.relationships()["4"].robbed,
+		"a kickoff snapshot restores the same robot, so a recording's header replays it"
+	)
+	s.finished = true
+	check(
+		is_equal_approx(s.relationships()["4"].robbed[0], 1.),
+		"a steal counts in full for the match after it"
+	)
+	s.finished = false
+	next.finished = true
+	check(
+		is_equal_approx(next.relationships()["4"].robbed[0], .5),
+		"and half as much for each match after that"
+	)
+	next.finished = false
+	var frozen = court()
+	frozen.configure_agents({}, s.relationships(), false)
+	check(frozen.agents[2].wariness(0) == 0., "a robot that is not learning gives no extra room")
+	# Sampling: the robot usually takes the move that has done best, but not always.
+	var actor = s.agents[0]
+	actor.exploration = 0.
+	for n in 6:
+		actor.observe("ctx", "drive", 65)
+		actor.observe("ctx", "pass", 100)
+	var tally := {"drive": 0, "pass": 0, "evade": 0}
+	var draw := RandomNumberGenerator.new()
+	draw.seed = 5
+	for n in 400:
+		tally[actor.choose_sampled("ctx", ["drive", "pass", "evade"], "drive", draw)] += 1
+	check(tally.pass > 250 and tally.drive < 60, "graded failures make a move rare")
+	check(tally.drive + tally.evade > 0, "but nothing is fully predictable")
+	var first := []
+	var second := []
+	for picks in [first, second]:
+		var same := RandomNumberGenerator.new()
+		same.seed = 5
+		for n in 40:
+			picks.append(actor.choose_sampled("ctx", ["drive", "pass", "evade"], "drive", same))
+	check(first == second, "the same seed makes the same choices, so replays hold")
+	# Gemini proposes; the robot's own record can outweigh the proposal.
+	var overridden := 0
+	for n in 200:
+		var pick: String = actor.choose_sampled("ctx", ["drive", "pass"], "drive", draw, "drive")
+		overridden += int(pick != "drive")
+	check(overridden > 100, "a proposal for a move that keeps failing is usually outweighed")
+
+
+## A match that starts with remembered steals must replay from what its recording's header holds.
+func check_memory_replay() -> void:
+	var pilots = load("res://learning/steal_eval.gd")
+	var first = court()
+	while not first.finished:
+		first.step(pilots.thieves(first))
+		first.events.clear()
+	var carried: Dictionary = first.relationships()
+	var remembered := 0.
+	for id in carried:
+		for count in carried[id].robbed:
+			remembered += float(count)
+	check(remembered > 0., "pilots who dash at the carrier rob a robot in a full match")
+	var header := {}
+	var logs := []
+	for run in 2:
+		var s = court()
+		s.configure_agents(first.learned_weights(), carried if run == 0 else header)
+		if run == 0:
+			header = s.relationships()
+		var log := []
+		for t in 3600:
+			s.step(pilots.thieves(s))
+			log.append_array(s.events)
+			s.events.clear()
+		logs.append(log)
+	check(
+		logs[0] == logs[1] and logs[0].size() > 500,
+		"a match that starts with remembered steals replays from its header"
+	)
+
+
 func _initialize() -> void:
 	check_court_geometry()
 	check_relay()
+	check_dead_ball()
+	check_pace()
+	check_wary()
+	check_memory_replay()
 	var moving = court()
 	moving.pos[0] = Vector2(-3.5, -1.)
 	moving.pos[1] = Vector2(.2, -1.)
