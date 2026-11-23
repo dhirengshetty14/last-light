@@ -10,6 +10,8 @@ import time
 from contextlib import contextmanager
 from pathlib import Path
 
+from dashboard import export_analyst, write_dashboard
+
 ROOT = Path(__file__).resolve().parents[1]
 LOCAL = ROOT / "telemetry" / "local"
 
@@ -154,7 +156,9 @@ def main():
         )
         previous = None
         while True:
-            paths = sorted(args.inputs or default_flights().glob("*.jsonl"))
+            # Run names start with microseconds, so the newest 30 live matches keep the 2 s loop
+            # fast. Files named on the command line are all loaded.
+            paths = sorted(args.inputs) or sorted(default_flights().glob("*.jsonl"))[-30:]
             try:
                 stamp = tuple((str(p), p.stat().st_size) for p in paths)
                 if stamp != previous and paths and stage(paths):
@@ -177,6 +181,16 @@ def main():
                             config,
                             default_flights().parent / "verified-responses.json",
                         )
+                    # The Bruin Analyst: advice the game reads during the match, and the dashboard.
+                    # Explicit inputs (tests, fixtures) never write into the player's data.
+                    export_analyst(
+                        bruin,
+                        config,
+                        LOCAL / "bruin-analyst.json"
+                        if args.inputs
+                        else default_flights().parent / "bruin-analyst.json",
+                    )
+                    write_dashboard(bruin, config, LOCAL / "dashboard.html")
                     previous = stamp
             except (OSError, ValueError, subprocess.CalledProcessError) as error:
                 if not args.watch:

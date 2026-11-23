@@ -49,6 +49,9 @@ func verify(path: String) -> bool:
 		# robots ignored who could reach them, always took their top move and obeyed Gemini.
 		s.set("steady_pace", false)
 		s.set("wary_robots", false)
+	if head.get("court_version", 5) >= 6 and head.get("court_version", 5) < 13:
+		# Before version 13 there was no Bruin Analyst.
+		s.set("bruin_analyst", false)
 	if head.get("free_agents", false):
 		# Dynamic calls: the frozen version 5 court has neither the third argument nor a draft.
 		s.call("setup", int(head.seed), false, true)
@@ -79,7 +82,7 @@ func verify(path: String) -> bool:
 			sealed = true
 			break
 		expected.append(event)
-		if event.kind == "model_transport":
+		if event.kind == "model_transport" or event.kind == "analyst_advice":
 			var stream: Dictionary = closing if event.after_step else remote
 			var t := int(event.tick)
 			if not stream.has(t):

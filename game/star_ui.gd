@@ -419,6 +419,10 @@ func show_plans(sim) -> void:
 		lines.append("\n%s   ·   %s" % [sim.NAMES[actor.role], actor.GOALS[actor.role - 2]])
 		if actor.model_status != "Local policy":
 			lines.append(actor.model_status)
+		if sim.bruin_analyst:
+			var note: String = actor.analyst_note(sim.tick)
+			if note != "":
+				lines.append(note)
 		lines.append(actor.last_plan if actor.last_plan != "" else "Watching the opening play.")
 		if actor.plan_basis != "":
 			lines.append(

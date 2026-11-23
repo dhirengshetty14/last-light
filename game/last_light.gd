@@ -5,6 +5,11 @@ const Performer = preload("res://game/crew_visual.gd")
 const Front = preload("res://game/star_ui.gd")
 const Coach = preload("res://game/gemini_coach.gd")
 var coach: Coach
+const Analyst = preload("res://game/bruin_analyst.gd")
+## The Bruin Analyst (court version 13): live in Rivals only, and never in tests or captures.
+var analyst: Analyst
+## The last lesson each robot announced, so the radio only speaks when one changes.
+var analyst_heard := ["", "", "", "", ""]
 var radio_host = preload("res://game/radio_host.gd").new()
 const Recorder = preload("res://game/flight_recorder.gd")
 const Easy = preload("res://game/easy_controls.gd")
@@ -982,6 +987,10 @@ func start() -> void:
 		cast[i].rotation.y = PI * .48 if sim.team[i] == 0 else -PI * .48
 	render_game(0., 1.)
 	var run := "%d-%d" % [Time.get_unix_time_from_system() * 1000000, seed_value]
+	analyst = null
+	analyst_heard = ["", "", "", "", ""]
+	if not crews and not free and not test_session and not capture_session:
+		analyst = Analyst.new(run)
 	var directory := "user://flights"
 	if test_session or capture_session:
 		directory = "user://court-captures"
@@ -993,8 +1002,9 @@ func start() -> void:
 			"kind": "header",
 			"run": run,
 			"seed": seed_value,
-			"game": "last-light-v12",
-			"court_version": 12,
+			"game": "last-light-v13",
+			"court_version": 13,
+			"bruin_analyst": analyst != null,
 			"social_learning": sim.social_learning,
 			"dock_relay": sim.relay_rules,
 			"moving_passes": sim.moving_passes,
@@ -1284,7 +1294,10 @@ func _physics_process(_dt: float) -> void:
 			pad_edges[seat][binding[0]] = down
 	positions = sim.pos.duplicate()
 	old_ball = sim.ball
-	sim.step(command_edges, coach.poll(sim) if coach else [])
+	var packets: Array = coach.poll(sim) if coach else []
+	if analyst:
+		packets.append_array(analyst.poll(sim))
+	sim.step(command_edges, packets)
 	if sim.owner == -1 and sim.flight != "":
 		trail_points.push_front(old_ball)
 		if trail_points.size() > trail_meshes.size() * 2:
@@ -1389,6 +1402,30 @@ func present(e: Dictionary) -> void:
 					)
 				)
 				message_until = sim.tick + 67
+		"analyst_advice":
+			if e.result == "available":
+				# Advice arrives every 3 s; the radio only speaks when a robot's lesson changes.
+				var tip: Dictionary = e.packet.advice
+				var heard := ""
+				for phase_name in ["defend", "loose"]:
+					if tip.has(phase_name):
+						heard = (
+							"%s %s, not %s. %s"
+							% [
+								"When a rival has the star:" if phase_name == "defend" else "Loose star:",
+								tip[phase_name].prefer,
+								tip[phase_name].avoid,
+								tip[phase_name].reason
+							]
+						)
+						break
+				if heard != "" and heard != analyst_heard[i]:
+					analyst_heard[i] = heard
+					front.record(heard, Game.NAMES[i] + " · BRUIN", tint_of(i))
+					comics.pop("LEARNING!", over(i), tint_of(i))
+					sound("lamp" if clips.has("lamp") else "catch")
+					message = "%s learns from %s" % [Game.NAMES[i], tip.values()[0].get("teacher", "its crew")]
+					message_until = sim.tick + 90
 		"robbed":
 			if int(e.times) >= 2:
 				front.record(
@@ -1694,7 +1731,20 @@ func _process(dt: float) -> void:
 					)
 				front.results(a, b, box_score, crews, side_names(), headline, footnote)
 			else:
-				front.results(sim.goals[0], sim.goals[1], box_score, crews)
+				var bruin_line: String = analyst.summary_line() if analyst else ""
+				front.results(
+					sim.goals[0],
+					sim.goals[1],
+					box_score,
+					crews,
+					[],
+					"",
+					(
+						""
+						if bruin_line == ""
+						else "%d machine-lit beacons\n%s" % [box_score.beacons, bruin_line]
+					)
+				)
 	if phase in ["walk_on", "play", "end", "pause", "whistle"]:
 		render_game(dt, Engine.get_physics_interpolation_fraction() if phase == "play" else 1.)
 	else:

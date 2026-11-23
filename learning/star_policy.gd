@@ -52,7 +52,8 @@ var last_values: Dictionary = {}
 ## drawn from this robot's own seeded generator, so a replay makes the same draws). `nudge` is a
 ## move someone else proposed; it gets a small lift, never a guarantee.
 func choose_sampled(
-	context: String, legal: Array, preferred: String, rng: RandomNumberGenerator, nudge := ""
+	context: String, legal: Array, preferred: String, rng: RandomNumberGenerator, nudge := "",
+	bias: Dictionary = {}
 ) -> String:
 	last_values = {}
 	explored = rng.randf() < exploration
@@ -81,6 +82,8 @@ func choose_sampled(
 			value += .075
 		if move == nudge:
 			value += NUDGE
+		# Court version 13: the Bruin Analyst's advice, a small lift or drop for named moves.
+		value += float(bias.get(str(move), 0.))
 		last_values[str(move)] = value
 		var noisy: float = value - WARMTH * log(-log(clampf(rng.randf(), 1e-6, 1. - 1e-6)))
 		if noisy > best:

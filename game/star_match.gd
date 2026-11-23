@@ -143,6 +143,9 @@ var look_up := [0, 0, 0, 0, 0]
 ## clearest lane, samples its moves rather than always taking its top one, and treats a Gemini
 ## playbook as advice to weigh against its own record instead of an order.
 var wary_robots := true
+## Court version 13: robots weigh the Bruin Analyst's advice (packets with source "bruin"). With no
+## packets a match plays exactly as version 12: the advice adds no random draws.
+var bruin_analyst := true
 ## Steal reach added by a ready dash, per player: Nell's Ferry Run is the long one.
 const DASH_REACH := [2.7, 1.7, .9, .9, .9]
 var dash_started := [-999, -999, -999, -999, -999]
@@ -212,6 +215,7 @@ func old_court() -> void:
 	fair_deck = false
 	steady_pace = false
 	wary_robots = false
+	bruin_analyst = false
 
 
 ## How close player j must be to take the star from robot i this moment: their steal reach, the
@@ -914,6 +918,35 @@ func relationships() -> Dictionary:
 	return out
 
 
+## Court version 13. The situation robot i decides in, in the words the court and Bruin share: how
+## near the star is, whether it is coming at the robot or going away (and fast enough to matter),
+## whether it is ahead of the robot or behind it, whether a human is within 2 m, and whether a side
+## wall is within 1 m. Bruin groups every reaction by it, so advice is about this kind of moment.
+func scene(i: int) -> String:
+	var here := Vector2(pos[i])
+	var star := Vector2(ball.x, ball.z)
+	var flow: Vector2 = Vector2(vel[owner]) if owner >= 0 else Vector2(motion.x, motion.z)
+	var to_me := here - star
+	var moving := "slow"
+	if flow.length() > 1.:
+		moving = "coming" if flow.dot(to_me) > 0. else "going"
+	var forward := (goal(i) - here).normalized()
+	var close := INF
+	for h in 2:
+		if team[h] != team[i]:
+			close = minf(close, here.distance_to(Vector2(pos[h])))
+	return (
+		"%s/%s/%s/%s%s"
+		% [
+			"near" if to_me.length() <= 3. else "far",
+			moving,
+			"ahead" if (star - here).dot(forward) >= 0. else "behind",
+			"pressed" if close < 2. else "free",
+			"/wall" if bounds.y - absf(here.y) < 1. else ""
+		]
+	)
+
+
 func goal(i: int) -> Vector2:
 	return Vector2(ring if team[i] == GOLD else -ring, 0)
 
@@ -1371,13 +1404,18 @@ func plan(i: int) -> void:
 		context = "star2/%s/carry/%s/%s" % [i, heat, NAMES[foe].to_lower()]
 	var us := Time.get_ticks_usec() if sample_time else 0
 	var proposal := ""
+	var lift := {}
+	var situation := ""
+	if bruin_analyst and wary_robots and not legacy_replay:
+		situation = scene(i)
+		lift = actor.analyst_bias(phase, situation, legal, tick)
 	var choice: String
 	if legacy_replay:
 		choice = actor.choose_v2(context, legal, preferred, rng)
 	elif wary_robots:
 		proposal = actor.proposal(phase, tick)
 		choice = actor.choose_sampled(
-			context, legal, preferred, actor.draw, proposal if proposal in legal else ""
+			context, legal, preferred, actor.draw, proposal if proposal in legal else "", lift
 		)
 	else:
 		choice = actor.choose(context, legal, preferred, actor.draw)
@@ -1388,7 +1426,11 @@ func plan(i: int) -> void:
 		# What the robot's own record favours, before Gemini's lift and before chance.
 		var top_value := -INF
 		for move in actor.last_values:
-			var own: float = float(actor.last_values[move]) - (Policy.NUDGE if move == proposal else 0.)
+			var own: float = (
+				float(actor.last_values[move])
+				- (Policy.NUDGE if move == proposal else 0.)
+				- float(lift.get(move, 0.))
+			)
 			if own > top_value:
 				top_value = own
 				actor.local_preference = move
@@ -1528,6 +1570,10 @@ func plan(i: int) -> void:
 		intent["rival"] = foe
 	if not advice.is_empty():
 		intent["gemini"] = advice
+	if situation != "":
+		intent["scene"] = situation
+	if not lift.is_empty():
+		intent["analyst"] = {"advice": actor.analyst_id, "lift": lift}
 	emit("response_intent", i, intent)
 
 
@@ -1826,6 +1872,18 @@ func apply_model_packets(packets: Array, after_step: bool = false) -> void:
 	for packet in packets:
 		var i := int(packet.actor)
 		if i < 2 or i > 4:
+			continue
+		if str(packet.get("source", "")) == "bruin":
+			if bruin_analyst:
+				emit(
+					"analyst_advice",
+					i,
+					{
+						"packet": packet,
+						"result": agents[i - 2].accept_analyst(packet, tick),
+						"after_step": after_step
+					}
+				)
 			continue
 		var result: String = agents[i - 2].accept_packet(packet, tick)
 		emit("model_transport", i, {"packet": packet, "result": result, "after_step": after_step})

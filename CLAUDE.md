@@ -207,6 +207,7 @@ does this). It loads sealed match logs into `telemetry/local/` (gitignored) and 
 | `captains.gd` | Scripted Free Agents captains: honest, liar, first half only, favourite robot, coin flip |
 | `social_train.gd`, `social_eval.gd` | Practice and held-out test for the robots' social choices; `social_checkpoint.json` and `social_eval.json` hold the results |
 | `steal_eval.gd` | Version 12: do robots stop handing the star to pilots who keep robbing them? Results are in `steal_eval.json`. |
+| `peer_eval.gd`, `peer_eval.py` | Version 13: do robots react better with live Bruin peer advice? Five scripted pilot styles, match 3 of each series against an unseen style. Results in `peer_eval.json` (and `peer_eval_one_style.json`, the earlier one-style run with looser advice). |
 | `train.gd`, `checkpoint.json`, `evaluation.json` | The original nursery game's learner |
 
 ### Other folders
@@ -221,7 +222,9 @@ does this). It loads sealed match logs into `telemetry/local/` (gitignored) and 
 | `tests/court_playtest.gd` | Plays both keyboard seats through the real scene: menus, pause, goals |
 | `tasks/` | Harbor-format tasks (`ring-window`, `catch-window`, `broken-promise`), each with `instruction.md`, `task.toml`, `solution/solve.sh` and `tests/test.sh`. Graders are in `tasks/*.gd`, and `tasks/check-local.sh` runs them in Docker with no network. |
 | `host/radio.py` | The Gemini playbook service. Standard library only; it alone holds the key. |
-| `telemetry/` | Bruin pipeline: `watch.py`, `pipeline.yml`, and the tables and checks in `assets/flight/*.sql` |
+| `telemetry/` | Bruin pipeline: `watch.py`, `pipeline.yml`, the tables and checks in `assets/flight/*.sql`, and `dashboard.py` (the Bruin Analyst's advice file and live dashboard) |
+| `game/bruin_analyst.gd` | Version 13: reads the Bruin Analyst's peer advice every 3 s during a live Rivals match and hands it to the court as packets |
+| `tests/bruin_analyst_test.gd` | The Analyst's advice reaches only its own robot, changes nothing when absent, and replays exactly |
 | `art/source/` | Offline scripts that built models, textures, music, sound effects and voices |
 | `assets/` | Models (glb), audio, fonts, textures |
 | `docs/` | Screenshots, videos, and recorded matches (`match-87.jsonl` is the replay fixture) |
@@ -266,6 +269,7 @@ exactly.
 | 10 | Every mode is a 4-minute match; most goals wins | `long_match = false` |
 | 11 | A star stuck behind a ring rolls back into play | `fair_deck = false` |
 | 12 | Robots look up before passing and passes fly slower; robots are pressure-aware, can evade, sample their moves, treat Gemini as advice, and remember who robbed them | `steady_pace = false`, `wary_robots = false` |
+| 13 | Each decision records its situation (`scene`); robots weigh the Bruin Analyst's peer advice for that situation (±0.04, event `analyst_advice`). With no advice, choices are exactly as in version 12. | `bruin_analyst = false` |
 
 **To add a version:**
 
@@ -328,6 +332,23 @@ Every robot (seats 2 to 4) runs the same loop, each with its **own separate memo
    weighs less than the one it picks instead, the robot says so once in a balloon, for example *"Rafi
    robbed me going wide. I pass early now."*
 
+### The Bruin Analyst (version 13, Rivals only)
+
+- Every robot decision records its situation (`star_match.scene`): star near or far, coming, going
+  or slow, ahead or behind, a human within 2 m, a side wall within 1 m.
+- While a live Rivals match runs, `telemetry/watch.py` loads the log with Bruin every 2 s.
+  `flight.reactions` scores how each robot reacted to every moment (the ball, humans, teammates,
+  walls); `flight.analyst_advice` finds, for each robot, phase and situation, the move with which
+  its **teammates** reacted best and worst. Memories stay separate: this is advice, not a copy.
+- The watcher writes it to `user://bruin-analyst.json`; `game/bruin_analyst.gd` reads it every 3 s,
+  only for the current run, and passes one packet per robot into `sim.step` (source `bruin`).
+- The robot adds +0.04 to the advised move and −0.04 to the one to avoid for its exact situation
+  (or the phase as a whole), then samples as usual. Advice lapses after 30 s. Packets are recorded
+  as `analyst_advice` events and replayed.
+- The radio (when a lesson changes), the Tab notebook and the final card show it.
+- `telemetry/local/dashboard.html` (refreshes every 3 s) charts reaction per 15 s and per match,
+  with and without advice, and lists what each robot is learning from whom.
+
 ### Gemini's part (`gemini_coach.gd`, `host/radio.py`)
 
 - Every 8 s each robot can send its observation to the host:
@@ -387,7 +408,9 @@ next choice in the same situation. Across matches, the saved memory carries the 
 | **Every pass and shot** (`grade_throw`, type `court_throw`) | Released 0.10; eligible 0.10; flew 0.20; a teammate touched it 0.25; delivered 0.35 | Live; logged only |
 | **Social choice** (`grade_social`) | Kept 100, broken 0, none 50, graded when the next promise settles | Live in Free Agents |
 | **Harbor tasks** (`tasks/`) | `reward.json` from separate no-network verifier containers | Built earlier; not re-run since version 12 |
-| **Bruin checks** (`telemetry/assets/flight/*.sql`) | Unique sequence ids; scores bounded 0 to 100; exactly one learning example per decision; an applied Gemini move equals its proposal; robot attribution for beacon events | Not re-run on version 12 |
+| **Bruin checks** (`telemetry/assets/flight/*.sql`) | Unique sequence ids; scores bounded 0 to 100; exactly one learning example per decision; an applied Gemini move equals its proposal; robot attribution for beacon events; reaction scores between 0 and 1; one reaction per robot per moment; advice and lifts only on legal moves; a robot never learns from itself | 19 checks pass on version 13 captures |
+| **Reactions** (`flight.reactions`, `score_windows`, `learning_curve`) | Every moment something happens to a robot (the ball: a rival passes or takes it; a human dashes at it while it carries; a teammate gets the star; it carries the star within 1 m of a side wall): speed of reaction 0.3, right direction 0.3, outcome 0.4. Goals are not used. Filed under the decision's situation. | Live in Rivals; `telemetry/local/dashboard.html` |
+| **Peer advice** (`flight.analyst_advice`) | For each robot, phase and situation: the move with which its teammates reacted best and worst (3+ reactions each, last 3 matches) | Reaches the robots every 3 s |
 
 ### Evaluations: does learning help?
 
@@ -395,6 +418,7 @@ next choice in the same situation. Across matches, the saved memory carries the 
 | --- | --- | --- |
 | `learning/star_eval.json` (ball play; 120 training and 32 held-out matches) | Fully verified tactics 21.4% before training, 21.3% after | Ball-play training did not help |
 | `learning/social_eval.json` (60 held-out series, hidden-truth verifier) | Random 0.557, written rules 0.649, trained 0.655 | Training matched the written rules but did not beat them |
+| `learning/peer_eval.json` (version 13; 5 series of 3 Rivals matches, live Bruin peer advice vs none, same seeds; match 3 against an unseen pilot style) | Reaction score, peer − solo: match 1 −0.001 ± 0.008, match 2 −0.011 ± 0.008, **match 3 (unseen style) +0.010 ± 0.005**, ahead on 4 of 5 styles. Peer robots: humans 0.915 vs 0.890, walls 0.81 vs 0.69, ball 0.522 vs 0.532. Goals unchanged. The earlier one-style run with looser advice (3 plays, 0.05 gap) was −0.01 to −0.02. | A small gain that shows on unseen players, after two matches of peer advice. Only 5 series: suggestive, not proven. |
 | `learning/steal_eval.json` (version 12; 16 series of 3 matches against pilots who repeat the dash-steal) | Steals: learning robots 13.8 in match 1, 10.6 in match 3; frozen robots 17.2 and 17.2. Paired difference −6.6 ± 1.4 by match 3. Verifier score 0.44, frozen 0.32, version 11 robots 0.28. | Learning works across matches. Within one match it only holds steady. Goals stay close, so it does not yet win more. |
 
 ### Honest limits
