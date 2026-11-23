@@ -23,6 +23,7 @@ import os
 import shutil
 import subprocess
 import sys
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -131,8 +132,12 @@ def sync(args):
     if not project:
         print("No Bruin Cloud project for this repository yet: run `python3 telemetry/cloud.py connect`.")
         return
+    # A run needs a date window. This pipeline is not partitioned by date, so today's is used.
+    today = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
     result = bruin(
         "cloud", "runs", "trigger", "--project-id", project, "--pipeline", PIPELINE,
+        "--start-date", today.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "--end-date", (today + timedelta(days=1)).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "--var", 'source="cloud"', "--note", f"{rows} events from {len(paths)} matches",
     )
     print((result.stdout or "") + (result.stderr or ""))

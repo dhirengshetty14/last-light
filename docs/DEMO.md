@@ -87,6 +87,10 @@ Point at the report.
   second. The page reads one file, so refreshing it costs no query."
 - The honest finding: "Bruin showed us that three tasks failed about 96% of the time whatever the
   robot did. The fault was our own checks, not the robots. We fixed the checks and retrained."
+- **Bruin Cloud.** Open cloud.getbruin.com and the `last-light` project. "The same pipeline runs
+  here on every match we upload: 16 tables and 19 quality checks." Run
+  `python3 telemetry/cloud.py sync` after the demo matches so the latest ones are there. A cloud run
+  takes a few minutes, so start it before you present.
 
 ## What to claim, and what not to
 

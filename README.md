@@ -139,6 +139,18 @@ Players launch the game, choose a mode and take the court. Both modes work offli
 
 Bruin builds all of it. The watcher stages the match logs, re-parsing only the live match, and runs the pipeline: 16 tables and 19 quality checks in about 0.7 s over 33 matches. The last asset, `flight.dashboard_feed`, writes the whole report as one JSON file. The page only reads that file, so a refresh costs no query, and the server listens on this machine only. The tables behind it are `flight.robot_decisions` (every graded decision with its task, situation and the check it broke at), `flight.task_scores`, `flight.robot_failure_modes` and `flight.robot_talk` (every message between robots, checked to be robot to robot). A failed quality check stops the pipeline, and so the report, until the bad log is removed.
 
+**Bruin Cloud.** The same pipeline also runs in Bruin Cloud, on a copy of the match data in MotherDuck, so the team can see the runs, the quality checks and the tables, and ask Bruin's agents about them. The live report stays on the game's Mac because it has to update within seconds. A pipeline variable chooses the source: `source="local"` (watch.py) reads the staged logs, and the default, `"cloud"`, reads `raw.match_events` in MotherDuck. In the cloud the report is kept as the table `flight.robot_report`. The first cloud run, over 86 matches (44,651 events), passed all 16 assets and all 19 quality checks in 3 minutes 44 seconds. To set it up once and then upload matches:
+
+```sh
+bruin cloud login --global                 # browser sign-in
+python3 telemetry/cloud.py configure       # MotherDuck token at a hidden prompt
+python3 telemetry/cloud.py connect         # after installing the Bruin GitHub App on the repository
+python3 telemetry/cloud.py sync            # upload the recorded matches and start a cloud run
+python3 telemetry/cloud.py status
+```
+
+The token is kept in `telemetry/local/cloud.bruin.yml` (gitignored, readable by you only) and in Bruin Cloud as the `nursery` connection. `sync` uploads the match logs only: game events, robot decisions and grades, robot talk, and Gemini's requests and replies.
+
 The native launcher starts the watcher if Bruin is installed. Each match writes a locally buffered JSONL trajectory, including a four-Hz court trace, ownership, releases, social changes, tactic decisions, outcomes, verifier flags and scores. Bruin refreshes a DuckDB database from sealed lines approximately every two seconds. Its checks include unique sequence IDs, bounded grading, one resolved learning example per decision, and machine attribution for beacon events. For connected matches, `flight.model_calls` reports the scout snapshot, requested and served model, request status, measured latency, token counts and returned playbook. `flight.agent_decisions` links each decision to its public reason, proposal, whether it was applied, overridden or illegal, most recent transport state and eventual verifier checks. The final whistle shows completed passes, steals, machine-lit beacons and Open Crews relays. The Bruin scoreboard groups those events by match and records the mode and each crew’s relay total. Local verified response summaries feed back into the next launch. The release stores data under the existing `Godot/app_userdata/This Side Up` directory so existing runs stay readable.
 
 ```sh

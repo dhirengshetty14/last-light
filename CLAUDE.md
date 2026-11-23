@@ -178,6 +178,22 @@ only reads that file, so a refresh costs no query.
 If a Bruin quality check fails (for example a log that does not start at sequence 1), the pipeline
 stops and the report stops updating until that log is removed. Check `telemetry/local/live.log`.
 
+### Bruin Cloud
+
+The same pipeline runs in Bruin Cloud (project `last-light`, linked to this repository through the
+Bruin GitHub App) against MotherDuck. The pipeline variable `source` picks where events come from:
+`"local"` reads `telemetry/local/events.ndjson` (watch.py passes it), the default `"cloud"` reads
+`raw.match_events` in MotherDuck. In the cloud, `flight.dashboard_feed` writes the table
+`flight.robot_report` instead of the local JSON file.
+
+`telemetry/cloud.py` does the rest: `configure` (MotherDuck token at a hidden prompt, stored
+gitignored and as the Bruin Cloud `nursery` connection), `connect` (link the repository), `sync`
+(upload every recorded match and trigger a cloud run) and `status`. Each teammate needs their own
+`bruin cloud login --global`; the MotherDuck token belongs to whoever set it up.
+
+Any asset you add must work in both modes: never read a local file outside the `source == "local"`
+branch.
+
 ### Where a running game saves things
 
 `user://` is `~/Library/Application Support/Godot/app_userdata/This Side Up/` on a Mac,
