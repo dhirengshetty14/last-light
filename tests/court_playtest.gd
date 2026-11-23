@@ -97,7 +97,8 @@ func _physics_process(_dt: float) -> bool:
 	total_frames += 1
 	if not is_instance_valid(game) or not game.is_node_ready():
 		return false
-	if total_frames > 16000:
+	# A four-minute match is 14,400 frames, plus the walk-on and the whistle.
+	if total_frames > 24000:
 		push_error("Playtest timed out")
 		quit(1)
 		return false

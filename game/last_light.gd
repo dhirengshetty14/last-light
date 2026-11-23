@@ -143,6 +143,9 @@ var anchor_note := Label3D.new()
 var ring_glow: Array = []
 var court_glow := ShaderMaterial.new()
 var sky_step := -1.
+var floods: Array = []
+var drones: Array = []
+var flood_glass: StandardMaterial3D
 ## Five trails of sparks for dashes, and a sixth that follows the star.
 var wakes: Array = []
 ## Where each pilot is steering, so a pass can follow it.
@@ -173,7 +176,11 @@ var last_voice := -150
 var last_ledger := [-1, -1, -99, -99, -99]
 var command_edges := [{}, {}]
 var pad_edges := [{}, {}]
-var muted := false
+## The pause screen switches sound effects (with voices and the sea) and the music on and off
+## separately. The choice is kept for the next launch.
+var sound_on := true
+var music_on := true
+const AUDIO_SETTINGS := "user://audio.cfg"
 var random := RandomNumberGenerator.new()
 var recorder = Recorder.new()
 var training: Dictionary = {}
@@ -306,6 +313,7 @@ func _ready() -> void:
 			ambience.play()
 	voice.volume_db = -1
 	effects.volume_db = -10
+	audio_buses()
 	add_child(front)
 	add_child(comics)
 	add_child(screens)
@@ -521,6 +529,58 @@ func court() -> void:
 	add_child(anchor_note)
 	anchor_ring.hide()
 	anchor_note.hide()
+	# Four floodlights, dark at sunset and bright by night. The two at the back hang under
+	# hovering lamp drones that bob and turn over the corners of the court.
+	flood_glass = room.metal("floodlight glass", "#fff3d6", .2, .0, .15)
+	var shell = room.metal("drone shell", "#2a3340", .45, .55)
+	var trim = room.metal("drone trim", "#ff6fb5", .4, .2, 1.2)
+	var blade = room.metal("drone blade", "#dfe6ee", .4, .3)
+	for corner in [Vector2(-1, -1), Vector2(1, -1), Vector2(-1, 1), Vector2(1, 1)]:
+		var head := Vector3(corner.x * (Game.RING + 1.7), 7.6, corner.y * (Game.BOUNDS.y + 2.4))
+		if corner.y < 0:
+			head.z = -Game.BOUNDS.y - 3.4
+		var aim := Vector3(corner.x * 3.5, 0, corner.y * 1.2)
+		var drone := Node3D.new()
+		add_child(drone)
+		drone.position = head
+		var rotors: Array = []
+		if corner.y < 0:
+			room.ball(drone, Vector3.ZERO, Vector3(.62, .24, .62), shell)
+			room.torus(drone, Vector3(0, -.02, 0), .6, .66, trim)
+			for k in 4:
+				var a := TAU * k / 4. + PI * .25
+				var tip := Vector3(cos(a), .12, sin(a)) * 1.05
+				room.tube(drone, Vector3.ZERO, tip, .05, shell)
+				room.torus(drone, tip + Vector3(0, .05, 0), .42, .47, shell)
+				var rotor := Node3D.new()
+				drone.add_child(rotor)
+				rotor.position = tip + Vector3(0, .08, 0)
+				room.box(rotor, Vector3.ZERO, Vector3(.8, .015, .08), blade)
+				rotors.append(rotor)
+			# The lamp bank hangs under the body, tilted down at the court.
+			var bank := Node3D.new()
+			drone.add_child(bank)
+			bank.position = Vector3(0, -.36, 0)
+			bank.look_at_from_position(head + bank.position, aim)
+			room.box(bank, Vector3.ZERO, Vector3(1.1, .36, .2), shell)
+			for k in 3:
+				room.box(bank, Vector3((k - 1) * .34, 0, -.11), Vector3(.26, .26, .03), flood_glass)
+			room.ball(drone, Vector3(-.62, -.05, 0), Vector3.ONE * .06, room.metal("nav red", "#ff3b3b", .3, 0., 3.))
+			room.ball(drone, Vector3(.62, -.05, 0), Vector3.ONE * .06, room.metal("nav green", "#3bff7a", .3, 0., 3.))
+			for part in drone.find_children("*", "MeshInstance3D", true, false):
+				part.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		var lamp := SpotLight3D.new()
+		add_child(lamp)
+		lamp.position = head
+		lamp.look_at_from_position(head, aim)
+		drones.append({"node": drone, "home": head, "aim": aim, "lamp": lamp, "rotors": rotors, "seed": randf() * 20.})
+		lamp.spot_range = 30.
+		lamp.spot_angle = 52.
+		lamp.spot_attenuation = .7
+		lamp.light_color = Color("#fff1dc")
+		lamp.light_energy = 0.
+		lamp.shadow_enabled = false
+		floods.append(lamp)
 	# Each ring throws its own colour across its end of the court.
 	for side in 2:
 		var wash := OmniLight3D.new()
@@ -735,16 +795,35 @@ func set_dusk(amount: float) -> void:
 	star_lamp.light_energy = 4.2 * amount
 
 
+## The lamp drones bob and drift over their corners, rotors spinning, and their spotlights go
+## with them.
+func hover(dt: float) -> void:
+	for d in drones:
+		var t: float = harbor.seconds + d.seed
+		var node: Node3D = d.node
+		node.position = d.home + Vector3(.25 * sin(t * .7), .3 * sin(t * 1.1) + .12 * sin(t * 2.3), .2 * cos(t * .9))
+		node.rotation = Vector3(.06 * sin(t * 1.3), .18 * sin(t * .4), .06 * cos(t * 1.1))
+		for rotor in d.rotors:
+			rotor.rotation.y += dt * 38.
+		var lamp: SpotLight3D = d.lamp
+		lamp.look_at_from_position(node.position + Vector3(0, -.4, 0), d.aim)
+
+
 ## The scene's lights follow the sky: a warm low sun at kickoff, moonlight and court lamps by the
 ## whistle, and near darkness when the robots walk out.
 func light_scene() -> void:
 	var night: float = harbor.dusk
 	var cold: float = harbor.cold
 	var out: float = dusk
-	room.sun.light_energy = lerpf(1.35, .16, night) * (1. - .8 * out)
+	room.sun.light_energy = lerpf(1.35, .2, night) * (1. - .8 * out)
 	room.sun.light_color = Color("#ffb67a").lerp(Color("#9db4ff"), maxf(night, cold * .7))
-	room.fill.light_energy = lerpf(.55, .34, night) * (1. - .5 * out)
-	room.world_env.ambient_light_energy = lerpf(.7, .42, night) * (1. - .55 * out)
+	room.fill.light_energy = lerpf(1.25, .5, night) * (1. - .6 * out)
+	room.fill.light_color = Color("#ffe6cf").lerp(Color("#cfdcff"), night)
+	room.world_env.ambient_light_energy = lerpf(.95, .6, night) * (1. - .55 * out)
+	# The dock's floodlights come on as the sun goes, so a night match is lit like a stadium.
+	for lamp in floods:
+		lamp.light_energy = 2.6 * smoothstep(.22, .7, night) * (1. - .85 * out)
+	flood_glass.emission_energy_multiplier = .15 + 5. * smoothstep(.22, .7, night) * (1. - .85 * out)
 	room.world_env.fog_light_color = Color("#f0a27e").lerp(Color("#28305a"), night).lerp(
 		Color("#3a4f78"), cold * .6
 	)
@@ -825,6 +904,13 @@ func handle(cmd: String) -> void:
 			phase = "play"
 			command_edges = [{}, {}]
 			front.match_view()
+		"sound", "music":
+			if cmd == "sound":
+				sound_on = not sound_on
+			else:
+				music_on = not music_on
+			apply_audio()
+			front.pause_menu(sound_on, music_on, cmd)
 
 
 func connect_radio() -> void:
@@ -907,8 +993,8 @@ func start() -> void:
 			"kind": "header",
 			"run": run,
 			"seed": seed_value,
-			"game": "last-light-v9",
-			"court_version": 9,
+			"game": "last-light-v10",
+			"court_version": 10,
 			"social_learning": sim.social_learning,
 			"dock_relay": sim.relay_rules,
 			"moving_passes": sim.moving_passes,
@@ -1020,6 +1106,36 @@ func next_line() -> void:
 		)
 
 
+## Music on its own bus and everything else on another, so each can be switched off alone.
+func audio_buses() -> void:
+	for called in ["Music", "Sound"]:
+		if AudioServer.get_bus_index(called) < 0:
+			AudioServer.add_bus()
+			var n := AudioServer.bus_count - 1
+			AudioServer.set_bus_name(n, called)
+			AudioServer.set_bus_send(n, "Master")
+	music.bus = "Music"
+	for player in [ambience, voice, effects] + sfx_pool:
+		player.bus = "Sound"
+	if not test_session and not capture_session:
+		var saved := ConfigFile.new()
+		if saved.load(AUDIO_SETTINGS) == OK:
+			sound_on = bool(saved.get_value("audio", "sound", true))
+			music_on = bool(saved.get_value("audio", "music", true))
+	apply_audio()
+
+
+func apply_audio() -> void:
+	AudioServer.set_bus_mute(AudioServer.get_bus_index("Sound"), not sound_on)
+	AudioServer.set_bus_mute(AudioServer.get_bus_index("Music"), not music_on)
+	if test_session or capture_session:
+		return
+	var saved := ConfigFile.new()
+	saved.set_value("audio", "sound", sound_on)
+	saved.set_value("audio", "music", music_on)
+	saved.save(AUDIO_SETTINGS)
+
+
 func sound(key: String, louder: float = 0., pitch: float = 1.) -> void:
 	# One copy of a sound per frame, on the next free layer, so effects overlap without cutting off.
 	var frame := Engine.get_process_frames()
@@ -1058,8 +1174,13 @@ func _input(ev: InputEvent) -> void:
 		return
 	var k: int = ev.physical_keycode
 	if k == KEY_M:
-		muted = not muted
-		AudioServer.set_bus_mute(0, muted)
+		# M silences everything, or brings everything back.
+		var on := not (sound_on or music_on)
+		sound_on = on
+		music_on = on
+		apply_audio()
+		if phase == "pause":
+			front.pause_menu(sound_on, music_on)
 		return
 	if k == KEY_B:
 		room.life.reduced = not room.life.reduced
@@ -1085,7 +1206,7 @@ func _input(ev: InputEvent) -> void:
 				handle("resume")
 			"play":
 				phase = "pause"
-				front.pause_menu()
+				front.pause_menu(sound_on, music_on)
 		get_viewport().set_input_as_handled()
 		return
 	if phase in ["story", "prologue"] and (k == KEY_SPACE or k == KEY_ENTER):
@@ -1428,9 +1549,9 @@ func update_hud() -> void:
 	if front.ledger.visible and (sim.tick % 8 == 0 or front.ledger.text.is_empty()):
 		front.show_plans(sim)
 	var left := ceili((sim.end_tick - sim.tick) / 60.)
-	var target := "FIRST TO THREE"
-	if free:
-		target = "FIRST TO TWO" if sim.union else "MOST GOALS WINS"
+	var target := "MOST GOALS WINS"
+	if sim.win_goals < 99:
+		target = "FIRST TO TWO" if sim.win_goals == 2 else "FIRST TO %d" % sim.win_goals
 	front.set_score(sim.goals, side_names(), "%d:%02d" % [left / 60, left % 60], target)
 	var prompt := "Loose star   ·   Run to catch it"
 	if sim.flight == "pass" and sim.target >= 0:
@@ -1490,7 +1611,9 @@ func _process(dt: float) -> void:
 	var night := .08
 	if phase in ["play", "pause", "whistle", "end"]:
 		night = .08 + .7 * clampf(float(sim.tick) / maxf(1., float(sim.end_tick)), 0., 1.)
+	harbor.focus = star.position
 	harbor.animate(dt, night, float(room.life.storm), dusk, room.life.reduced)
+	hover(dt * (.3 if room.life.reduced else 1.))
 	light_scene()
 	if phase in ["walk_on", "play", "whistle"]:
 		next_line()

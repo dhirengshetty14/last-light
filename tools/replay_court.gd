@@ -38,6 +38,9 @@ func verify(path: String) -> bool:
 	if head.get("court_version", 5) >= 6 and head.get("court_version", 5) < 9:
 		# Versions 6 to 8 were played on the earlier, smaller court.
 		s.call("old_court")
+	if head.get("court_version", 5) == 9:
+		# Version 9 played two or three minutes, and Rivals and Open Crews ended at three goals.
+		s.set("long_match", false)
 	if head.get("free_agents", false):
 		# Dynamic calls: the frozen version 5 court has neither the third argument nor a draft.
 		s.call("setup", int(head.seed), false, true)

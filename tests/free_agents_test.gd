@@ -288,7 +288,12 @@ func check_matches() -> void:
 	var honest: Dictionary = outcomes["[true, true]"]
 	var liars: Dictionary = outcomes["[false, false]"]
 	var mixed: Dictionary = outcomes["[true, false]"]
-	check(honest.unions <= 1, "two captains who keep their word almost never face a union")
+	# A four-minute match leaves room for an honest captain to run out the clock on a promise now
+	# and then, so a walkout can still happen, but far less often than for captains who cheat.
+	check(
+		honest.unions <= 3 and honest.unions <= liars.unions - 8,
+		"two captains who keep their word rarely face a union"
+	)
 	check(honest.kept[0] + honest.kept[1] > 24, "honest captains complete deals in real play")
 	check(
 		honest.kept[0] + honest.kept[1] > 2 * (honest.broken[0] + honest.broken[1]),

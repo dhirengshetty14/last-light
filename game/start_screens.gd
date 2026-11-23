@@ -40,7 +40,7 @@ const MODES = [
 		"band": "RIVAL CAPTAINS",
 		"title": "FREE AGENTS",
 		"who": "Nell against Rafi. The three robots pick sides.",
-		"meta": "3 MINUTES   ·   MOST GOALS WINS",
+		"meta": "4 MINUTES   ·   MOST GOALS WINS",
 		"accent": Color("#ffc056"),
 		"points":
 		[
@@ -54,7 +54,7 @@ const MODES = [
 		"band": "TWO AGAINST THREE",
 		"title": "RIVALS",
 		"who": "Nell and Rafi together against Pip, Morrow and Zip.",
-		"meta": "2 MINUTES   ·   FIRST TO THREE",
+		"meta": "4 MINUTES   ·   MOST GOALS WINS",
 		"accent": Color("#56d9ee"),
 		"points":
 		[
@@ -68,7 +68,7 @@ const MODES = [
 		"band": "RECRUIT A ROBOT",
 		"title": "OPEN CREWS",
 		"who": "You start two against three. Win robots over mid-match.",
-		"meta": "2 MINUTES   ·   FIRST TO THREE",
+		"meta": "4 MINUTES   ·   MOST GOALS WINS",
 		"accent": Color("#9be27c"),
 		"points":
 		[
@@ -106,10 +106,10 @@ uniform float top = 0.35;
 uniform float bottom = 0.6;
 void fragment() {
 	vec2 c = UV - 0.5;
-	float v = smoothstep(0.38, 0.98, length(c * vec2(1.05, 1.35)));
-	float low = smoothstep(0.5, 1.0, UV.y);
-	float high = 1.0 - smoothstep(0.0, 0.32, UV.y);
-	COLOR = vec4(0.008, 0.016, 0.032, clamp(v * 0.55 + low * bottom + high * top, 0.0, 0.94) * amount);
+	float v = smoothstep(0.5, 1.05, length(c * vec2(1.0, 1.3)));
+	float low = smoothstep(0.62, 1.0, UV.y);
+	float high = 1.0 - smoothstep(0.0, 0.26, UV.y);
+	COLOR = vec4(0.012, 0.02, 0.045, clamp(v * 0.22 + low * bottom + high * top, 0.0, 0.9) * amount);
 }
 """
 const BEAM := """shader_type canvas_item;
@@ -286,6 +286,36 @@ func words(text: String, face: Font, size_px: int, tint: Color) -> Label:
 	return l
 
 
+## Words that sit straight on the harbor get a dark edge and a soft shadow, so they read against
+## a bright sky without the scene behind them having to be darkened.
+func edged(l: Label) -> Label:
+	var px: int = l.get_theme_font_size("font_size")
+	l.add_theme_constant_override("outline_size", clampi(px / 5, 3, 10))
+	l.add_theme_color_override("font_outline_color", Color(0.05, 0.06, 0.1, 0.94))
+	l.add_theme_color_override("font_shadow_color", Color(0.02, 0.03, 0.06, 0.5))
+	l.add_theme_constant_override("shadow_offset_x", 0)
+	l.add_theme_constant_override("shadow_offset_y", 2)
+	l.add_theme_constant_override("shadow_outline_size", clampi(px / 3, 7, 16))
+	return l
+
+
+## Small print gets a dark plate just its own size, placed in the middle of the screen at `y`
+## (or left where it is when `y` is negative).
+func plated(l: Label, y := -1.) -> Label:
+	var plate := StyleBoxFlat.new()
+	plate.bg_color = Color(0.03, 0.04, 0.07, 0.64)
+	plate.set_corner_radius_all(10)
+	plate.content_margin_left = 14
+	plate.content_margin_right = 14
+	plate.content_margin_top = 4
+	plate.content_margin_bottom = 4
+	l.add_theme_stylebox_override("normal", plate)
+	l.size = l.get_minimum_size()
+	if y >= 0.:
+		l.position = Vector2((area().x - l.size.x) * .5, y)
+	return l
+
+
 func clear() -> void:
 	if reel and reel.is_valid():
 		reel.kill()
@@ -376,10 +406,11 @@ func action(parent: Control, at: Vector2, width: float, text: String, cmd: Strin
 
 
 func heading(kicker: String, title: String) -> void:
-	var top := words(kicker, MONO, 15, AMBER)
+	var top := words(kicker, MONO, 15, Color("#ffd98a"))
 	page.add_child(top)
-	top.position = Vector2(64, 38)
-	var big := words(title, DISPLAY, 52, PAPER)
+	plated(top)
+	top.position = Vector2(58, 26)
+	var big := edged(words(title, DISPLAY, 52, PAPER))
 	page.add_child(big)
 	big.position = Vector2(62, 58)
 	arrive(top, 0.)
@@ -394,21 +425,19 @@ func title() -> void:
 	screen = "title"
 	logo_done = false
 	lit_letters = 0
-	shade_look.set_shader_parameter("top", .2)
-	shade_look.set_shader_parameter("bottom", .75)
+	shade_look.set_shader_parameter("top", 0.)
+	shade_look.set_shader_parameter("bottom", .42)
 	var size := area()
-	var kicker := words("SATURN   ·   LAMPLIGHT HARBOR   ·   THE LAST NIGHT OF SUMMER", MONO, 15, AMBER)
-	kicker.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var kicker := words("SATURN   ·   LAMPLIGHT HARBOR   ·   THE LAST NIGHT OF SUMMER", MONO, 15, Color("#fff0c9"))
 	page.add_child(kicker)
-	kicker.position = Vector2(0, 100)
-	kicker.size = Vector2(size.x, 24)
+	plated(kicker, 96)
 	kicker.modulate.a = 0.
 	var halo := ColorRect.new()
 	halo.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var dark := ShaderMaterial.new()
 	dark.shader = Shader.new()
 	# A band of shadow across the screen behind the name, like the title card of a film.
-	dark.shader.code = "shader_type canvas_item; void fragment(){ float across = 1.0 - smoothstep(0.30, 0.5, abs(UV.y - 0.5)); float wide = 1.0 - smoothstep(0.3, 0.5, abs(UV.x - 0.5)) * 0.6; COLOR = vec4(0.012, 0.018, 0.035, 0.72 * across * wide); }"
+	dark.shader.code = "shader_type canvas_item; void fragment(){ vec2 c = (UV - 0.5) * vec2(1.0, 1.9); COLOR = vec4(0.03, 0.03, 0.08, 0.3 * (1.0 - smoothstep(0.1, 0.5, length(c)))); }"
 	halo.material = dark
 	page.add_child(halo)
 	halo.position = Vector2(0, 96)
@@ -442,29 +471,25 @@ func title() -> void:
 	page.add_child(rule)
 	rule.size = Vector2(0, 3)
 	rule.position = Vector2(size.x * .5, 352)
-	var line := words("Two humans. Three robots. One light to win.", BODY, 30, PAPER)
+	var line := edged(words("Two humans. Three robots. One light to win.", BODY, 30, Color("#fffaf0")))
 	line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	page.add_child(line)
 	line.position = Vector2(0, 372)
 	line.size = Vector2(size.x, 40)
 	line.modulate.a = 0.
-	var small := words("A party game for two players on one keyboard", MONO, 14, DIM)
-	small.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var small := words("A party game for two players on one keyboard", MONO, 14, PAPER)
 	page.add_child(small)
-	small.position = Vector2(0, 418)
-	small.size = Vector2(size.x, 22)
+	plated(small, 420)
 	small.modulate.a = 0.
-	prompt = words("PRESS ANY KEY", DISPLAY, 30, AMBER)
+	prompt = edged(words("PRESS ANY KEY", DISPLAY, 34, AMBER))
 	prompt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	page.add_child(prompt)
 	prompt.position = Vector2(0, size.y - 118)
 	prompt.size = Vector2(size.x, 40)
 	prompt.modulate.a = 0.
-	var skip := words("ESC   skip the story and go straight to the controls", MONO, 13, DIM)
-	skip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var skip := words("ESC   skip the story and go straight to the controls", MONO, 13, PAPER)
 	page.add_child(skip)
-	skip.position = Vector2(0, size.y - 74)
-	skip.size = Vector2(size.x, 22)
+	plated(skip, size.y - 76)
 	skip.modulate.a = 0.
 	reel = create_tween()
 	reel.tween_property(halo, "modulate:a", 1., .45)
@@ -527,8 +552,8 @@ func title_key() -> bool:
 func controls(pilots: Array) -> void:
 	clear()
 	screen = "controls"
-	shade_look.set_shader_parameter("top", .55)
-	shade_look.set_shader_parameter("bottom", .8)
+	shade_look.set_shader_parameter("top", .3)
+	shade_look.set_shader_parameter("bottom", .5)
 	heading("HOW TO PLAY   ·   TWO PLAYERS, ONE KEYBOARD", "Move, and two buttons. That's all.")
 	var size := area()
 	var gap := 40.
@@ -588,16 +613,12 @@ func controls(pilots: Array) -> void:
 		"In a match, the bar at the bottom of the screen always says what your two buttons will do right now.",
 		BODY, 19, PAPER
 	)
-	tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	page.add_child(tip)
-	tip.position = Vector2(0, 606)
-	tip.size = Vector2(size.x, 28)
+	plated(tip, 600)
 	arrive(tip, .3)
-	var pad_line := words("Gamepads work too: left stick to move, A is GO, X is SHARE.", MONO, 13, DIM)
-	pad_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var pad_line := words("Gamepads work too: left stick to move, A is GO, X is SHARE.", MONO, 13, PAPER)
 	page.add_child(pad_line)
-	pad_line.position = Vector2(0, 638)
-	pad_line.size = Vector2(size.x, 22)
+	plated(pad_line, 640)
 	arrive(pad_line, .34)
 	var bar := Control.new()
 	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -630,8 +651,8 @@ func key_row(card: Control, y: float, what: String, meaning: String, tint: Color
 func modes() -> void:
 	clear()
 	screen = "modes"
-	shade_look.set_shader_parameter("top", .55)
-	shade_look.set_shader_parameter("bottom", .8)
+	shade_look.set_shader_parameter("top", .3)
+	shade_look.set_shader_parameter("bottom", .5)
 	heading("CHOOSE YOUR GAME", "Three ways to play.")
 	var size := area()
 	var gap := 30.
@@ -694,11 +715,10 @@ func modes() -> void:
 	page.add_child(bar)
 	action(bar, Vector2(64, 668), 250, "←   HOW TO PLAY", "controls", AMBER, false)
 	action(bar, Vector2(330, 668), 250, "MEET THE CREW AGAIN", "story", AMBER, false)
-	var hint := words("←  →   choose          ENTER   play          ESC   back", MONO, 14, DIM)
-	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	var hint := words("←  →   choose          ENTER   play          ESC   back", MONO, 14, PAPER)
 	bar.add_child(hint)
-	hint.position = Vector2(size.x - 664, 684)
-	hint.size = Vector2(600, 24)
+	plated(hint)
+	hint.position = Vector2(size.x - 64 - hint.size.x, 680)
 	arrive(bar, .35, 14.)
 	first.grab_focus.call_deferred()
 

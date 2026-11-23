@@ -120,10 +120,10 @@ func build(arena: bool = false) -> void:
 	sky.process_mode = Sky.PROCESS_MODE_INCREMENTAL
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	env.ambient_light_energy = .7
+	env.ambient_light_energy = .95
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.tonemap_mode = Environment.TONE_MAPPER_ACES
-	env.tonemap_exposure = .92
+	env.tonemap_exposure = 1.06
 	# Bright things bleed light, like a night game under lamps.
 	# Only truly bright things bloom: lamps, the star, neon. The sky stays crisp.
 	env.glow_enabled = true
@@ -166,10 +166,12 @@ func build(arena: bool = false) -> void:
 	sun.shadow_blur = 1.4
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
 	sun.directional_shadow_max_distance = 48
+	# The sun is behind the far rail, so everyone would face us in shadow. A strong, soft light
+	# from the camera side shows their faces, the way a film crew lights a sunset scene.
 	add_child(fill)
-	fill.rotation_degrees = Vector3(-34, 8, 0)
-	fill.light_color = Color("#9fb6ff")
-	fill.light_energy = .55
+	fill.rotation_degrees = Vector3(-32, 14, 0)
+	fill.light_color = Color("#ffe6cf")
+	fill.light_energy = 1.25
 	fill.shadow_enabled = false
 	var iron := metal("iron", "#30404b", .52, .48)
 	var dark := metal("dark", "#202d39", .55, .52)
@@ -205,15 +207,19 @@ func build(arena: bool = false) -> void:
 			ticks.append(dot)
 		markers.append(ticks)
 		placard(self, ["DECK", "CEILING", "HATCH"][z], p + Vector3(0, .19, 1.11), PAD_TINT[z], 32)
-	# Tilted structural ribs frame a continuous view of space.
-	for x in [-8.2, -5.9, 5.9, 8.2]:
-		tube(self, Vector3(x, -.12, -2.92), Vector3(x * .90, 4.75, -3.38), .14, iron)
-		tube(self, Vector3(x * .90, 4.75, -3.38), Vector3(x * .76, 5.95, -1.95), .13, brass)
-	for h in [.34, 4.78]:
-		tube(self, Vector3(-8, h, -3.25), Vector3(8, h, -3.25), .079, iron)
+	# Tilted structural ribs frame a continuous view of space. The open-air arena has no frame:
+	# nothing stands between the court and the sky.
+	if not arena:
+		for x in [-8.2, -5.9, 5.9, 8.2]:
+			tube(self, Vector3(x, -.12, -2.92), Vector3(x * .90, 4.75, -3.38), .14, iron)
+			tube(self, Vector3(x * .90, 4.75, -3.38), Vector3(x * .76, 5.95, -1.95), .13, brass)
+		for h in [.34, 4.78]:
+			tube(self, Vector3(-8, h, -3.25), Vector3(8, h, -3.25), .079, iron)
 	for x in [-6.65, 6.65]:
 		crate(Vector3(x, .0, -1.91), Vector3(1.07, .63, .85))
 		crate(Vector3(x + .10, .64, -1.89), Vector3(.80, .49, .68))
+		if arena:
+			continue
 		tube(self, Vector3(x, 2.67, -2.98), Vector3(x * .90, 2.67, -3.25), .042, iron)
 		box(self, Vector3(x, 2.65, -2.93), Vector3(.25, .67, .15), iron)
 		box(self, Vector3(x, 2.65, -2.82), Vector3(.105, .50, .045), tungsten)
@@ -239,15 +245,17 @@ func build(arena: bool = false) -> void:
 	for x in [-6.8, -4.9, -2.2, 2.2, 4.9, 6.8]:
 		box(self, Vector3(x, -.20, 3.49), Vector3(.09, .25, .10), iron)
 	var hook_x: float = PADS[0].x
-	tube(self, Vector3(-7.2, 3.75, -.7), Vector3(-2.7, 3.75, -.7), .079, iron)
-	tube(self, Vector3(-6.70, 3.72, -.7), Vector3(-6.70, 2.60, -2.85), .055, brass)
-	box(self, Vector3(hook_x, 3.64, -.69), Vector3(.40, .29, .24), brass)
+	if not arena:
+		# The winch over the nursery pads and the gantry over the middle of the deck.
+		tube(self, Vector3(-7.2, 3.75, -.7), Vector3(-2.7, 3.75, -.7), .079, iron)
+		tube(self, Vector3(-6.70, 3.72, -.7), Vector3(-6.70, 2.60, -2.85), .055, brass)
+		box(self, Vector3(hook_x, 3.64, -.69), Vector3(.40, .29, .24), brass)
+		for x in [-1.15, 1.15]:
+			tube(self, Vector3(x, .11, -2.42), Vector3(x, 2.83, -2.42), .057, brass)
+			tube(self, Vector3(x, 2.83, -2.42), Vector3(x * .54, 3.36, -2.41), .055, iron)
+		tube(self, Vector3(-.64, 3.36, -2.41), Vector3(.64, 3.36, -2.41), .038, teal)
 	for s in [-1, 1]:
 		winch_cables.append(tube(self, Vector3.ZERO, Vector3.UP, .012, iron))
-	for x in [-1.15, 1.15]:
-		tube(self, Vector3(x, .11, -2.42), Vector3(x, 2.83, -2.42), .057, brass)
-		tube(self, Vector3(x, 2.83, -2.42), Vector3(x * .54, 3.36, -2.41), .055, iron)
-	tube(self, Vector3(-.64, 3.36, -2.41), Vector3(.64, 3.36, -2.41), .038, teal)
 	batch_fixed_dock()
 	window_plate()
 	if arena:

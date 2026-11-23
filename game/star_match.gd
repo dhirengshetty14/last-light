@@ -122,6 +122,10 @@ var bounds: Vector2 = BOUNDS
 var spread := Vector2(RING / OLD_RING, BOUNDS.y / OLD_BOUNDS.y)
 ## The larger court also plays longer: three minutes of Free Agents, two of the other modes.
 var enlarged := true
+## Court version 10: every mode is a four-minute match and the most goals wins. Earlier courts
+## played two or three minutes, and Rivals and Open Crews ended at three goals.
+const MATCH_SECONDS := 240
+var long_match := true
 ## Court version 8. Each robot weighs how its own social choices turned out before: which captain
 ## to sign with, what to do about a broken promise, an offer or new terms, and how to vote. With
 ## this off every one of those follows its written rule, as in court 7.
@@ -140,11 +144,14 @@ func setup(seed_value: int, crews: bool, free: bool = false) -> void:
 	pos = lineup()
 	destinations = pos.duplicate()
 	end_tick = 60 * 120 if enlarged else END
+	if long_match:
+		win_goals = 99
+		end_tick = 60 * MATCH_SECONDS
 	if free:
 		free_agents = true
 		# A timed match: the captains' game needs room for promises to be made, kept and broken.
 		win_goals = 99
-		end_tick = 60 * (180 if enlarged else 120)
+		end_tick = 60 * (MATCH_SECONDS if long_match else (180 if enlarged else 120))
 		# As rivals the captains run level. Nell keeps the longer dash, Rafi the wider catch.
 		speed[0] = 4.2
 		speed[1] = 4.2
@@ -167,6 +174,7 @@ func old_court() -> void:
 	bounds = OLD_BOUNDS
 	spread = Vector2.ONE
 	enlarged = false
+	long_match = false
 
 
 func lineup() -> Array:

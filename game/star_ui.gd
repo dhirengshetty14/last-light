@@ -27,7 +27,7 @@ func _ready() -> void:
 	hero.hide()
 	full(match_hud, self)
 	match_hud.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	shade(match_hud, "story")
+	shade(match_hud, "match")
 	var board := Panel.new()
 	board.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	match_hud.add_child(board)
@@ -55,7 +55,7 @@ func _ready() -> void:
 	match_clock.custom_minimum_size.x = 99
 	match_clock.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	limit_label = place(board, 177, 37, 14, PALE)
-	limit_label.text = "FIRST TO THREE"
+	limit_label.text = "MOST GOALS WINS"
 	limit_label.custom_minimum_size.x = 132
 	limit_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var dash_panel := PanelContainer.new()
@@ -276,7 +276,7 @@ func briefing(mode: String, names: Array) -> void:
 			"Keep your word",
 			mode,
 			(
-				"Nell attacks the gold ring on the right. Rafi attacks the blue ring on the left. Most goals in two minutes wins. Every robot signs for a promise: Pip wants the next shot, Zip wants passes, Morrow wants a shot that comes off a pass. A promise only runs down while your crew holds the star. Break one and that robot walks out. If both captains break one, the robots vote on playing for themselves.\nTwo buttons each. P1 %s  ·  WASD to move, SPACE to shoot or dash, F to pass, pay a promise or make an offer.     P2 %s  ·  ARROWS, ENTER and slash do the same. The bars at the bottom say what each button will do. The ring under a player is their crew's colour. The turning dashed ring is Morrow's slow zone."
+				"Nell attacks the gold ring on the right. Rafi attacks the blue ring on the left. Most goals in four minutes wins. Every robot signs for a promise: Pip wants the next shot, Zip wants passes, Morrow wants a shot that comes off a pass. A promise only runs down while your crew holds the star. Break one and that robot walks out. If both captains break one, the robots vote on playing for themselves.\nTwo buttons each. P1 %s  ·  WASD to move, SPACE to shoot or dash, F to pass, pay a promise or make an offer.     P2 %s  ·  ARROWS, ENTER and slash do the same. The bars at the bottom say what each button will do. The ring under a player is their crew's colour. The turning dashed ring is Morrow's slow zone."
 				% names
 			),
 			{"play": "Take the court", "pilots": "Change pilots", "select": "Change mode"}
@@ -498,10 +498,17 @@ func results(
 	final_card.show()
 
 
-func pause_menu() -> void:
+func pause_menu(sound_on := true, music_on := true, keep := "") -> void:
+	focus_on = keep
 	menu(
 		"Time out",
 		"LAST LIGHT",
-		"Pick up where you left off, or take a new crew onto the court.",
-		{"resume": "Resume match", "select": "Change mode"}
+		"Pick up where you left off, or take a new crew onto the court. M switches all audio off and on.",
+		{
+			"resume": "Resume match",
+			"sound": "Sound   ON" if sound_on else "Sound   OFF",
+			"music": "Music   ON" if music_on else "Music   OFF",
+			"select": "Change mode"
+		}
 	)
+	focus_on = ""

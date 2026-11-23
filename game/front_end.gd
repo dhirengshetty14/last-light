@@ -12,6 +12,8 @@ var where_label: Label
 var hero: TextureRect
 var page := "title"
 var first: Button
+## The command whose button should keep the focus when a menu is redrawn, such as a switch.
+var focus_on := ""
 var active := false
 var title_paint := ShaderMaterial.new()
 var story_root: Control
@@ -43,6 +45,9 @@ func shade(parent: Control, mode: String) -> void:
 	var s := Shader.new()
 	if mode == "title":
 		s.code = "shader_type canvas_item; void fragment(){float x=1.-smoothstep(0.,.66,UV.x);float y=smoothstep(.54,1.,UV.y);float top=1.-smoothstep(0.,.43,UV.y);COLOR=vec4(.024,.049,.064,min(.96,.15+.65*x*max(y,top)+.60*y));}"
+	elif mode == "match":
+		# During play only the strip behind the button bar is shaded, so the court stays bright.
+		s.code = "shader_type canvas_item; void fragment(){float b=smoothstep(.8,.97,UV.y);float t=1.-smoothstep(0.,.09,UV.y);COLOR=vec4(.014,.025,.034,max(b*.74,t*.3));}"
 	else:
 		s.code = "shader_type canvas_item; void fragment(){float b=smoothstep(.67,.985,UV.y);float t=1.-smoothstep(0.,.13,UV.y);COLOR=vec4(.014,.025,.034,max(b*.94,t*.74));}"
 	var m := ShaderMaterial.new()
@@ -128,6 +133,7 @@ func set_controls(items: Dictionary) -> void:
 	row.add_theme_constant_override("separation", 12)
 	nav.add_child(row)
 	var i := 0
+	var keep: Button = null
 	for command in items:
 		var b := Button.new()
 		b.text = items[command]
@@ -158,8 +164,12 @@ func set_controls(items: Dictionary) -> void:
 		row.add_child(b)
 		if i == 0:
 			first = b
+		if command == focus_on:
+			keep = b
 		i += 1
-	if first and active:
+	if keep and active:
+		keep.grab_focus()
+	elif first and active:
 		first.grab_focus()
 
 
