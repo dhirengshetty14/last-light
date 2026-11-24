@@ -5,7 +5,8 @@ project. It covers what we are building, how the game and its robots work, how t
 its verifiers are built, how to run and test everything, the rules that keep it working, and where it
 is heading. When you change something important, update this file in the same commit.
 
-The player-facing description, with every rule and number, is in [README.md](README.md). This file is
+The player-facing overview is in [README.md](README.md), and every rule and number is in
+[docs/TECHNICAL.md](docs/TECHNICAL.md). This file is
 the map behind it.
 
 ---
@@ -682,7 +683,7 @@ robot chose, so they taught it nothing. Bruin's failure tables are what showed t
 - `main` is the shared branch. Make a branch for each change and open a pull request.
 - Write commit messages as one plain sentence that describes the change for the player or the
   developer.
-- Update `README.md` and this file when behaviour changes.
+- Update `README.md`, `docs/TECHNICAL.md` and this file when behaviour changes.
 - Never commit `.godot/`, `exports/`, `telemetry/local/`, anything from `user://`, or secrets.
 - If you change scripts that the Harbor image copies (see `tasks/Dockerfile`), rebuild it with
   `docker build -t last-light-harbor:4.7.2 -f tasks/Dockerfile .` and run
