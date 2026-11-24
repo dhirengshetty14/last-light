@@ -1,5 +1,29 @@
 # Last Light
 
+![The title screen: Nell, Pip, Morrow, Zip and Rafi on the harbor court at sunset](docs/title.jpg)
+
+**A 3D party game for two people on one keyboard, with three AI robots that ally, trade, compete and betray.** Built in Godot 4.7.2 for the Multiplayer AI hackathon, Track 2: Co-op Multiplayer.
+
+At sundown on Saturn's harbor, Nell and Rafi (the two players) and Pip, Morrow and Zip (the robots) play four-minute matches with a glowing star: throw it through the other crew's ring. Each player has two buttons: GO (shoot, dash, steal) and SHARE (pass, pay a promise, make an offer).
+
+- **Three modes.** *Rivals*: both players against the three robots. *Open Crews*: win robots over to your side during the match. *Free Agents*: each player captains a crew, robots sign with whoever promises them something, walk out when a promise is broken, and can vote to form their own crew.
+- **Robots that learn while you play.** Every robot decision is checked by code and scored from 0 to 1. The score changes that robot's next choice, and its memory carries into the next match. Each robot learns on its own.
+- **Robots that talk to each other.** A robot robbed twice warns its crewmates, and one that changes a habit passes on the tip. The messages travel through a BAND room, and a crewmate acts on one only once BAND has delivered it.
+- **World events caused by the robots alone.** A goal from a robot-only passing chain sends a glowing whale across the sky and widens both rings. In Free Agents, a robot walkout turns off the harbor lights.
+
+**Sponsor tools in the loop**
+
+- **Bruin.** While you play, every match is loaded into DuckDB every 2 seconds (22 tables, 116 data checks), and a live report shows where each robot is failing. The same pipeline runs in Bruin Cloud on MotherDuck. Bruin's agent coaches the robots before a match, and in Rivals the Bruin Analyst tells each robot its crewmates' best moves every 3 seconds.
+- **BAND.** Pip, Morrow and Zip are three BAND agents. Their warnings and tips go through a shared room, along with their lessons and votes.
+- **Runware.** At the final whistle, FLUX.1 [schnell] draws the match's big moment as a comic panel for the final screen.
+- **Gemini** (optional). A robot that keeps failing asks Gemini for a playbook, and weighs it as advice.
+
+**Play it.** On a Mac with Godot 4.7.2 installed, double-click `Play Last Light.command`; it also starts the live robot report at http://127.0.0.1:8960/. Anywhere else: `godot --path .`
+
+![Zip, robbed twice by Rafi, warns Pip and Morrow on the harbor radio](docs/robots-talk.jpg)
+
+---
+
 At sundown on Saturn's Lamplight Harbor, five dockhands play for the right to switch on the beacon. Nell and Rafi attack the gold ring on the **right**. Pip, Morrow and Zip start in blue. Run the light into range, pass to make space, or dash through a rival to take possession. Every match lasts four minutes and the most goals wins. A tied score shares the light.
 
 Stills from Free Agents on the current court: [the opening comic page](docs/free-agents-opening.jpg), [a broken promise](docs/free-agents-promises.jpg) and [the robots' walkout](docs/free-agents-union.jpg).
