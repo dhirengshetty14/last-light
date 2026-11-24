@@ -57,6 +57,7 @@ fi
 
 check "court rules and robots" "$GODOT" --headless --path . -s tests/star_match_test.gd
 check "free agents (promises, union)" "$GODOT" --headless --path . -s tests/free_agents_test.gd
+check "bruin analyst (advice, replay)" "$GODOT" --headless --path . -s tests/bruin_analyst_test.gd
 check "gemini turns (no network)" "$GODOT" --headless --path . -s tests/gemini_court.gd
 check "gemini host (no network)" python3 tests/radio_host_test.py
 check "band bridge (no network)" python3 tests/band_bridge_test.py

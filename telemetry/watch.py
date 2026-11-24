@@ -10,6 +10,8 @@ import time
 from contextlib import contextmanager
 from pathlib import Path
 
+import analyst
+
 ROOT = Path(__file__).resolve().parents[1]
 LOCAL = ROOT / "telemetry" / "local"
 
@@ -205,6 +207,18 @@ def main():
                             config,
                             default_flights().parent / "verified-responses.json",
                         )
+                    # The Bruin Analyst: advice the game reads during the match, and its page.
+                    # Explicit inputs and other folders (tests, fixtures) never write into the
+                    # player's data.
+                    # Both read the file flight.analyst_feed has just written; neither runs a query.
+                    found = analyst.load(LOCAL / "analyst.json")
+                    analyst.export_analyst(
+                        found,
+                        LOCAL / "bruin-analyst.json"
+                        if args.inputs or args.flights
+                        else default_flights().parent / "bruin-analyst.json",
+                    )
+                    analyst.write_dashboard(found, LOCAL / "analyst.html")
                     previous = stamp
             except (OSError, ValueError, subprocess.CalledProcessError) as error:
                 if not args.watch:

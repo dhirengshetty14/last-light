@@ -79,6 +79,8 @@ func verify(path: String) -> bool:
 		s.call("set_bruin_coach", head.bruin_coach)
 	# Whether robots' warnings and tips went through the BAND room before the listeners acted.
 	s.set("band_relay", head.get("band_relay", false))
+	# Whether the Bruin Analyst was on: decisions then record their situation and weigh its advice.
+	s.set("bruin_analyst", head.get("bruin_analyst", false))
 	var inputs: Dictionary = {}
 	var expected: Array = []
 	var remote: Dictionary = {}
@@ -97,7 +99,7 @@ func verify(path: String) -> bool:
 			sealed = true
 			break
 		expected.append(event)
-		if event.kind == "model_transport":
+		if event.kind == "model_transport" or event.kind == "analyst_advice":
 			var stream: Dictionary = closing if event.after_step else remote
 			var t := int(event.tick)
 			if not stream.has(t):

@@ -63,6 +63,13 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply(200, PAGE.read_bytes(), "text/html; charset=utf-8")
         if path == "/sponsors.json":
             return self.reply(200, json.dumps(sponsor_state()).encode(), "application/json")
+        if path == "/analyst":
+            # The Bruin Analyst's page, rewritten by the watcher after every pipeline run.
+            page = LOCAL / "analyst.html"
+            if page.is_file():
+                return self.reply(200, page.read_bytes(), "text/html; charset=utf-8")
+            waiting = b"<!doctype html><meta http-equiv=refresh content=3><p>No robot reactions scored yet. Play a match.</p>"
+            return self.reply(200, waiting, "text/html; charset=utf-8")
         if path.startswith("/panels/") and path.endswith(".png"):
             picture = PANELS / Path(path).name
             if picture.is_file():

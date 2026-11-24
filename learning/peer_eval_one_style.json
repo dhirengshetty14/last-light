@@ -1,0 +1,139 @@
+{
+ "what": "Robots' reaction score 0 to 1 (flight.reactions): peer = live Bruin advice from teammates every 3 s, solo = none. Same seeds and pilots.",
+ "series": 4,
+ "arms": {
+  "solo": {
+   "reaction_by_match": {
+    "1": [
+     0.5615,
+     0.0068,
+     4
+    ],
+    "2": [
+     0.5547,
+     0.0098,
+     4
+    ],
+    "3": [
+     0.5643,
+     0.0061,
+     4
+    ]
+   },
+   "first_vs_second_half": {
+    "first": [
+     0.5547,
+     0.0077,
+     12
+    ],
+    "second": [
+     0.5671,
+     0.0103,
+     12
+    ]
+   },
+   "by_kind": {
+    "ball": [
+     0.426,
+     0.0076,
+     12
+    ],
+    "human": [
+     0.925,
+     0.0094,
+     12
+    ],
+    "teammate": [
+     0.6116,
+     0.0111,
+     12
+    ],
+    "wall": [
+     0.7964,
+     0.0997,
+     5
+    ]
+   },
+   "decisions_with_advice": 0.0,
+   "goals_humans_robots": [
+    17.92,
+    17.0
+   ]
+  },
+  "peer": {
+   "reaction_by_match": {
+    "1": [
+     0.5417,
+     0.0099,
+     4
+    ],
+    "2": [
+     0.5465,
+     0.0109,
+     4
+    ],
+    "3": [
+     0.5528,
+     0.0051,
+     4
+    ]
+   },
+   "first_vs_second_half": {
+    "first": [
+     0.5448,
+     0.0087,
+     12
+    ],
+    "second": [
+     0.5494,
+     0.0076,
+     12
+    ]
+   },
+   "by_kind": {
+    "ball": [
+     0.417,
+     0.0093,
+     12
+    ],
+    "human": [
+     0.8935,
+     0.0165,
+     12
+    ],
+    "teammate": [
+     0.6099,
+     0.0097,
+     12
+    ],
+    "wall": [
+     0.717,
+     0.0687,
+     9
+    ]
+   },
+   "decisions_with_advice": 0.6122,
+   "goals_humans_robots": [
+    18.75,
+    15.67
+   ]
+  }
+ },
+ "peer_minus_solo_by_match": {
+  "1": [
+   -0.0198,
+   0.0077,
+   4
+  ],
+  "2": [
+   -0.0082,
+   0.005,
+   4
+  ],
+  "3": [
+   -0.0114,
+   0.0069,
+   4
+  ]
+ }
+}

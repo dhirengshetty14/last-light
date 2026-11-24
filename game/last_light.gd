@@ -5,6 +5,13 @@ const Performer = preload("res://game/crew_visual.gd")
 const Front = preload("res://game/star_ui.gd")
 const Coach = preload("res://game/gemini_coach.gd")
 var coach: Coach
+const Analyst = preload("res://game/bruin_analyst.gd")
+## The Bruin Analyst: live in Rivals only. Tests and captures run without it unless launched with
+## `-- --analyst-file=<file>`, which reads the advice from that file instead of the player's own.
+var analyst: Analyst
+var analyst_file := ""
+## The last lesson each robot announced, so the radio only speaks when one changes.
+var analyst_heard := ["", "", "", "", ""]
 var radio_host = preload("res://game/radio_host.gd").new()
 const Recorder = preload("res://game/flight_recorder.gd")
 const Easy = preload("res://game/easy_controls.gd")
@@ -236,6 +243,8 @@ func _ready() -> void:
 			band_inbox = arg.trim_prefix("--band-inbox=")
 		if arg == "--band-relay":
 			band_relay = true
+		if arg.begins_with("--analyst-file="):
+			analyst_file = arg.trim_prefix("--analyst-file=")
 		if arg.begins_with("--mode="):
 			capture_mode = arg.trim_prefix("--mode=")
 		if arg == "--written-rules":
@@ -1037,6 +1046,13 @@ func start() -> void:
 	panel_age = 0.
 	if panel_box:
 		panel_box.hide()
+	analyst = null
+	analyst_heard = ["", "", "", "", ""]
+	if not crews and not free and (analyst_file != "" or not (test_session or capture_session)):
+		analyst = Analyst.new(run)
+		if analyst_file != "":
+			analyst.path = analyst_file
+	sim.bruin_analyst = analyst != null
 	var directory := "user://flights"
 	if test_session or capture_session:
 		directory = "user://court-captures"
@@ -1051,6 +1067,7 @@ func start() -> void:
 			"game": "last-light-v14",
 			"court_version": 14,
 			"mercy": sim.mercy,
+			"bruin_analyst": sim.bruin_analyst,
 			"social_learning": sim.social_learning,
 			"dock_relay": sim.relay_rules,
 			"moving_passes": sim.moving_passes,
@@ -1453,7 +1470,10 @@ func _physics_process(_dt: float) -> void:
 	positions = sim.pos.duplicate()
 	old_ball = sim.ball
 	read_band()
-	sim.step(command_edges, coach.poll(sim) if coach else [], band_queue)
+	var packets: Array = coach.poll(sim) if coach else []
+	if analyst:
+		packets.append_array(analyst.poll(sim))
+	sim.step(command_edges, packets, band_queue)
 	band_queue = []
 	if sim.owner == -1 and sim.flight != "":
 		trail_points.push_front(old_ball)
@@ -1559,6 +1579,39 @@ func present(e: Dictionary) -> void:
 					)
 				)
 				message_until = sim.tick + 67
+		"analyst_advice":
+			if e.result == "available":
+				# Advice arrives every 3 s with fresh numbers. The radio speaks, in plain words,
+				# only when the advised move itself changes: a few times a match, not dozens.
+				var tip: Dictionary = e.packet.advice
+				var heard := ""
+				var gist := ""
+				for phase_name in ["defend", "loose"]:
+					# Advice for a phase can be for particular situations only, with no move for
+					# the phase as a whole; the radio reads out whole-phase advice.
+					if tip.has(phase_name) and tip[phase_name].has("prefer"):
+						var said: Dictionary = tip[phase_name]
+						var prefer := str(said["prefer"])
+						var avoid := str(said.get("avoid", ""))
+						var teacher := str(said.get("teacher", ""))
+						gist = "%s/%s/%s" % [phase_name, prefer, avoid]
+						heard = (
+							"%s %s, not %s. %s showed me."
+							% [
+								"When they have the star:" if phase_name == "defend" else "When the star is loose:",
+								Game.ASKED.get(prefer, prefer),
+								Game.ASKED.get(avoid, avoid),
+								teacher if teacher != "" else "My crew"
+							]
+						)
+						break
+				if gist != "" and gist != analyst_heard[i]:
+					analyst_heard[i] = gist
+					front.record(heard, Game.NAMES[i] + " · BRUIN", tint_of(i))
+					comics.pop("LEARNING!", over(i), tint_of(i))
+					sound("lamp" if clips.has("lamp") else "catch")
+					message = "%s learns from %s" % [Game.NAMES[i], tip.values()[0].get("teacher", "its crew")]
+					message_until = sim.tick + 90
 		"robbed":
 			if int(e.times) >= 2:
 				front.record(
@@ -1906,7 +1959,20 @@ func _process(dt: float) -> void:
 					)
 				front.results(a, b, box_score, crews, side_names(), headline, footnote)
 			else:
-				front.results(sim.goals[0], sim.goals[1], box_score, crews)
+				var bruin_line: String = analyst.summary_line() if analyst else ""
+				front.results(
+					sim.goals[0],
+					sim.goals[1],
+					box_score,
+					crews,
+					[],
+					"",
+					(
+						""
+						if bruin_line == ""
+						else "%d machine-lit beacons\n%s" % [box_score.beacons, bruin_line]
+					)
+				)
 	if phase == "end":
 		show_match_panel(dt)
 	elif panel_box and panel_box.visible:

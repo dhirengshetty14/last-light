@@ -59,6 +59,84 @@ func accept_packet(packet: Dictionary, tick: int) -> String:
 	return "available"
 
 
+## The Bruin Analyst's latest advice: for each phase, a move to prefer and one to
+## avoid, worked out by Bruin from this match's graded decisions and what followed them. It is a
+## small lift (ANALYST_LIFT), smaller than Gemini's, and lapses after 30 s without fresh advice.
+var analyst: Dictionary = {}
+var analyst_id := 0
+var analyst_tick := -1
+const ANALYST_TICKS := 1800
+const ANALYST_LIFT := .04
+
+
+func accept_analyst(packet: Dictionary, tick: int) -> String:
+	if int(packet.actor) != role:
+		return "wrong_robot"
+	if int(packet.id) <= analyst_id:
+		return "superseded"
+	if not packet.get("advice") is Dictionary:
+		return "invalid"
+	analyst_id = int(packet.id)
+	analyst = packet.advice
+	analyst_tick = tick
+	return "available"
+
+
+## The broader situation: only where the star is and how it moves ("near/coming/ahead"), without
+## the human and the wall. Bruin also gives advice at this level, which has more evidence behind it.
+static func broad(situation: String) -> String:
+	return "/".join(situation.split("/").slice(0, 3))
+
+
+## Advice for this very situation when Bruin has it, then for the broader situation, then for the
+## phase as a whole.
+func analyst_bias(phase: String, situation: String, legal: Array, tick: int) -> Dictionary:
+	if analyst.is_empty() or tick - analyst_tick > ANALYST_TICKS or not analyst.has(phase):
+		return {}
+	var entry: Dictionary = analyst[phase]
+	var scenes: Dictionary = entry.get("scenes", {})
+	if scenes.has(situation):
+		entry = scenes[situation]
+	elif scenes.has(broad(situation)):
+		entry = scenes[broad(situation)]
+	elif not entry.has("prefer"):
+		return {}
+	var bias := {}
+	if str(entry.get("prefer", "")) in legal:
+		bias[str(entry.prefer)] = ANALYST_LIFT
+	if str(entry.get("avoid", "")) in legal and entry.get("avoid") != entry.get("prefer"):
+		bias[str(entry.avoid)] = -ANALYST_LIFT
+	return bias
+
+
+func analyst_note(tick: int) -> String:
+	if analyst.is_empty() or tick - analyst_tick > ANALYST_TICKS:
+		return ""
+	var parts: Array[String] = []
+	for phase in ["carry", "support", "defend", "loose"]:
+		if analyst.has(phase) and analyst[phase].has("prefer"):
+			var entry: Dictionary = analyst[phase]
+			parts.append(
+				(
+					"%s %s, not %s (from %s)"
+					% [
+						"loose star:" if phase == "loose" else phase + ":",
+						entry.prefer,
+						entry.avoid,
+						entry.get("teacher", "teammates")
+					]
+				)
+			)
+	var scenes := 0
+	for phase in analyst:
+		scenes += analyst[phase].get("scenes", {}).size()
+	return (
+		"Learning from teammates   "
+		+ "  ·  ".join(parts)
+		+ ("   ·   %d situations" % scenes if scenes else "")
+	)
+
+
 func advice(phase: String, context: String, legal: Array, tick: int) -> Dictionary:
 	if model_plan.is_empty():
 		return {}

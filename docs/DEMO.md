@@ -83,12 +83,17 @@ Point at the report.
   quarter of those decisions passed all five checks."
 - **Where it breaks.** "This is the move that costs the most score, and the check it misses."
 - **Model calls.** "A robot only calls Gemini when it is struggling, not every few seconds."
-- **Bruin.** "Bruin loads every match log, runs 109 quality checks and rebuilds this in under a
+- **Bruin.** "Bruin loads every match log, runs 116 quality checks and rebuilds this in about a
   second. The page reads one file, so refreshing it costs no query."
 - The honest finding: "Bruin showed us that three tasks failed about 96% of the time whatever the
   robot did. The fault was our own checks, not the robots. We fixed the checks and retrained."
+- **Bruin Analyst** (Rivals only). Click **Bruin Analyst** at the top of the report. "Bruin also
+  scores how each robot reacts to every moment: the ball, a person dashing at it, a crewmate
+  getting the star, a wall. Every three seconds each robot is told which moves worked best for its
+  crewmates in the situation it is in." In the game, **LEARNING!** pops over a robot when its
+  advice changes, and the final card shows each robot's reaction score.
 - **Bruin Cloud.** Open cloud.getbruin.com and the `last-light` project. "The same pipeline runs
-  here on every match we upload: 17 tables and 109 quality checks." Run
+  here on every match we upload: 22 tables and 116 quality checks." Run
   `python3 telemetry/cloud.py sync` after the demo matches so the latest ones are there. A cloud run
   takes a few minutes, so start it before you present.
 
@@ -123,6 +128,8 @@ Do not say:
 - "The robots learn to win." Against players who repeat the dash-steal, they are robbed less than
   they were but do not win more.
 - "The robots plan ahead." Each decision is graded on the next half second or so.
+- "The Bruin Analyst makes the robots better." It changes what they choose, but in our test of five
+  series the reaction scores with and without it were the same within the noise.
 
 ## If something goes wrong
 
