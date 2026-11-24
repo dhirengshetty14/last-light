@@ -75,14 +75,14 @@ The game never waits on any of them. Without them it still plays: the robots hea
 
 ## Run it
 
-You need [Godot 4.7.2](https://github.com/godotengine/godot/releases/tag/4.7.2-stable) (the standard build). The live report also needs Python 3 and the Bruin CLI.
+You need [Godot 4.7.2](https://github.com/godotengine/godot/releases/tag/4.7.2-stable) (the standard build). The live report also needs Python 3 and the [Bruin CLI](https://github.com/bruin-data/bruin).
 
 ```sh
 godot --headless --path . --import   # once: import the assets (a minute or two)
 godot --path .                       # play
 ```
 
-On a Mac, double-click **Play Last Light.command**. It starts the game and the live robot report at http://127.0.0.1:8960/.
+On a Mac, double-click **Play Last Light.command**. It starts the game and the live robot report at http://127.0.0.1:8960/. On Windows or Linux, run `python3 telemetry/dashboard.py --open` beside the game for the report.
 
 ```sh
 scripts/check.sh                     # every headless check, about 40 s

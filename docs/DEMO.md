@@ -139,3 +139,30 @@ Do not say:
 | No Gemini | Nothing to do. The robots play on their own record, and the report shows zero model calls. |
 | The robots are too strong | They ease off while they lead: for each goal of lead, up to four, they run slower and take longer to dash at you. Launch with `-- --full-strength` to turn that off. |
 | The robots are too weak | Launch with `-- --full-strength`. |
+
+## Recording the demo video
+
+The scenes above work as a shot list. Record at 1920 × 1080 with the game filling the screen.
+
+**What works on any computer.** With Godot 4.7.2 (see the [README](../README.md)), the game needs no keys and no internet: the intro, all three modes, the robots' balloons and radio, their warnings, tips and lessons, the deals and walkouts, and the whale. The live robot report and the Bruin Analyst page also need Python 3 and the Bruin CLI: run `python3 telemetry/dashboard.py --open` beside the game (on a Mac, `Play Last Light.command` does both).
+
+**What needs Dhiren's accounts.** BAND, Runware, Gemini and Bruin Cloud run on his accounts, and their keys stay on his Mac. Record those shots on his Mac, or set up your own with the `configure` commands in [TECHNICAL.md](TECHNICAL.md). Never put a key in the repo or in a chat.
+
+**Shots, about three minutes in all**
+
+| # | Shot | Length |
+| --- | --- | --- |
+| 1 | The intro: the title, the story and the five characters (Space turns the page) | 20 s |
+| 2 | How to play, then Choose your game | 10 s |
+| 3 | Rivals: a goal, then a robot robbed twice warning its crew (scene 2) | 40 s |
+| 4 | A lesson, the tip spreading to a crewmate, and the Tab notebook (scene 3) | 30 s |
+| 5 | Free Agents: a promise kept, one broken, a walkout (scene 4) | 40 s |
+| 6 | The live robot report and the Bruin Analyst page beside the game (scene 5) | 25 s |
+| 7 | The BAND room while the robots talk, and the comic panel on the final screen (scene 6) | 20 s |
+
+**Tips**
+
+- Play one warm-up match first. Robots that were robbed in an earlier match warn their crew and change habits sooner.
+- A lesson needs the same robot robbed several times in the same kind of moment. Give it a minute.
+- The comic panel reaches the final screen a few seconds after the whistle.
+- The older videos in `docs/` show earlier versions of the game. Record new footage.

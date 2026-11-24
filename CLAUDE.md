@@ -239,6 +239,7 @@ branch.
 | `last-light-policy.json` | **The robots' memory**: learned estimates and relationships, saved after each live match |
 | `verified-responses.json` | Extra verified learning examples loaded at launch |
 | `bruin-coach.json` | Coach Bruin's notes, loaded at launch |
+| `bruin-analyst.json` | The Bruin Analyst's latest advice, read every 3 s during a live Rivals match |
 | `band-inbox.jsonl`, `band-bridge.alive` | What the BAND bridge hands the game, and its sign that it is running |
 | `panels/*.png` | Runware's comic panel of each match |
 | `audio.cfg` | Sound and music switches |
