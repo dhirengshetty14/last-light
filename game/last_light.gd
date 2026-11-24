@@ -180,7 +180,6 @@ var gather_tick := -20
 var gather_offset := Vector3.ZERO
 const WALK_ON_SECONDS := 3.2
 var last_voice := -150
-var last_ledger := [-1, -1, -99, -99, -99]
 var command_edges := [{}, {}]
 var pad_edges := [{}, {}]
 ## The pause screen switches sound effects (with voices and the sea) and the music on and off
@@ -1015,7 +1014,6 @@ func start() -> void:
 	star.show()
 	last_voice = -200
 	voice_queue.clear()
-	last_ledger = [-1, -1, -99, -99, -99]
 	last_lesson.fill(-1)
 	message_until = 230
 	message = "Nell has the light. Gold attacks right."
@@ -1544,11 +1542,10 @@ func present(e: Dictionary) -> void:
 				if speaker >= 2:
 					match_call(speaker, "relay", 60)
 		"response_intent":
+			# A robot's own reasoning stays in its Tab notebook. The harbor radio carries only what
+			# robots say to each other and what happens on the court.
 			if e.choice == "outlet" and sim.owner in [0, 1] and sim.team[i] == sim.team[sim.owner]:
 				match_call(i, "outlet", 230)
-			if sim.tick - last_ledger[i] > (420 if free else 100):
-				front.record(e.reason, Game.NAMES[i], tint_of(i))
-				last_ledger[i] = sim.tick
 		"custody":
 			if e.method == "restart":
 				return
