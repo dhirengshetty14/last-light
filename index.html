@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Last Light</title>
+<meta name="description" content="A 3D party game for two people on one keyboard and three AI robots that ally, trade, compete and betray.">
+<style>
+  :root { --bg: #0f1218; --card: #181c25; --ink: #f2efe8; --muted: #b9b4a8; --gold: #ffc056; --line: #2a3040; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 920px; margin: 0 auto; padding: 32px 16px 48px; }
+  h1 { font-size: clamp(36px, 7vw, 64px); margin: 0 0 4px; letter-spacing: .04em; color: var(--gold); }
+  .tag { color: var(--muted); margin: 0 0 20px; font-size: 19px; }
+  img { width: 100%; border-radius: 12px; border: 1px solid var(--line); display: block; }
+  .buttons { display: flex; flex-wrap: wrap; gap: 12px; margin: 22px 0 8px; }
+  a.button { display: inline-block; padding: 12px 20px; border-radius: 10px; text-decoration: none; font-weight: 650; }
+  a.primary { background: var(--gold); color: #1a1408; }
+  a.secondary { border: 1px solid var(--line); color: var(--ink); background: var(--card); }
+  .note { color: var(--muted); font-size: 15px; margin: 6px 0 24px; }
+  table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 10px; overflow: hidden; margin: 8px 0 24px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); font-size: 15px; }
+  th { color: var(--muted); font-weight: 600; }
+  h2 { font-size: 20px; margin: 28px 0 8px; }
+  ul { padding-left: 20px; }
+  a { color: var(--gold); }
+</style>
+</head>
+<body>
+<main>
+  <h1>LAST LIGHT</h1>
+  <p class="tag">Two people on one keyboard. Three AI robots that ally, trade, compete and betray.</p>
+  <img src="title.jpg" alt="Nell, Pip, Morrow, Zip and Rafi on the harbor court at sunset">
+  <div class="buttons">
+    <a class="button primary" href="https://github.com/dhirengshetty14/last-light/releases/latest/download/Last-Light-macOS.zip">Download for Mac</a>
+    <a class="button secondary" href="https://github.com/dhirengshetty14/last-light">Source code on GitHub</a>
+  </div>
+  <p class="note">Mac: unzip, then right-click <b>Last Light.app</b> and choose <b>Open</b> the first time. A version that plays right here in your browser is on its way.</p>
+
+  <h2>How to play</h2>
+  <table>
+    <tr><th></th><th>Move</th><th>GO: shoot, dash, steal</th><th>SHARE: pass, pay, offer</th></tr>
+    <tr><td><b>Nell</b></td><td>W A S D</td><td>Space</td><td>F</td></tr>
+    <tr><td><b>Rafi</b></td><td>Arrow keys</td><td>Enter</td><td>/</td></tr>
+  </table>
+  <ul>
+    <li><b>Rivals</b>: Nell and Rafi together against the robots Pip, Morrow and Zip.</li>
+    <li><b>Open Crews</b>: win robots over to your side during the match.</li>
+    <li><b>Free Agents</b>: the robots sign with whoever promises them something, and walk out when you break it.</li>
+  </ul>
+  <p class="note">Built for the Multiplayer AI hackathon, 23 November 2026, by Dhiren and Shefali.</p>
+</main>
+</body>
+</html>
