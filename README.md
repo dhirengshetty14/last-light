@@ -6,6 +6,8 @@
 
 Built in Godot 4.7.2 for the Multiplayer AI hackathon (23 November 2026), Track 2: Co-op Multiplayer.
 
+**[▶ Play in your browser](https://dhirengshetty14.github.io/last-light/)** (two players on one keyboard) · **[Download for Mac](https://github.com/dhirengshetty14/last-light/releases/latest)**
+
 [The game](#the-game) · [Multiplayer AI](#what-makes-it-multiplayer-ai) · [How the robots learn](#how-the-robots-think-and-learn) · [Sponsor tools](#sponsor-tools) · [Run it](#run-it) · [Demo script](docs/DEMO.md)
 
 ## The game
@@ -82,7 +84,7 @@ godot --headless --path . --import   # once: import the assets (a minute or two)
 godot --path .                       # play
 ```
 
-On a Mac, double-click **Play Last Light.command**. It starts the game and the live robot report at http://127.0.0.1:8960/. On Windows or Linux, run `python3 telemetry/dashboard.py --open` beside the game for the report.
+No install: play the [browser version](https://dhirengshetty14.github.io/last-light/), which uses Godot's simpler web renderer and runs without the live report, BAND, Runware or Gemini. On a Mac, double-click **Play Last Light.command**. It starts the game and the live robot report at http://127.0.0.1:8960/. On Windows or Linux, run `python3 telemetry/dashboard.py --open` beside the game for the report.
 
 ```sh
 scripts/check.sh                     # every headless check, about 40 s

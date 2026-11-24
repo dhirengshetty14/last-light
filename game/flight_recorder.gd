@@ -1,20 +1,31 @@
 extends RefCounted
 ## The writer owns the file. Frame and physics callbacks enqueue immutable batches.
+## A browser build has no threads, so there each batch is written straight away instead.
 var mutex := Mutex.new()
 var wake := Semaphore.new()
 var worker := Thread.new()
 var pending: Array = []
 var opened := false
+var direct: FileAccess
+var in_browser := OS.has_feature("web")
 
 
 func begin(path: String, header: Dictionary) -> void:
 	opened = true
-	worker.start(_write.bind(path))
+	if in_browser:
+		direct = FileAccess.open(path, FileAccess.WRITE)
+	else:
+		worker.start(_write.bind(path))
 	append([header])
 
 
 func append(batch: Array) -> void:
 	if not opened or batch.is_empty():
+		return
+	if in_browser:
+		if direct:
+			for e in batch:
+				direct.store_line(JSON.stringify(e, "", true, true))
 		return
 	mutex.lock()
 	pending.append(batch)
@@ -24,6 +35,13 @@ func append(batch: Array) -> void:
 
 func finish(footer: Dictionary) -> void:
 	if not opened:
+		return
+	if in_browser:
+		append([footer])
+		if direct:
+			direct.close()
+			direct = null
+		opened = false
 		return
 	append([footer])
 	mutex.lock()
