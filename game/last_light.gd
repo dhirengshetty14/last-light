@@ -41,17 +41,17 @@ const CAST = [
 	[
 		"PIP   /   BALL THIEF",
 		"See these little hands? Best pickpocket on Saturn. Check your pockets.",
-		"GETAWAY   ·   Steals from farther away, then bolts with a burst of speed. Plays for the next shot."
+		"GETAWAY   ·   Steals from farther away, then bolts with a burst of speed. In Free Agents, wants the next shot."
 	],
 	[
 		"MORROW   /   KEEPER",
 		"Thirty winters guarding this dock. I remember every runner who got past me.",
-		"ANCHOR   ·   Carry the star near him and you slow right down. Plays for a goal made off a pass."
+		"ANCHOR   ·   Carry the star near him and you slow right down. In Free Agents, wants a goal off a pass."
 	],
 	[
 		"ZIP   /   COURIER",
 		"I delivered your jersey this morning. Want to see how fast?",
-		"EXPRESS   ·   Fastest on the dock, and his passes fly a third faster. Plays for passes."
+		"EXPRESS   ·   Fastest on the dock, and his passes fly a third faster. In Free Agents, wants passes."
 	]
 ]
 ## Morrow tells the story before the five are introduced.

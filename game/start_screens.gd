@@ -60,7 +60,7 @@ const MODES = [
 		[
 			"Pass between you to slip past three defenders.",
 			"Shoot from inside the painted arc in front of the gold ring.",
-			"The robots watch how you play and change their tactics."
+			"Pip steals, Morrow slows you down near him, and Zip passes fast."
 		]
 	},
 	{
