@@ -271,7 +271,8 @@ def status(_args):
     project = project_id()
     if not project:
         fail("No Bruin Cloud project for this repository yet.")
-    print(bruin("cloud", "runs", "list", "--project-id", project, "--limit", "5").stdout)
+    result = bruin("cloud", "runs", "list", "--project-id", project, "--pipeline", PIPELINE, "--limit", "5")
+    print((result.stdout or "") + (result.stderr or ""))
 
 
 def main():

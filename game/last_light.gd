@@ -286,6 +286,10 @@ func _ready() -> void:
 		note.hide()
 		doll.add_child(note)
 		deal_tags.append(note)
+		# A speech panel's camera shows the scenery and the speaker's own layer, so whoever is
+		# standing in front of the speaker (often the player who just robbed it) is not in the picture.
+		own_layer(doll, 1 << (9 + i))
+		doll.set_meta("portrait_layer", 1 << (9 + i))
 	add_child(music)
 	add_child(voice)
 	add_child(effects)
@@ -1115,6 +1119,15 @@ func _exit_tree() -> void:
 	for player in [music, voice, effects]:
 		player.stop()
 		player.stream = null
+
+
+## Move everything drawn for one player from the shared render layer to a layer of its own. The
+## main camera sees every layer, so the match looks the same.
+func own_layer(node: Node, bit: int) -> void:
+	if node is GeometryInstance3D and node.layers & 1:
+		node.layers = (node.layers & ~1) | bit
+	for child in node.get_children():
+		own_layer(child, bit)
 
 
 ## Whether telemetry/band.py is running beside the game: it rewrites this file every two seconds.

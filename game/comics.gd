@@ -543,6 +543,8 @@ func _process(dt: float) -> void:
 		var next: Dictionary = waiting.pop_front()
 		subject = next.doll
 		subject_height = next.height
+		# The scenery and the speaker only: nobody standing between the lens and the speaker.
+		lens.cull_mask = 1 | int(subject.get_meta("portrait_layer", 0))
 		cut_name.text = next.who
 		cut_name.add_theme_color_override("font_color", next.tint)
 		cut_text.text = next.line
