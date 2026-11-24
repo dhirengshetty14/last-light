@@ -135,6 +135,12 @@ var lessons_told: Dictionary = {}
 var bruin_coach: Dictionary = {}
 
 
+## What people have told this robot over BAND this match, by phase: the move they asked for, who
+## asked, and the BAND message it came from. `band_used` holds the phases it has said it acted on.
+var band_tips: Dictionary = {}
+var band_used: Dictionary = {}
+
+
 ## Court version 14: what crewmates have told this robot this match. Warnings about a player who
 ## keeps robbing them (a count per player), tips for a situation (the move a crewmate dropped there
 ## and the one it uses now, and who said so), and the tips this robot has already said it used.

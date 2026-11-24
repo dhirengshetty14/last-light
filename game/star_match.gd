@@ -213,6 +213,88 @@ const MOVES := {
 var bruin_notes: Array = []
 
 
+## What comes back from the BAND room reaches the court here, at a tick boundary, the same way a
+## Gemini reply does. Three things are understood, and anything else is dropped:
+##   a relay: BAND has delivered a crewmate's warning or tip to this robot, which now acts on it
+##   a person's warning about Nell or Rafi: the robot gives that player 0.15 m more room
+##   a person's move to favour in one phase: that move gets a small lift in the robot's weighing
+## The words shown and logged are the court's own, never a person's text. Every accepted note is a
+## "talk_heard" or "band_note" event, so a replay hands the same note back at the same tick.
+const BAND_LIFT := .06
+## How long a listener waits for BAND before it takes a crewmate's message off the harbor radio.
+const RELAY_PATIENCE := 300
+## Whether robots' warnings and tips travel through the BAND room. The scene turns it on when the
+## bridge is running, and the match header records it. Off, a message is heard as it is said.
+var band_relay := false
+## Messages said and not yet heard by everyone they were for, by message number.
+var outbox: Dictionary = {}
+var told := 0
+const ASKED := {
+	"press": "press the carrier",
+	"screen": "guard the ring",
+	"cut": "cut the passing lane",
+	"recover": "chase the star",
+	"lead": "read where the star lands",
+	"outlet": "stay close for a pass",
+	"advance": "get ahead",
+	"drive": "go straight at the ring",
+	"flank": "take the wide lane",
+	"pass": "pass early",
+	"finish": "shoot",
+	"evade": "keep your distance"
+}
+
+
+func hear_band(notes: Array) -> void:
+	for note in notes:
+		if not note is Dictionary:
+			continue
+		var seat := int(note.get("seat", -1))
+		if seat < 2 or seat > 4:
+			continue
+		var who := str(note.get("who", "Someone")).left(12)
+		var ref := str(note.get("ref", "")).left(64)
+		var topic := str(note.get("topic", ""))
+		var actor = agents[seat - 2]
+		if topic == "relay":
+			deliver(int(note.get("msg", -1)), seat, "band", ref)
+		elif topic == "warn":
+			var about := int(note.get("about", -1))
+			if about < 0 or about > 1:
+				continue
+			actor.heard_warnings[about] += 1
+			emit(
+				"band_note",
+				seat,
+				{
+					"topic": "warn",
+					"about": about,
+					"who": who,
+					"ref": ref,
+					"line": "%s on BAND: watch %s. Giving %s more room." % [who, NAMES[about], NAMES[about]]
+				}
+			)
+		elif topic == "tip":
+			var phase := str(note.get("phase", ""))
+			var move := str(note.get("try", ""))
+			if phase not in PHASES or move not in MOVES[phase]:
+				continue
+			actor.band_tips[phase] = {"try": move, "who": who, "ref": ref}
+			actor.band_used.erase(phase)
+			emit(
+				"band_note",
+				seat,
+				{
+					"topic": "tip",
+					"phase": phase,
+					"try": move,
+					"who": who,
+					"ref": ref,
+					"line": "%s on BAND: %s. I'll lean that way." % [who, ASKED[move]]
+				}
+			)
+
+
 ## Give each robot the notes Coach Bruin wrote for it, and say them on the radio. Call it after the
 ## draft; the replay tool calls it at the same point with the notes from the match header.
 func set_bruin_coach(notes: Array) -> void:
@@ -305,12 +387,64 @@ func crewmates(i: int) -> Array:
 
 
 ## Court version 14. Robot i says something to other robots. The event names who it was for.
+## A warning or a tip changes what each listener does (`take_in`). Normally that happens as it is
+## said. With `band_relay` on, the message goes out through the BAND room first, and each listener
+## takes it in when BAND has delivered it to that robot (`deliver`).
 func tell(i: int, topic: String, listeners: Array, line: String, fields: Dictionary = {}) -> void:
 	if listeners.is_empty():
 		return
 	var said := {"topic": topic, "to": listeners, "line": line}
 	said.merge(fields)
+	var relayed := band_relay and topic in ["warn", "tip"]
+	if relayed:
+		told += 1
+		said["msg"] = told
+		said["via"] = "band"
+		outbox[told] = {
+			"from": i, "topic": topic, "fields": fields, "waiting": listeners.duplicate(), "sent": tick
+		}
 	emit("talk", i, said)
+	if not relayed:
+		for k in listeners:
+			take_in(k, i, topic, fields)
+
+
+## Robot k acts on what robot `from` told it: more room for a player it was warned about, or a tip
+## kept for one situation.
+func take_in(k: int, from: int, topic: String, fields: Dictionary) -> void:
+	var listener = agents[k - 2]
+	if topic == "warn":
+		listener.heard_warnings[int(fields["about"])] += 1
+	elif topic == "tip":
+		listener.tips[fields["situation"]] = {
+			"avoid": fields["avoid"], "use": fields["use"], "from": from
+		}
+
+
+## Message `msg` has reached robot k: over BAND (the bridge saw it arrive in the room for k), or
+## over the harbor radio because BAND took longer than RELAY_PATIENCE.
+func deliver(msg: int, k: int, via: String, ref: String = "") -> void:
+	if not outbox.has(msg):
+		return
+	var item: Dictionary = outbox[msg]
+	if k not in item["waiting"]:
+		return
+	item["waiting"].erase(k)
+	take_in(k, item["from"], item["topic"], item["fields"])
+	emit(
+		"talk_heard",
+		k,
+		{
+			"from": item["from"],
+			"msg": msg,
+			"topic": item["topic"],
+			"via": via,
+			"wait": tick - int(item["sent"]),
+			"ref": ref
+		}
+	)
+	if item["waiting"].is_empty():
+		outbox.erase(msg)
 
 
 ## How far the robots are easing off, from 0 (not at all) to 1: a quarter for each goal they lead
@@ -1143,13 +1277,10 @@ func possession(i: int, method: String) -> void:
 		)
 		emit("robbed", before, {"by": i, "times": times, "move": tactics[before]})
 		if team_talk and times in [2, 4]:
-			var crew := crewmates(before)
-			for k in crew:
-				agents[k - 2].heard_warnings[i] += 1
 			tell(
 				before,
 				"warn",
-				crew,
+				crewmates(before),
 				(
 					"%s has robbed me %s. Give that dash more room."
 					% [NAMES[i], "twice" if times == 2 else "four times"]
@@ -1508,6 +1639,10 @@ func plan(i: int) -> void:
 	if not note.is_empty():
 		lifts[note["try"]] = COACH_LIFT
 		lifts[note["avoid"]] = -COACH_LIFT
+	# What a person asked for over BAND in this phase, if anything.
+	var asked: Dictionary = actor.band_tips.get(phase, {})
+	if not asked.is_empty():
+		lifts[asked["try"]] = float(lifts.get(asked["try"], 0.)) + BAND_LIFT
 	var talk_key := ""
 	if team_talk and heat != "free":
 		talk_key = "%s/%s" % [heat, NAMES[foe].to_lower()]
@@ -1623,14 +1758,11 @@ func plan(i: int) -> void:
 				}
 			)
 			if team_talk:
-				var crew := crewmates(i)
-				for k in crew:
-					agents[k - 2].tips[talk_key] = {"avoid": burnt, "use": choice, "from": i}
 				var habit: String = HABIT_WORDS[burnt]
 				tell(
 					i,
 					"tip",
-					crew,
+					crewmates(i),
 					(
 						"Crew: near %s, %s %s got me robbed."
 						% [NAMES[foe], TIP_WORDS[choice], habit.left(1).to_upper() + habit.substr(1)]
@@ -1647,6 +1779,18 @@ func plan(i: int) -> void:
 			explanation = heeded
 			basis = "a crewmate's tip"
 			tell(i, "heed", [teller], heeded, {"situation": talk_key, "use": choice})
+	if (
+		not asked.is_empty()
+		and choice == asked["try"]
+		and not actor.explored
+		and not actor.band_used.has(phase)
+	):
+		# The robot is doing what a person asked for over BAND, and says so once.
+		actor.band_used[phase] = true
+		var doing := "Doing what %s asked on BAND: %s." % [asked["who"], ASKED[choice]]
+		explanation = doing
+		basis = "a BAND message"
+		emit("band_heed", i, {"who": asked["who"], "ref": asked["ref"], "try": choice, "line": doing})
 	actor.last_plan = explanation
 	actor.plan_basis = basis
 	actor.prior_attempts = samples
@@ -2072,11 +2216,18 @@ func apply_model_packets(packets: Array, after_step: bool = false) -> void:
 		emit("model_transport", i, {"packet": packet, "result": result, "after_step": after_step})
 
 
-func step(commands: Array = [{}, {}], packets: Array = []) -> void:
+func step(commands: Array = [{}, {}], packets: Array = [], band: Array = []) -> void:
 	if finished:
 		return
 	tick += 1
 	apply_model_packets(packets)
+	if not band.is_empty():
+		hear_band(band)
+	for msg in outbox.keys():
+		if tick - int(outbox[msg]["sent"]) >= RELAY_PATIENCE:
+			# BAND never delivered it: the listeners still waiting take it off the harbor radio.
+			for k in outbox[msg]["waiting"].duplicate():
+				deliver(msg, k, "radio")
 	if free_agents and not drafted:
 		draft()
 	if tick < restart_until:

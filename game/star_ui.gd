@@ -448,6 +448,9 @@ func show_plans(sim) -> void:
 			for phase in actor.bruin_coach:
 				var note: Dictionary = actor.bruin_coach[phase]
 				lines.append("Coach Bruin   %s: try %s, not %s" % [phase, note["try"], note["avoid"]])
+			for phase in actor.band_tips:
+				var asked: Dictionary = actor.band_tips[phase]
+				lines.append("Asked on BAND by %s   %s: %s" % [asked["who"], phase, asked["try"]])
 			var warned := 0
 			for count in actor.heard_warnings:
 				warned += int(count)

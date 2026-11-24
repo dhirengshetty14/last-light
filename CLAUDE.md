@@ -163,8 +163,8 @@ python3 telemetry/dashboard.py --open     # http://127.0.0.1:8960/
 ```
 
 It starts the watcher (`telemetry/watch.py --watch`), which stages the match logs into
-`telemetry/local/` (gitignored) and runs the Bruin pipeline in `telemetry/assets/flight/*.sql`: 16
-tables and 19 quality checks in about 0.7 s. The page shows, within a couple of seconds of play:
+`telemetry/local/` (gitignored) and runs the Bruin pipeline in `telemetry/assets/flight/*.sql`: 17
+tables and 109 quality checks in about 0.7 s. The page shows, within a couple of seconds of play:
 
 - which of the seven tasks each robot is failing;
 - the moves that cost the most verifier score and the check each one misses;
@@ -205,12 +205,25 @@ branch.
   (`bruin_coach`), and the replay tool applies them at the same point.
 - **BAND** (`telemetry/band.py`): a bridge that reads the live match log and posts robot `talk`,
   `lesson`, `coach_note` and vote events into a BAND room as the speaking robot, @mentioning the
-  listeners, and answers people who @mention a robot. Keys in `telemetry/local/band.json`.
+  listeners. Keys in `telemetry/local/band.json`.
+  - **Robot talk travels through the room.** While the bridge runs it keeps
+    `user://band-bridge.alive` fresh, and the game then starts each live match with
+    `sim.band_relay = true` (recorded in the header as `band_relay`). A warning or tip is posted to
+    BAND; the bridge reads the room as each listener, and when BAND shows that robot the message it
+    appends a `relay` note to `user://band-inbox.jsonl`. The game reads the inbox twice a second
+    and hands the notes to `step()`, and the listener acts on the message from that tick (a
+    `talk_heard` event, `via: "band"`). After `RELAY_PATIENCE` (300 ticks) the listener takes it
+    off the game's own radio instead (`via: "radio"`). See section 6.
+  - **People can reach a robot too**, by @mentioning it in the room. A question is answered from
+    the live match. "watch Rafi" or a move such as "pass early" becomes a note in the same inbox:
+    0.15 m more room for that player, or +`BAND_LIFT` (0.06) for that move in that phase
+    (`band_note`, then `band_heed` when the robot does it). Only the meaning reaches the game,
+    never the person's words.
 - **Runware** (`telemetry/panels.py`): after each match's `final` event, one FLUX.1 [schnell]
   picture of the match's big moment, saved to `user://panels/<run>.png` with a caption. The final
   screen polls for it for 30 s. Key in `telemetry/local/runware.key`.
 - `telemetry/dashboard.py` starts the BAND bridge and the panel maker when their config files exist.
-  None of the three is ever called from inside the game loop.
+  None of the three is ever called from inside the game loop: the game only reads local files.
 
 ### Where a running game saves things
 
@@ -224,6 +237,9 @@ branch.
 | `court-captures/*.jsonl` | Matches from tests, playtests and captures |
 | `last-light-policy.json` | **The robots' memory**: learned estimates and relationships, saved after each live match |
 | `verified-responses.json` | Extra verified learning examples loaded at launch |
+| `bruin-coach.json` | Coach Bruin's notes, loaded at launch |
+| `band-inbox.jsonl`, `band-bridge.alive` | What the BAND bridge hands the game, and its sign that it is running |
+| `panels/*.png` | Runware's comic panel of each match |
 | `audio.cfg` | Sound and music switches |
 
 ---
@@ -270,10 +286,11 @@ branch.
 | `tests/star_match_test.gd` | Court rules, robots, pace, pressure, lessons, determinism |
 | `tests/free_agents_test.gd` | Promises, walkouts, the union vote, social learning, two-button controls |
 | `tests/gemini_court.gd`, `tests/radio_host_test.py` | Gemini turns and host, with no network |
+| `tests/band_bridge_test.py` | The BAND bridge against a stand-in room, with no network |
 | `tests/court_playtest.gd` | Plays both keyboard seats through the real scene: menus, pause, goals |
 | `tasks/` | Harbor-format tasks (`ring-window`, `catch-window`, `broken-promise`), each with `instruction.md`, `task.toml`, `solution/solve.sh` and `tests/test.sh`. Graders are in `tasks/*.gd`, and `tasks/check-local.sh` runs them in Docker with no network. |
 | `host/radio.py` | The Gemini playbook service. Standard library only; it alone holds the key. |
-| `telemetry/` | Bruin pipeline: `watch.py`, `pipeline.yml`, and the tables and checks in `assets/flight/*.sql`. The report's tables are `robot_decisions`, `task_scores`, `robot_failure_modes`, `robot_talk` and `dashboard_feed`. |
+| `telemetry/` | Bruin pipeline: `watch.py`, `pipeline.yml`, and the tables and checks in `assets/flight/*.sql`. The report's tables are `robot_decisions`, `task_scores`, `robot_failure_modes`, `robot_talk`, `band_deliveries` and `dashboard_feed`. |
 | `telemetry/dashboard.py`, `dashboard.html` | The live robot report: a local server and one self-contained page |
 | `art/source/` | Offline scripts that built models, textures, music, sound effects and voices |
 | `assets/` | Models (glb), audio, fonts, textures |
@@ -399,6 +416,17 @@ a `topic`, the seats it was `to`, and the `line` shown on screen.
 
 The three memories stay separate: a robot never reads a crewmate's record, it only keeps what it was
 told. Warnings and tips last for the match.
+
+**Through BAND (`band_relay`).** `tell()` is the one place a robot speaks, and `take_in()` the one
+place a listener acts on it. With `band_relay` off (tests, training, evaluations, and live play
+without the bridge) a listener takes a message in as it is said. With it on, a `warn` or `tip` gets
+a message number (`msg`) and waits in `outbox`; each listener takes it in when `deliver()` is called
+for it, either from a `relay` note the bridge wrote after BAND delivered the message to that robot,
+or when `RELAY_PATIENCE` runs out. Each arrival is a `talk_heard` event with `via` (`band` or
+`radio`) and `wait` in ticks. `tools/replay_court.gd` hands the recorded `band` arrivals back at
+the same ticks, so a match played over BAND replays exactly. In a full test match over the real
+room, deliveries took about a second. `band_relay` needs no court version: off, nothing changes,
+and on, the header says so.
 
 ### Fair play for people (version 14)
 
@@ -565,6 +593,7 @@ robot chose, so they taught it nothing. Bruin's failure tables are what showed t
 
 - Three modes.
 - Robots that warn and tip each other, and act on what they hear.
+- Robot warnings and tips that travel through a BAND room, with a fallback to the game's own radio.
 - Fair play for people, with robots easing off while they lead.
 - A four-minute demo script: [docs/DEMO.md](docs/DEMO.md).
 - A live Bruin report of where each robot is failing, task by task and check by check.
@@ -587,8 +616,8 @@ robot chose, so they taught it nothing. Bruin's failure tables are what showed t
 - **Agents that use their powers deliberately** and plan to win the match, not just the next 0.6 s:
   credit for the decision that led to a goal, or to losing one.
 - **Light VLM checks** alongside the code checks (for example on spoken lines). These are not used yet.
-- **BAND or other outside services for match data.** This needs Dhiren's go-ahead and his own
-  account.
+- **Any outside service beyond the ones in use.** Bruin Cloud with MotherDuck, BAND and Runware
+  have Dhiren's go-ahead and run on his accounts. Anything else needs his go-ahead first.
 - **Hindsight drills.** Replay a recorded match to a failed decision, try every other legal move
   from that exact moment, and feed the verifier's scores back. Deterministic replay makes this
   possible; it is not built.

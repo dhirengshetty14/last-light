@@ -1,7 +1,7 @@
 #!/bin/sh
 # Every headless check for Last Light. Run it before you push; Docker runs the same script.
 #
-#   scripts/check.sh           court, Free Agents, Gemini and host tests, a replay, a quick steal test
+#   scripts/check.sh           court, Free Agents, Gemini, host and BAND tests, a replay, a quick steal test
 #   scripts/check.sh --full    also the six full-game playtests (several minutes)
 #
 # Set GODOT to the Godot 4.7.2 executable if it is not on your PATH or in a usual place.
@@ -59,6 +59,7 @@ check "court rules and robots" "$GODOT" --headless --path . -s tests/star_match_
 check "free agents (promises, union)" "$GODOT" --headless --path . -s tests/free_agents_test.gd
 check "gemini turns (no network)" "$GODOT" --headless --path . -s tests/gemini_court.gd
 check "gemini host (no network)" python3 tests/radio_host_test.py
+check "band bridge (no network)" python3 tests/band_bridge_test.py
 check "replay of docs/match-87" "$GODOT" --headless --path . -s tools/replay_court.gd -- docs/match-87.jsonl
 check "steal test, two series" "$GODOT" --headless --path . -s learning/steal_eval.gd -- --series=2 --out="$scratch/steal.json"
 

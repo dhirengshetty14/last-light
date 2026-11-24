@@ -170,6 +170,7 @@ summary { cursor: pointer; }
         <h2>Robots talking to each other</h2>
         <p class="sub">Warnings and tips one robot gave its crewmates, and who acted on them.</p>
         <ul class="lessons" id="talk"></ul>
+        <p class="sub" id="talkBand" style="margin:8px 0 0"></p>
         <h2 style="margin-top:16px">Lessons the robots said out loud</h2>
         <p class="sub">A robot says one when it drops a move that got it robbed.</p>
         <ul class="lessons" id="lessons"></ul>
@@ -367,6 +368,10 @@ function renderLessons(d) {
   $("lessons").replaceChildren(...(items.length ? items : [el("li", { class: "empty", text: "None yet." })]));
   const said = (d.talk || []).map((t) => el("li", {}, who(t.speaker), el("span", { text: "to " + (t.listeners || []).join(" and ") + ": " + t.line })));
   $("talk").replaceChildren(...(said.length ? said : [el("li", { class: "empty", text: "Nothing said yet. A robot robbed twice warns its crew." })]));
+  const b = d.band || {};
+  $("talkBand").textContent = (b.delivered || b.radio)
+    ? "Through BAND: " + num(b.delivered || 0) + " deliveries to a listening robot, median " + (b.median_seconds || 0).toFixed(1) + " s (slowest " + (b.slowest_seconds || 0).toFixed(1) + " s). " + num(b.radio || 0) + " taken off the harbor radio because BAND took over 5 s. The listener only acts once the message arrives."
+    : "";
 }
 
 function render(d) {
@@ -403,7 +408,7 @@ async function sponsors() {
       $("panelCaption").textContent = p.caption || "";
       $("panelSub").textContent = "Drawn by Runware (" + p.model + ") in " + p.seconds + " s from the match log.";
     }
-    $("bandNote").textContent = d.band_room ? "Robot talk is mirrored live to the BAND room \u201c" + d.band_room + "\u201d. @mention a robot there to ask it what it is doing." : "BAND is not set up: run python3 telemetry/band.py configure.";
+    $("bandNote").textContent = d.band_room ? "While the bridge runs, the robots\u2019 warnings and tips travel through the BAND room \u201c" + d.band_room + "\u201d: a crewmate acts on one only when BAND has delivered it." : "BAND is not set up: run python3 telemetry/band.py configure.";
   } catch (error) {}
 }
 sponsors();

@@ -194,6 +194,18 @@ var panel_box: PanelContainer
 var panel_image: TextureRect
 var panel_caption: Label
 var panel_age := 0.
+## What the BAND bridge hands the game: a crewmate's message that BAND has delivered to a robot,
+## and messages people sent a robot. telemetry/band.py appends them to this file; the game reads
+## new lines twice a second and hands them to the court with the next tick. The game itself never
+## talks to BAND, so play never waits on the network. Test sessions read no inbox unless launched
+## with `-- --band-inbox=<file>`.
+var band_inbox := ""
+## Whether the robots' own warnings and tips go through the BAND room this match. On when the bridge
+## is running (it keeps `user://band-bridge.alive` fresh), or with `-- --band-relay`.
+var band_relay := false
+var band_offset := 0
+var band_wait := 0
+var band_queue: Array = []
 const SAVE_PATH := "user://last-light-policy.json"
 var capture_path := ""
 var frame_samples: Array[float] = []
@@ -220,6 +232,10 @@ func _ready() -> void:
 			forced_seed = int(arg.trim_prefix("--seed="))
 		if arg == "--full-strength":
 			full_strength = true
+		if arg.begins_with("--band-inbox="):
+			band_inbox = arg.trim_prefix("--band-inbox=")
+		if arg == "--band-relay":
+			band_relay = true
 		if arg.begins_with("--mode="):
 			capture_mode = arg.trim_prefix("--mode=")
 		if arg == "--written-rules":
@@ -959,6 +975,16 @@ func start() -> void:
 	sim.social_learning = free and not written_rules
 	sim.draft()
 	sim.set_bruin_coach(bruin_notes)
+	# Only messages sent during this match count.
+	if band_inbox == "" and not test_session and not capture_session:
+		band_inbox = "user://band-inbox.jsonl"
+	sim.band_relay = band_inbox != "" and (band_relay or bridge_alive())
+	band_queue.clear()
+	band_offset = 0
+	if band_inbox != "" and FileAccess.file_exists(band_inbox):
+		var inbox := FileAccess.open(band_inbox, FileAccess.READ)
+		if inbox:
+			band_offset = inbox.get_length()
 	set_dusk(0.)
 	connect_radio()
 	box_score = {"passes": [0, 0], "shots": [0, 0], "steals": [0, 0], "relays": 0, "beacons": 0}
@@ -1031,6 +1057,7 @@ func start() -> void:
 			"starting_policy": sim.learned_weights().duplicate(true),
 			"starting_relationships": sim.relationships(),
 			"bruin_coach": sim.bruin_notes.duplicate(true),
+			"band_relay": sim.band_relay,
 			"seat_pilots": pilot_names(),
 			"gemini_models": coach.models.duplicate() if coach else []
 		}
@@ -1088,6 +1115,42 @@ func _exit_tree() -> void:
 	for player in [music, voice, effects]:
 		player.stop()
 		player.stream = null
+
+
+## Whether telemetry/band.py is running beside the game: it rewrites this file every two seconds.
+func bridge_alive() -> bool:
+	var beat := "user://band-bridge.alive"
+	if not FileAccess.file_exists(beat):
+		return false
+	return Time.get_unix_time_from_system() - FileAccess.get_modified_time(beat) < 15.
+
+
+## Twice a second, pick up whole new lines from the BAND inbox for the court's next tick.
+func read_band() -> void:
+	band_wait += 1
+	if band_inbox == "" or band_wait % 30 != 0 or not FileAccess.file_exists(band_inbox):
+		return
+	var inbox := FileAccess.open(band_inbox, FileAccess.READ)
+	if inbox == null:
+		return
+	var size := inbox.get_length()
+	if size < band_offset:
+		band_offset = 0
+	if size == band_offset:
+		return
+	inbox.seek(band_offset)
+	var chunk := inbox.get_buffer(size - band_offset).get_string_from_utf8()
+	var whole := chunk.rfind("\n")
+	if whole < 0:
+		return
+	var ready := chunk.substr(0, whole + 1)
+	band_offset += ready.to_utf8_buffer().size()
+	for line in ready.split("\n", false):
+		if not line.begins_with("{"):
+			continue
+		var note: Variant = JSON.parse_string(line)
+		if note is Dictionary:
+			band_queue.append(note)
 
 
 ## Look twice a second, for up to 30 s after the whistle, for this match's comic panel.
@@ -1376,7 +1439,9 @@ func _physics_process(_dt: float) -> void:
 			pad_edges[seat][binding[0]] = down
 	positions = sim.pos.duplicate()
 	old_ball = sim.ball
-	sim.step(command_edges, coach.poll(sim) if coach else [])
+	read_band()
+	sim.step(command_edges, coach.poll(sim) if coach else [], band_queue)
+	band_queue = []
 	if sim.owner == -1 and sim.flight != "":
 		trail_points.push_front(old_ball)
 		if trail_points.size() > trail_meshes.size() * 2:
@@ -1493,6 +1558,14 @@ func present(e: Dictionary) -> void:
 			sound("dash")
 			message = "%s sidesteps %s's dash!" % [Game.NAMES[i], Game.NAMES[e["from"]]]
 			message_until = sim.tick + 80
+		"band_note", "band_heed":
+			# A person's message over BAND reached this robot, or the robot is acting on one.
+			comics.say(cast[i], FACE[i], Game.NAMES[i].to_upper(), e.line, tint_of(i))
+			comics.pop("BAND!", over(i), tint_of(i))
+			front.record(e.line, Game.NAMES[i], tint_of(i))
+			message = "%s: %s" % [Game.NAMES[i], e.line]
+			message_until = sim.tick + 150
+			sound("radio")
 		"coach_note":
 			# Coach Bruin's advice for this robot, from the failure tables, read out at kickoff.
 			front.record("Coach Bruin: " + str(e.advice), Game.NAMES[i], tint_of(i))
@@ -1512,10 +1585,28 @@ func present(e: Dictionary) -> void:
 			# A warning follows a steal, which already has its own sound word on that spot.
 			if e.topic != "warn":
 				comics.pop({"tip": "TIP!", "heed": "GOT IT!"}.get(e.topic, "CREW!"), over(i), tint_of(i))
-			front.record("To %s: %s" % [heard_by, e.line], Game.NAMES[i], tint_of(i))
+			var route := "On BAND, to" if e.get("via", "") == "band" else "To"
+			front.record("%s %s: %s" % [route, heard_by, e.line], Game.NAMES[i], tint_of(i))
 			message = "%s to %s: %s" % [Game.NAMES[i], heard_by, e.line]
 			message_until = sim.tick + 150
 			sound("radio")
+		"talk_heard":
+			# A crewmate's warning or tip has reached this robot, and from now on it acts on it.
+			var what := "warning" if e.topic == "warn" else "tip"
+			var teller: String = Game.NAMES[int(e["from"])]
+			if e.via == "band":
+				comics.pop("BAND!", over(i), tint_of(i))
+				front.record(
+					"Got %s's %s over BAND in %.1f s." % [teller, what, float(e.wait) / 60.],
+					Game.NAMES[i],
+					tint_of(i)
+				)
+			else:
+				front.record(
+					"BAND was slow. Took %s's %s off the harbor radio." % [teller, what],
+					Game.NAMES[i],
+					tint_of(i)
+				)
 		"goal":
 			dock_lights.signal_crew(e.team, true)
 			harbor.cheer(e.team)

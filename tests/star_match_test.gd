@@ -574,7 +574,185 @@ func check_bruin_coach() -> void:
 	)
 
 
+## Messages people send a robot over BAND: validated, applied, announced and replayable.
+func check_band_notes() -> void:
+	var s = court()
+	s.hear_band([
+		{"seat": 4, "topic": "warn", "about": 1, "who": "Dhiren", "ref": "m1"},
+		{"seat": 0, "topic": "warn", "about": 1, "who": "Dhiren"},
+		{"seat": 4, "topic": "warn", "about": 7, "who": "Dhiren"},
+		{"seat": 2, "topic": "tip", "phase": "support", "try": "advance", "who": "Dhiren", "ref": "m2"},
+		{"seat": 2, "topic": "tip", "phase": "support", "try": "press", "who": "Dhiren"},
+		{"seat": 3, "topic": "dance"},
+		"not a note"
+	])
+	var notes: Array = s.events.filter(func(e): return e.kind == "band_note")
+	check(notes.size() == 2, "only a known kind of note for a robot gets through")
+	check(
+		is_equal_approx(s.agents[2].wariness(1), .15) and s.agents[2].wariness(0) == 0.,
+		"a warning over BAND makes the robot give that player more room"
+	)
+	check(
+		str(notes[0].line) == "Dhiren on BAND: watch Rafi. Giving Rafi more room.",
+		"and the robot says so in the court's own words"
+	)
+	# Pip supports a crewmate: the move asked for over BAND weighs more, and Pip says when it does it.
+	var values := {}
+	var heeded := 0
+	for told in [true, false]:
+		var t = court()
+		if told:
+			t.hear_band([notes[1]])
+		t.tick = 300
+		t.agents[0].exploration = 0.
+		t.owner = 3
+		t.pos[3] = Vector2(-2., 0.)
+		t.pos[2] = Vector2(-4., 1.)
+		for n in 30:
+			t.pending[2] = {}
+			t.plan(2)
+			if n == 0:
+				values[told] = t.agents[0].last_values
+		heeded += t.events.filter(func(e): return e.kind == "band_heed").size()
+	check(
+		is_equal_approx(float(values[true].advance) - float(values[false].advance), Game.BAND_LIFT),
+		"a move asked for over BAND gets a small lift in the robot's own weighing"
+	)
+	check(heeded == 1, "the robot says once that it is doing what was asked, and never without being asked")
+	# A match that heard BAND notes replays exactly when the recorded notes are handed back.
+	var logs := []
+	var given := {
+		200: [{"seat": 4, "topic": "warn", "about": 0, "who": "Dhiren", "ref": "a"}],
+		900: [{"seat": 3, "topic": "tip", "phase": "defend", "try": "press", "who": "Dhiren", "ref": "b"}]
+	}
+	for run in 2:
+		var m = court()
+		var log := []
+		for t in 1800:
+			var heard: Array = given.get(m.tick + 1, [])
+			if run == 1:
+				heard = logs[0].filter(func(e): return e.kind == "band_note" and e.tick == m.tick + 1)
+			m.step([{}, {}], [], heard)
+			log.append_array(m.events)
+			m.events.clear()
+		logs.append(log)
+	check(
+		logs[0] == logs[1] and logs[0].filter(func(e): return e.kind == "band_note").size() == 2,
+		"a match that heard BAND notes replays from its own recording"
+	)
+
+
+## Rafi robs Zip twice in court s, which makes Zip warn Pip and Morrow about Rafi.
+func rob_zip_twice(s) -> void:
+	s.pos[4] = Vector2(-1., 0.)
+	s.pos[1] = Vector2(1.6, 0.)
+	s.pos[0] = Vector2(8., 4.)
+	s.cooldown[1] = 0
+	for n in 2:
+		s.owner = 4
+		s.pending[4] = {}
+		s.plan(4)
+		s.possession(1, "steal")
+
+
+func check_band_relay() -> void:
+	# With the relay on, Zip's warning goes out to the BAND room and nobody has heard it yet.
+	var s = court()
+	s.band_relay = true
+	s.tick = 300
+	rob_zip_twice(s)
+	var said: Array = s.events.filter(func(e): return e.kind == "talk")
+	check(
+		said.size() == 1 and said[0].get("via") == "band" and said[0].get("msg") == 1,
+		"with the BAND relay on, a robot's warning is numbered and sent through BAND"
+	)
+	check(
+		s.agents[0].wariness(1) == 0. and s.agents[1].wariness(1) == 0.,
+		"and no crewmate acts on it before BAND delivers it"
+	)
+	# BAND delivers it to Pip. A second delivery, one for the speaker and one for no message are dropped.
+	s.tick = 372
+	s.hear_band([
+		{"seat": 2, "topic": "relay", "msg": 1, "ref": "b1"},
+		{"seat": 2, "topic": "relay", "msg": 1, "ref": "b1"},
+		{"seat": 4, "topic": "relay", "msg": 1, "ref": "b1"},
+		{"seat": 3, "topic": "relay", "msg": 9, "ref": "b9"}
+	])
+	var heard: Array = s.events.filter(func(e): return e.kind == "talk_heard")
+	check(
+		(
+			heard.size() == 1
+			and heard[0].seat == 2
+			and heard[0].via == "band"
+			and heard[0].wait == 72
+			and heard[0]["from"] == 4
+		),
+		"a listener hears a crewmate once, when BAND has delivered the message to it"
+	)
+	check(
+		is_equal_approx(s.agents[0].wariness(1), .15) and s.agents[1].wariness(1) == 0.,
+		"and only that listener gives the player more room"
+	)
+	# BAND never delivers it to Morrow, who takes it off the harbor radio when patience runs out.
+	s.restart_until = 100000
+	for n in Game.RELAY_PATIENCE:
+		s.step()
+	heard = s.events.filter(func(e): return e.kind == "talk_heard")
+	check(
+		(
+			heard.size() == 2
+			and heard[1].seat == 3
+			and heard[1].via == "radio"
+			and heard[1].wait == Game.RELAY_PATIENCE
+			and s.outbox.is_empty()
+		),
+		"a listener BAND never reached takes the message off the harbor radio after five seconds"
+	)
+	check(is_equal_approx(s.agents[1].wariness(1), .15), "and acts on it then")
+	# With the relay off nothing changes: the crew hears at once and the event carries no number.
+	var plain = court()
+	plain.tick = 300
+	rob_zip_twice(plain)
+	said = plain.events.filter(func(e): return e.kind == "talk")
+	check(
+		(
+			said.size() == 1
+			and not said[0].has("msg")
+			and is_equal_approx(plain.agents[0].wariness(1), .15)
+			and plain.events.filter(func(e): return e.kind == "talk_heard").is_empty()
+		),
+		"with the relay off, crewmates hear a warning as it is said"
+	)
+	# A relayed match replays exactly when the recorded deliveries are handed back.
+	var logs := []
+	for run in 2:
+		var m = court()
+		m.band_relay = true
+		var log := []
+		for t in 1500:
+			if m.tick == 240:
+				rob_zip_twice(m)
+			var back: Array = []
+			if run == 0 and m.tick + 1 == 330:
+				back = [{"seat": 3, "topic": "relay", "msg": 1, "ref": "b1"}]
+			elif run == 1:
+				for e in logs[0]:
+					if e.kind == "talk_heard" and e.via == "band" and e.tick == m.tick + 1:
+						back.append({"topic": "relay", "seat": e.seat, "msg": e.msg, "ref": e.ref})
+			m.step([{}, {}], [], back)
+			log.append_array(m.events)
+			m.events.clear()
+		logs.append(log)
+	var routes: Array = logs[0].filter(func(e): return e.kind == "talk_heard").map(func(e): return e.via)
+	check(
+		logs[0] == logs[1] and "band" in routes and "radio" in routes,
+		"a match whose robots talked through BAND replays from its own recording"
+	)
+
+
 func _initialize() -> void:
+	check_band_relay()
+	check_band_notes()
 	check_bruin_coach()
 	check_court_geometry()
 	check_relay()

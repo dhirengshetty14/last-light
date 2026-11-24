@@ -83,12 +83,12 @@ Point at the report.
   quarter of those decisions passed all five checks."
 - **Where it breaks.** "This is the move that costs the most score, and the check it misses."
 - **Model calls.** "A robot only calls Gemini when it is struggling, not every few seconds."
-- **Bruin.** "Bruin loads every match log, runs 19 quality checks and rebuilds this in under a
+- **Bruin.** "Bruin loads every match log, runs 109 quality checks and rebuilds this in under a
   second. The page reads one file, so refreshing it costs no query."
 - The honest finding: "Bruin showed us that three tasks failed about 96% of the time whatever the
   robot did. The fault was our own checks, not the robots. We fixed the checks and retrained."
 - **Bruin Cloud.** Open cloud.getbruin.com and the `last-light` project. "The same pipeline runs
-  here on every match we upload: 16 tables and 19 quality checks." Run
+  here on every match we upload: 17 tables and 109 quality checks." Run
   `python3 telemetry/cloud.py sync` after the demo matches so the latest ones are there. A cloud run
   takes a few minutes, so start it before you present.
 
@@ -98,9 +98,13 @@ Point at the report.
   *"When a teammate has the star, I'll try advance instead of outlet..."*. Say: "Bruin's own agent
   read the failure tables in Bruin Cloud and coached the robots. They give the coached move a small
   lift; their graded record still decides." Run `python3 telemetry/cloud.py coach` before the demo.
-- **BAND.** Have the BAND room open on a second screen. Every warning and tip appears there as that
-  robot, @mentioning its crewmates. Type `@pip what are you doing?` and Pip answers from the live
-  match.
+- **BAND.** Have the BAND room open on a second screen. Rob a robot twice, as in scene 2. Its
+  warning appears in the room as that robot, @mentioning its crewmates, and about a second later
+  the harbor radio shows each crewmate receiving it: *"Got Zip's warning over BAND in 1.1 s."*
+  Say: "The robots are talking to each other through BAND. A crewmate only acts on a warning once
+  BAND has delivered it. If BAND is slow, the game falls back to its own radio after five seconds."
+  Nobody needs to type. If a judge wants to, `@Pip what are you doing?` gets an answer from the
+  live match, and `@Zip watch Rafi` makes Zip give Rafi more room.
 - **Runware.** At the final whistle, "The match in one panel" appears on the final screen: a comic
   panel of the match's big moment, drawn from the match log in a few seconds.
 

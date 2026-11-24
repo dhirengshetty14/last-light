@@ -77,10 +77,15 @@ func verify(path: String) -> bool:
 		s.call("draft")
 	if head.get("bruin_coach") is Array:
 		s.call("set_bruin_coach", head.bruin_coach)
+	# Whether robots' warnings and tips went through the BAND room before the listeners acted.
+	s.set("band_relay", head.get("band_relay", false))
 	var inputs: Dictionary = {}
 	var expected: Array = []
 	var remote: Dictionary = {}
 	var closing: Dictionary = {}
+	# What came back from the BAND room, by the tick the court heard it: crewmates' messages BAND
+	# delivered, and messages from people.
+	var heard: Dictionary = {}
 	var final_tick := 0
 	var sealed := false
 	while f.get_position() < f.get_length():
@@ -98,6 +103,16 @@ func verify(path: String) -> bool:
 			if not stream.has(t):
 				stream[t] = []
 			stream[t].append(event.packet)
+		if event.kind == "band_note" or (event.kind == "talk_heard" and event.via == "band"):
+			var said_at := int(event.tick)
+			if not heard.has(said_at):
+				heard[said_at] = []
+			if event.kind == "band_note":
+				heard[said_at].append(event)
+			else:
+				heard[said_at].append(
+					{"topic": "relay", "seat": event.seat, "msg": event.msg, "ref": event.ref}
+				)
 		if event.kind == "human_input":
 			var at := int(event.tick)
 			if not inputs.has(at):
@@ -117,7 +132,10 @@ func verify(path: String) -> bool:
 				cmd[seat][button] = true
 		for seat in 2:
 			cmd[seat]["move"] = stick[seat]
-		s.step(cmd, remote.get(at, []))
+		if heard.has(at):
+			s.call("step", cmd, remote.get(at, []), heard[at])
+		else:
+			s.step(cmd, remote.get(at, []))
 		s.apply_model_packets(closing.get(at, []), true)
 		for actual in s.events:
 			if cursor >= expected.size() or not equivalent(actual, expected[cursor]):

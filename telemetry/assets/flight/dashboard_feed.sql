@@ -11,6 +11,7 @@ depends:
   - flight.model_calls
   - flight.court_scoreboard
   - flight.robot_talk
+  - flight.band_deliveries
 @bruin */
 -- The live dashboard's whole feed, written by this pipeline run as one JSON document. The page
 -- (telemetry/dashboard.html, served by telemetry/dashboard.py) only reads this file, so a refresh
@@ -134,5 +135,14 @@ depends:
                 FROM flight.events WHERE kind = 'lesson' ORDER BY run DESC, tick DESC LIMIT 6) l) AS lessons,
         (SELECT list(t ORDER BY t.run DESC, t.seq DESC) FROM (
                 SELECT run, seq, tick, speaker, topic, listeners, line
-                FROM flight.robot_talk ORDER BY run DESC, seq DESC LIMIT 8) t) AS talk
+                FROM flight.robot_talk ORDER BY run DESC, seq DESC LIMIT 8) t) AS talk,
+        -- Robot messages that went through the BAND room, and how long BAND took to deliver them.
+        (SELECT {
+                'delivered': count(*) FILTER (WHERE route = 'band'),
+                'radio': count(*) FILTER (WHERE route = 'radio'),
+                'median_seconds': median(seconds) FILTER (WHERE route = 'band'),
+                'slowest_seconds': max(seconds) FILTER (WHERE route = 'band'),
+                'delivered_now': count(*) FILTER (WHERE route = 'band' AND run = (SELECT run FROM now_run)),
+                'radio_now': count(*) FILTER (WHERE route = 'radio' AND run = (SELECT run FROM now_run))
+            } FROM flight.band_deliveries) AS band
 {% if var.source == "local" %}) TO 'telemetry/local/dashboard.json' (FORMAT JSON);{% else %});{% endif %}
